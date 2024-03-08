@@ -77,11 +77,10 @@
 			<!-- <div class="hidden md:block"> -->
 				<div class="">
 				<div class="flex gap-8">
-					<div class="">
+					<!-- <div class="">
 						<button class="fa-solid fa-flask text-white text-2xl pl-2 hover:translate-y-[-4px] transition-all duration-200" on:click={test}></button>
-						<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10"> -->
 						<p class="text-center text-white">Test</p>
-					</div>
+					</div> -->
 
 					<div class="">
 						<button class="fa-solid fa-file-import text-white text-2xl pl-2 hover:translate-y-[-4px] transition-all duration-200" on:click={toggleImportModal}></button>
