@@ -74,7 +74,8 @@
 				<h1 class="font-bold text-xl text-white text-center hidden md:block">Academic Scheduling Aid</h1>
 			</div>
 			
-			<div class="hidden md:block">
+			<!-- <div class="hidden md:block"> -->
+				<div class="">
 				<div class="flex gap-8">
 					<div class="">
 						<button class="fa-solid fa-flask text-white text-2xl pl-2 hover:translate-y-[-4px] transition-all duration-200" on:click={test}></button>

@@ -37,111 +37,86 @@
 
     // Takes the file that is uploaded and sends it to server 1 (server.ts) to be converted to JSON
 async function insertFileToFilters() {
-    // try {
-    //     if (selectedFile && selectedFile.name) {
-    //         if ($file.fileName !== 'No File') {
-    //             titleModal.set('File Already Exists')
-    //             messageModal.set('There is already a file uploaded. Please delete the current file and try again.')
-    //             showImportModal.set(true)
-    //             emptyFile = true
-    //             selectedFile = {}
-    //         }
-    //         else if (selectedFile.name.toLowerCase().endsWith('.csv')) {
-    //             const formData = new FormData()
-    //             formData.append('file', selectedFile)
-    //             file.set({fileName: selectedFile.name})
-    //             progressModal.set(true)
-    //             progressBarModal.set(true)
-    //             progress.set('0')
+    try {
+        if (selectedFile && selectedFile.name) {
+            if ($file.fileName !== 'No File') {
+                titleModal.set('File Already Exists')
+                messageModal.set('There is already a file uploaded. Please delete the current file and try again.')
+                showImportModal.set(true)
+                emptyFile = true
+                selectedFile = {}
+            }
+            else if (selectedFile.name.toLowerCase().endsWith('.csv')) {
+                const formData = new FormData()
+                formData.append('file', selectedFile)
+                
+                file.set({fileName: selectedFile.name})
+                progressModal.set(true)
+                progressBarModal.set(true)
+                progress.set('0')
 
-                // await fetch('https://uvu-scheduling-app-server1.vercel.app/convert', {
-                // // await fetch('http://localhost:3000/convert', {
-                //     method: 'POST',
-                //     body: formData
-                // })
 
-                let fileName = {fileName: selectedFile.name}
                 const response = await fetch ('./importCSV/convert', {
                     method: 'POST',
-                    body: JSON.stringify(fileName),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    body: formData,
                 })
-                console.log(response)
 
-                // .then(response => {
-                //     if (!response.ok) {
-                //         throw new Error(`HTTP error! status: ${response.status}`);
-                //     }
-                //     progress.set('full')
-                //     return response.json();
-                // })
+                .then(() => {
+                    progress.set('full')
+                    emptyFile = true
+                    selectedFile = {}
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            updateLists().then(resolve)
+                        }, 2000)
+                    })
+                })
 
-                // .then(() => {
-                //     emptyFile = true
-                //     selectedFile = {}
-                //     // setTimeout(updateLists, 2000)
-                //     return new Promise((resolve) => {
-                //         setTimeout(() => {
-                //             updateLists().then(resolve)
-                //         }, 2000)
-                //     })
-                // })
+                .then(() => {
+                    return new Promise((resolve) => {
+                        updateFileName().then(resolve)
+                    });
+                })
+                .then(() => {
+                    progressBarModal.set(false)
+                    progressBarFinished.set(true)
+                })
 
-                // .then(() => {
-                //     return new Promise((resolve) => {
-                //         updateFileName().then(resolve)
-                //     });
-                // })
-                // .then(() => {
-                //     progressBarModal.set(false)
-                //     progressBarFinished.set(true)
-                // })
-
-    //         } else {
-    //             titleModal.set('Invalid File Type')
-    //             messageModal.set('The file you uploaded is not a CSV file. Please upload a CSV file and try again.')
-    //             showImportModal.set(true)
-    //             emptyFile = true
-    //             selectedFile = {}
-    //         }
-    //     } else {
-    //         titleModal.set('No File Selected')
-    //         messageModal.set('No file was detected at import. Please try again.')
-    //         showImportModal.set(true)
-    //     }
-    // } catch (error) {
-    //     console.error('Error:', error)
+            } else {
+                titleModal.set('Invalid File Type')
+                messageModal.set('The file you uploaded is not a CSV file. Please upload a CSV file and try again.')
+                showImportModal.set(true)
+                emptyFile = true
+                selectedFile = {}
+            }
+        } else {
+            titleModal.set('No File Selected')
+            messageModal.set('No file was detected at import. Please try again.')
+            showImportModal.set(true)
+        }
+    } catch (error) {
+        console.error('Error:', error)
        
-    // }
+    }
 }
 
 
 async function updateLists() {
-    const response = await fetch('https://uvu-scheduling-app-server1.vercel.app/list')
+    const response = await fetch('./importCSV/updateList')
     // const response = await fetch('http://localhost:3000/list')
     const data = await response.json()
     dataStore.set(data)
 }
 
 async function updateFileName() {
-    try {
-        const response = await fetch('https://uvu-scheduling-app-server1.vercel.app/fileName', {
-            method: 'POST',
-            body: JSON.stringify($file)
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        } else {
-            console.log("file was sent over");
-            return response.json()
+    const response = await fetch ('./importCSV/fileName', {
+        method: 'POST',
+        body: JSON.stringify($file),
+        headers: {
+            'Content-Type': 'application/json'
         }
-    } catch (error) {
-        console.log("There was an error with the fetch: ", error);
-    }
-    
+    })
+    return response.json()
 }
 
 </script>
