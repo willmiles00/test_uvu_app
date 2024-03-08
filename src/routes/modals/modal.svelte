@@ -18,10 +18,10 @@
             deleteProgressModal.set(true)
             deleteProgressBarModal.set(true)
 
-            fetch('https://uvu-scheduling-app-server1.vercel.app/delete', {
-            // fetch('http://localhost:3000/delete', {
+            const response = await fetch('./modals/delete', {
                 method: 'DELETE'
             })
+            return response.json()
 
             .then(() => {
                 file.set({fileName: 'No File'})
@@ -49,15 +49,15 @@
     }
 
     async function removeName() {
-    await fetch('https://uvu-scheduling-app-server1.vercel.app/deleteName', {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(() => {
-        console.log('file name was changed to No File')
-    })
+        const response = await fetch('./modals/deleteName', {
+            method: 'DELETE',
+        })
+        return response.json()
+        
+        .then(() => {
+            console.log('file name was changed to No File')
+        })
+        
     }
   
 </script>

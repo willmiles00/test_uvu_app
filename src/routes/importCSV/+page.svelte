@@ -103,7 +103,6 @@ async function insertFileToFilters() {
 
 async function updateLists() {
     const response = await fetch('./importCSV/updateList')
-    // const response = await fetch('http://localhost:3000/list')
     const data = await response.json()
     dataStore.set(data)
 }
