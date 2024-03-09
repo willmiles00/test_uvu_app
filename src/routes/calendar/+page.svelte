@@ -3,6 +3,8 @@
 	import TimeGrid from '@event-calendar/time-grid'
 	// import ResourceTimeGrid from '@event-calendar/resource-time-grid'
 	import Filter from '../filter/+page.svelte'
+	import {dataStore} from '../mongodbData.js'
+	
 
 	// the listData that was passed down from the parent component
 
@@ -20,7 +22,7 @@
 		slotMinTime: '06:00:00',
 		slotMaxTime: '22:00:00',
 		slotHeight: 128,
-        height: '70%',
+        height: '78%',
 		titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
         eventBackgroundColor: '#275D38',
         headerToolbar: {start: '', center: '', end: ''},
@@ -47,7 +49,7 @@
 </script>
 
 
-<div class="px-4 mt-8 md:flex md:justify-between">
+<div class="px-4 mt-8 md:flex md:justify-between text-black">
 	<div class="md:basis-4/12 mt-4">
 		<!-- the ListData prop again gets passed down to the filter component -->
 		<Filter on:filteredData={filterTheData} />

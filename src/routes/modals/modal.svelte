@@ -17,6 +17,7 @@
             showModal.set(false)
             deleteProgressModal.set(true)
             deleteProgressBarModal.set(true)
+            deleteProgress.set(0)
 
             const response = await fetch('./modals/delete', {
                 method: 'DELETE'
@@ -25,7 +26,7 @@
 
             .then(() => {
                 file.set({fileName: 'No File'})
-                deleteProgress.set('full')
+                deleteProgress.set(1)
             })
 
             .then(() => {
@@ -34,14 +35,15 @@
                 setTimeout(() => {
                     deleteProgressBarModal.set(false)
                     deleteProgressBarFinished.set(true)
-                }, 2000)
+                    deleteProgress.set(0)
+                }, 1000)
             })
 
             .then(() => {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     removeName().then(resolve);
-                }, 2000)
+                }, 1000)
             });
         })
         }
@@ -53,7 +55,7 @@
             method: 'DELETE',
         })
         return response.json()
-        
+
         .then(() => {
             console.log('file name was changed to No File')
         })

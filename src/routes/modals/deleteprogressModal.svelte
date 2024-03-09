@@ -33,9 +33,10 @@
 
                 {#if $deleteProgressBarModal}
                     <div class="flex justify-center bg-gray-100 rounded-b-md py-4 px-2">
-                        <div class="progressBar w-full border border-black rounded-full bg-white">
+                        <!-- <div class="progressBar w-full border border-black rounded-full bg-white">
                             <div class="w-{$deleteProgress} progress bg-primary transition-all duration-1000 rounded-full"></div>
-                        </div>
+                        </div> -->
+                        <progress class=" h-[12px] rounded-full bg-red-800 progress-bar bg-white border border-gray-200" value={$deleteProgress}></progress>
                     </div>
                 {:else if $deleteProgressBarFinished}
                     <div class="flex justify-center bg-gray-100 rounded-b-md py-4">
@@ -49,10 +50,15 @@
 {/if}
 
 <style>
-    .progressBar {
-        height: 1rem;
+    .progress-bar::-webkit-progress-bar {
+      @apply bg-white;
     }
-    .progress {
-        height: .9rem;
+    
+    .progress-bar::-webkit-progress-value {
+      @apply bg-primary;
+    }
+    
+    .progress-bar::-moz-progress-bar {
+      @apply bg-primary;
     }
 </style>

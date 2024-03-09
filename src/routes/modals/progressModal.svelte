@@ -25,9 +25,9 @@
                 </div>
 
                 {#if $progressBarModal}
-                    <p class="mx-8 my-16">Please wait while the file is being processed.</p>
+                    <p class="mx-8 my-16 text-black">Please wait while the file is being processed.</p>
                 {:else if $progressBarFinished}
-                    <p class="mx-8 my-16">Your file has been uploaded Sucessfully!</p>
+                    <p class="mx-8 my-16 text-black">Your file has been uploaded Sucessfully!</p>
                 {/if}
 
                 
@@ -36,8 +36,10 @@
 
                 {#if $progressBarModal}
                     <div class="flex justify-center bg-gray-100 rounded-b-md py-4 px-2">
-                        <div class="progressBar w-full border border-black rounded-full bg-white">
-                            <div class="w-{$progress} progress bg-primary transition-all duration-1000 rounded-full"></div>
+                        <!-- <div class="progressBar w-full border border-black rounded-full bg-white"> -->
+                        <div class="w-full">
+                            <!-- <div class="w-{$progress} progress bg-primary transition-all duration-1000 rounded-full"></div> -->
+                            <progress value={$progress} class=" h-[12px] rounded-full progress-bar bg-white border border-gray-200"/>
                         </div>
                     </div>
                 {:else if $progressBarFinished}
@@ -52,10 +54,15 @@
 {/if}
 
 <style>
-    .progressBar {
-        height: 1rem;
+    .progress-bar::-webkit-progress-bar {
+      @apply bg-white;
     }
-    .progress {
-        height: .9rem;
+    
+    .progress-bar::-webkit-progress-value {
+      @apply bg-primary;
     }
-</style>
+    
+    .progress-bar::-moz-progress-bar {
+      @apply bg-primary;
+    }
+    </style>

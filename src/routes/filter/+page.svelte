@@ -194,12 +194,12 @@
 <DeleteProgressModal />
 
 <div class="">
-    <div class="w-full border border-primary mb-12 rounded-md">
-        <p class="text-center text-white py-1 uppercase font-bold bg-primary">Current File:</p>
-        <p class="text-center text-sm py-1 px-4">{$file.fileName}</p> 
+    <div class="w-full border border-primary border-l-8 mb-12 rounded-md">
+        <p class="text-center text-black py-1 font-bold text-primary">Current File:</p>
+        <p class="text-center text-sm py-1 px-4 text-gray-700">{$file.fileName}</p> 
     </div>
 
-    <div class="rounded-lg bg-primary py-6 w-full pl-3 text-white">
+    <div class="rounded-lg bg-primary py-4 w-full pl-3 text-white">
         <h1>Filter By...</h1>
     </div>
 
@@ -233,7 +233,7 @@
                         <li class="pl-4 py-1">There are no professors listed...</li>
                     {:else}
                         {#each filteredProfessors as professor}
-                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100">
+                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold transition-all duration-100 text-gray-700 hover:text-black">
                                 <button on:click={() => toggleProfessor(professor)} class="flex justify-between w-full cursor-pointer rounded-b-md">
                                     <p>{professor}</p>
                                     <input type="checkbox" value={professor} bind:group={selectedProfessors} class="mr-2 mt-1 text-primary appearance-none border-none ring-none rounded-full"/>
@@ -277,7 +277,7 @@
                         <li class="pl-4 py-1">There are no rooms listed...</li>
                     {:else}
                         {#each filteredRooms as room}
-                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100">
+                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100 text-gray-700 hover:text-black">
                                 <button on:click={() => toggleRoom(room)} class="flex justify-between w-full cursor-pointer rounded-b-md">
                                     <p>{room}</p>
                                     <input type="checkbox" value={room} bind:group={selectedRooms} class="mr-2 mt-1 text-primary appearance-none border-none ring-none rounded-full"/>
@@ -321,7 +321,7 @@
                         <li class="pl-4 py-1">There are no courses listed...</li>
                     {:else}
                         {#each filteredCourses as course}
-                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100">
+                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100 text-gray-700 hover:text-black">
                                 <button on:click={() => toggleCourse(course)} class="flex justify-between w-full cursor-pointer rounded-b-md">
                                     <p>{course}</p>
                                     <input type="checkbox" value={course} bind:group={selectedCourses} class="mr-2 mt-1 text-primary appearance-none border-none ring-none rounded-full"/>

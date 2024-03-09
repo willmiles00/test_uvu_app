@@ -1,6 +1,8 @@
 /* writable stores for our modal */
 
-import { writable } from 'svelte/store'
+import { writable } from 'svelte/store';
+import { tweened } from 'svelte/motion';
+import { cubicOut } from 'svelte/easing';
 
 // shows the title of the modal
 export const titleModal = writable('')
@@ -15,7 +17,11 @@ export const showOneOption = writable(false)
 export const showTwoOptions = writable(false)
 
 // stores for the progress bar and its modal
-export const progress = writable('0')
+export const progress = tweened(0, {
+        duration: 800,
+        easing: cubicOut
+});
+
 export const progressBarModal = writable(false)
 export const progressBarFinished = writable(false)
 export const progressModal = writable(false)
@@ -24,7 +30,10 @@ export const progressModal = writable(false)
 export const showImportModal = writable(false)
 
 // store for the "remove all Schedules" button and its modal
-export const deleteProgress = writable('0')
+export const deleteProgress = tweened(0, {
+    duration: 800,
+    easing: cubicOut
+});
 export const deleteProgressBarModal = writable(false)
 export const deleteProgressBarFinished = writable(false)
 export const deleteProgressModal = writable(false)
