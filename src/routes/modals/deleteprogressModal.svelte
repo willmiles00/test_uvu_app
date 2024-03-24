@@ -4,13 +4,14 @@
     function close() {
         deleteProgressBarFinished.set(false)
         deleteProgressModal.set(false)
+        location.reload()
     }
 
 </script>
 
 {#if $deleteProgressModal}
     
-        <div class="fixed flex justify-center z-50 w-full">
+        <div class="fixed z-30 w-full h-full flex justify-center items-center">
             <div class="bg-white border border-primary rounded-md  shadow-gray-400 shadow-md w-8/12 md:w-6/12">
 
                 <div class="flex justify-start py-6 border-b border-gray-300 mx-8">
@@ -22,9 +23,9 @@
                 </div>
 
                 {#if $deleteProgressBarModal}
-                    <p class="mx-8 my-16">Please wait while the Schedules are being removed.</p>
+                    <p class="mx-8 my-16 text-black">Please wait while the schedules are being removed.</p>
                 {:else if $deleteProgressBarFinished}
-                    <p class="mx-8 my-16">Your schedules have been removed Sucessfully!</p>
+                    <p class="mx-8 my-16 text-black">Your schedules have been removed Sucessfully!</p>
                 {/if}
 
                 

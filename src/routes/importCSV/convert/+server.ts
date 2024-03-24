@@ -8,20 +8,35 @@ import { simulateMain } from './convertCSV2JSON'
 export async function POST({request}) {
     const formData = await request.formData()
 
+
     const file = formData.get('file')
     if (file instanceof File) {
         const fileContents = await file.arrayBuffer()
         const buffer = Buffer.from(fileContents)
-        let fullEventList = await simulateMain(buffer)
+        let eventsYearSeason = await simulateMain(buffer)
 
-        // const client = await clientPromise
-        // const db = client?.db('scheduleDB')
-        // const collection = db?.collection('events')
-        // const document = fullEventList
-        // await collection?.insertMany(document)
+        const [yearSeason, fullEventList] = eventsYearSeason
+        const [year, season] = yearSeason.split(' ')
+        const theYearAndSeason = {year: year, season: season}
+
+        const client = await clientPromise
+        const db = client?.db('scheduleDB')
+
+        // const courseCollection = db?.collection('courseList')
+        const eventsCollection = db?.collection('events')
+        const yearSeasonCollection = db?.collection('yearSeason')
+
+            // const courseListDocument = courseList
+        const eventsDocument = fullEventList
+        const yearSeasonDocument = theYearAndSeason
+
+        await eventsCollection?.insertMany(eventsDocument)
+        await yearSeasonCollection?.insertOne(yearSeasonDocument)
+        // await courseCollection?.insertMany(courseListDocument)
 
         let message = {'success': "success"}
-        return json(fullEventList)
+        return json(theYearAndSeason)
+        // return json(fullEventList)
     } else {
         // Handle the case where file is not a File instance
         console.error('File is not a File instance')

@@ -7,6 +7,7 @@
         progressBarFinished.set(false)
         progressModal.set(false)
         dispatch('closeCSV')
+        location.reload()
     }
 
 </script>

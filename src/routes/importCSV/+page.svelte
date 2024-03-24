@@ -37,23 +37,23 @@
 
     // Takes the file that is uploaded and sends it to server 1 (server.ts) to be converted to JSON
 async function insertFileToFilters() {
-    // try {
-    //     if (selectedFile && selectedFile.name) {
-    //         if ($file.fileName !== 'No File') {
-    //             titleModal.set('File Already Exists')
-    //             messageModal.set('There is already a file uploaded. Please delete the current file and try again.')
-    //             showImportModal.set(true)
-    //             emptyFile = true
-    //             selectedFile = {}
-    //         }
-    //         else if (selectedFile.name.toLowerCase().endsWith('.csv')) {
+    try {
+        if (selectedFile && selectedFile.name) {
+            if ($file.fileName !== 'No File') {
+                titleModal.set('File Already Exists')
+                messageModal.set('There is already a file uploaded. Please delete the current file and try again.')
+                showImportModal.set(true)
+                emptyFile = true
+                selectedFile = {}
+            }
+            else if (selectedFile.name.toLowerCase().endsWith('.csv')) {
                 const formData = new FormData()
                 formData.append('file', selectedFile)
                 
-    //             file.set({fileName: selectedFile.name})
-    //             progressModal.set(true)
-    //             progressBarModal.set(true)
-    //             progress.set(0)
+                file.set({fileName: selectedFile.name})
+                progressModal.set(true)
+                progressBarModal.set(true)
+                progress.set(0)
 
 
                 const response = await fetch ('./importCSV/convert', {
@@ -61,48 +61,48 @@ async function insertFileToFilters() {
                     body: formData,
                 })
                 const data = await response.json()
-                console.log(data)
+                // console.log(data)
 
-    //             .then(() => {
-    //                 emptyFile = true
-    //                 selectedFile = {}
-    //                 return new Promise((resolve) => {
-    //                     progress.set(1)
-    //                     setTimeout(() => {
-    //                         updateLists().then(resolve)
-    //                     }, 500)
-    //                 })
-    //             })
+                .then(() => {
+                    emptyFile = true
+                    selectedFile = {}
+                    return new Promise((resolve) => {
+                        progress.set(1)
+                        setTimeout(() => {
+                            updateLists().then(resolve)
+                        }, 500)
+                    })
+                })
 
-    //             .then(() => {
-    //                 return new Promise((resolve) => {
-    //                     setTimeout(() => {
-    //                         updateFileName().then(resolve)
-    //                     }, 500)
-    //                 });
-    //             })
-    //             .then(() => {
-    //                 progress.set(0)
-    //                 progressBarModal.set(false)
-    //                 progressBarFinished.set(true)
-    //             })
+                .then(() => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            updateFileName().then(resolve)
+                        }, 500)
+                    });
+                })
+                .then(() => {
+                    progress.set(0)
+                    progressBarModal.set(false)
+                    progressBarFinished.set(true)
+                })
 
-    //         } else {
-    //             titleModal.set('Invalid File Type')
-    //             messageModal.set('The file you uploaded is not a CSV file. Please upload a CSV file and try again.')
-    //             showImportModal.set(true)
-    //             emptyFile = true
-    //             selectedFile = {}
-    //         }
-    //     } else {
-    //         titleModal.set('No File Selected')
-    //         messageModal.set('No file was detected at import. Please try again.')
-    //         showImportModal.set(true)
-    //     }
-    // } catch (error) {
-    //     console.error('Error:', error)
+            } else {
+                titleModal.set('Invalid File Type')
+                messageModal.set('The file you uploaded is not a CSV file. Please upload a CSV file and try again.')
+                showImportModal.set(true)
+                emptyFile = true
+                selectedFile = {}
+            }
+        } else {
+            titleModal.set('No File Selected')
+            messageModal.set('No file was detected at import. Please try again.')
+            showImportModal.set(true)
+        }
+    } catch (error) {
+        console.error('Error:', error)
        
-    // }
+    }
 }
 
 

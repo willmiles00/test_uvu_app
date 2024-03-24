@@ -4,7 +4,7 @@ import { format, parse } from 'date-fns';
 import { Readable } from 'stream';
 
 // const eventListPath = './data/FullEventList.json';
-let yearDate: string
+let yearSeason: string
 
 type MyData = Record<string, any>;
 const jsonArray: MyData[] = [];
@@ -58,7 +58,7 @@ async function writeJSON() {
 
   csvData = [...filteredArray]
 //   console.log('csvData', csvData[0]._3)
-  yearDate = csvData[0]._3
+	yearSeason = csvData[0]._3
 }
 
 export async function processFile(fileContents?: Buffer): Promise<Array<any>> {
@@ -70,7 +70,9 @@ export async function processFile(fileContents?: Buffer): Promise<Array<any>> {
 		await writeJSON();
 	  
 		const cleanedUpJson = cleanUpJSON();
-		const fullEventList = produceEventList(cleanedUpJson);
+		const theCleanedUpJSON = produceEventList(cleanedUpJson);
+
+		const fullEventList = addColors(theCleanedUpJSON);
 	  
 		// await writeFile(eventListPath, JSON.stringify(fullEventList));
 		// console.log("fulleventlist in processFile", fullEventList)
@@ -78,6 +80,7 @@ export async function processFile(fileContents?: Buffer): Promise<Array<any>> {
 		// Clear the existing data
         jsonArray.length = 0;
         csvData.length = 0;
+		
 		return fullEventList
 		
 	} else {
@@ -88,9 +91,11 @@ export async function processFile(fileContents?: Buffer): Promise<Array<any>> {
 
 export async function simulateMain(fileContents?: Buffer): Promise<Array<any>> {
 	process.env.MAIN = 'true'
-	const result = await processFile(fileContents)
-	// console.log('results in the simulateMain ', result)
-    return result;
+	let fileResult = await processFile(fileContents)
+	console.log('results in the simulateMain ', fileResult)
+	const fileSeasonYear = yearSeason
+	let result = [fileSeasonYear, fileResult]
+    return result
 }
 
 
@@ -148,8 +153,11 @@ function produceEventList(data: any[]) {
 			if (item.meeting_pattern === 'Does Not Meet') return
 			const id = item.id
 			const courseID = item.courseID
+			// const title = {
+			// 	html: `<p>${item.course}-${item.section}</p><p>${item.course_title}</p><p>${item.instructor}<p><p>${item.building_room}</p>`
+			// }
 			const title = {
-				html: `<p>${item.course}-${item.section}</p><p>${item.course_title}</p><p>${item.instructor}<p><p>${item.building_room}</p>`
+				html: `<p>${item.course}</p><p>${item.course_title}</p><p>${item.instructor}<p><p>${item.building_room}</p>`
 			}
 			const instructor = item.instructor
 			const section = item.section
@@ -204,138 +212,99 @@ function produceEventList(data: any[]) {
 	//console.log(eventList.filter((item) => item?.extendedProps?.building_room === 'CS 502'));
 }
 
-// let fall = [
-// 	{M: '08-21'},
-// 	{T: '08-22'},
-// 	{W: '08-23'},
-// 	{R: '08-24'},
-// 	{F: '08-25'},
-// 	{MWF: '08-21,08-23,08-25'},
-// 	{MW: '08-21,08-23'},
-// 	{TR: '08-22,08-24'},
-// 	{MTWR: '08-21,08-22,08-23,08-24'},
-// ]
-
-// let spring = [
-// 	{M: '01-08'},
-// 	{T: '01-09'},
-// 	{W: '01-10'},
-// 	{R: '01-11'},
-// 	{F: '01-12'},
-// 	{MWF: '01-08,01-10,01-12'},
-// 	{MW: '01-08,01-10'},
-// 	{TR: '01-09,01-11'},
-// 	{MTWR: '01-08,01-09,01-10,01-11'},
-// ]
-
-// let summer = [
-// 	{M: '05-08'},
-// 	{T: '05-09'},
-// 	{W: '05-10'},
-// 	{R: '05-11'},
-// 	{F: '05-12'},
-// 	{MWF: '05-08,05-10,05-12'},
-// 	{MW: '05-08,05-10'},
-// 	{TR: '05-09,05-11'},
-// 	{MTWR: '05-08,05-09,05-10,05-11'},
-// ]
-
-// let semester: any
 
 function convertTime(time: string) {
-	// const [year, season] = yearDate.split(' ');
-
-	// if (season === 'Fall') {
-	// 	semester = fall
-	// } else if (season === 'Spring') {
-	// 	semester = spring
-	// } else if (season === 'Summer') {
-	// 	semester = summer
-	// }
+	const [year, season] = yearSeason.split(' ');
 	const [days, startEndTimes] = time.split(' ');
-	// // Find the object in the semester array that has the days key
-    // const dateObject = semester.find((obj) => obj.hasOwnProperty(days));
+	let semester: any
+	// console.log(days)
 
-    // // If the object exists, get the date
-    // let isoDate;
-    // if (dateObject) {
-    //     isoDate = `${year}-${dateObject[days]}`;
-    // }
+	let fall = [
+		{M: `${year}-08-21`},
+		{T: `${year}-08-22`},
+		{W: `${year}-08-23`},
+		{R: `${year}-08-24`},
+		{F: `${year}-08-25`},
+		{MWF: `${year}-08-21,${year}-08-23,${year}-08-25`},
+		{MW: `${year}-08-21,${year}-08-23`},
+		{TR: `${year}-08-22,${year}-08-24`},
+		{MTWR: `${year}-08-21,${year}-08-22,${year}-08-23,${year}-08-24`},
+	]
+	
+	let spring = [
+		{M: `${year}-01-08`},
+		{T: `${year}-01-09`},
+		{W: `${year}-01-10`},
+		{R: `${year}-01-11`},
+		{F: `${year}-01-12`},
+		{MWF: `${year}-01-08,${year}-01-10,${year}-01-12`},
+		{MW: `${year}-01-08,${year}-01-10`},
+		{TR: `${year}-01-09,${year}-01-11`},
+		{MTWR: `${year}-01-08,${year}-01-09,${year}-01-10,${year}-01-11`},
+	]
+	
+	let summer = [
+		{M: `${year}-05-08`},
+		{T: `${year}-05-09`},
+		{W: `${year}-05-10`},
+		{R: `${year}-05-11`},
+		{F: `${year}-05-12`},
+		{MWF: `${year}-05-08,${year}-05-10,${year}-05-12`},
+		{MW: `${year}-05-08,${year}-05-10`},
+		{TR: `${year}-05-09,${year}-05-11`},
+		{MTWR: `${year}-05-08,${year}-05-09,${year}-05-10,${year}-05-11`},
+	]
 
-	let isoDate;
+	if (season === 'Fall') {
+		semester = fall
+	} else if (season === 'Spring') {
+		semester = spring
+	} else if (season === 'Summer') {
+		semester = summer
+	}
+
+	// Find the object in the semester array that has the days key
+    const dateObject = semester.find((obj) => obj.hasOwnProperty(days));
+
+    // If the object exists, get the date
+    let isoDate;
+    if (dateObject) {
+        isoDate = dateObject[days];
+    }
+
+	// let isoDate;
 
 	// switch (days) {
 	// 	case 'M':
-	// 		isoDate = `${year}-${semester[0].M}`; // Monday
-	// 					// isoDate = '2024-01-9'; // Monday
+	// 		isoDate = '2024-01-9'; // Monday
 	// 		break;
 	// 	case 'W':
-	// 		isoDate = `${year}-${semester[0].W}`; // Wednesday
-	// 					// isoDate = '2024-01-10'; // Wednesday
+	// 		isoDate = '2024-01-10'; // Wednesday
 	// 		break;
 	// 	case 'MW':
-	// 		isoDate = `${year}-${semester[0].M},${year}-${semester[0].W}`; // Monday and Wednesday
-	// 					// isoDate = '2024-01-08,2024-01-10'; // Monday and Wednesday
+	// 		isoDate = '2024-01-08,2024-01-10'; // Monday and Wednesday
 	// 		break;
 	// 	case 'T':
-	// 		isoDate = `${year}-${semester[0].T}`; // Tuesday
-	// 					// isoDate = '2024-01-09'; // Tuesday
+	// 		isoDate = '2024-01-09'; // Tuesday
 	// 		break;
 	// 	case 'TR':
-	// 		isoDate = `${year}-${semester[0].T},${year}-${semester[0].R}`; // Tuesday and Thursday
-	// 					// isoDate = '2024-01-09,2024-01-11'; // Tuesday and Thursday
+	// 		isoDate = '2024-01-09,2024-01-11'; // Tuesday and Thursday
 	// 		break;
 	// 	case 'R':
-	// 		isoDate = `${year}-${semester[0].R}`; // Thursday
-	// 					// isoDate = '2024-01-11'; // Thursday
+	// 		isoDate = '2024-01-11'; // Thursday
 	// 		break;
 	// 	case 'F':
-	// 		isoDate = `${year}-${semester[0].F}`; // Friday
-	// 					// isoDate = '2024-01-12'; // Friday
+	// 		isoDate = '2024-01-12'; // Friday
 	// 		break;
 	// 	case 'MTWR':
-	// 		isoDate = `${year}-${semester[0].M},${year}-${semester[0].T},${year}-${semester[0].W},${year}-${semester[0].R}`; // Monday, Tuesday, Wednesday, Thursday
-	// 					// isoDate = '2024-01-08,2024-01-09,2024-01-10,2024-01-11'; // Monday, Tuesday, Wednesday, Thursday
+	// 		isoDate = '2024-01-08,2024-01-09,2024-01-10,2024-01-11'; // Monday, Tuesday, Wednesday, Thursday
 	// 		break;
 	// 	case 'MWF':
-	// 		isoDate = `${year}-${semester[0].M},${year}-${semester[0].T},${year}-${semester[0].W}`; // Monday, Tuesday, Wednesday
-	// 					// isoDate = '2024-01-08,2024-01-09,2024-01-10'; // Monday, Tuesday, Wednesday
+	// 		isoDate = '2024-01-08,2024-01-09,2024-01-10'; // Monday, Tuesday, Wednesday
 	// 		break;
 	// 	default:
 	// 		isoDate = 'Invalid day'; // Invalid input
 	// }
-
-	switch (days) {
-		case 'M':
-			isoDate = '2024-01-9'; // Monday
-			break;
-		case 'W':
-			isoDate = '2024-01-10'; // Wednesday
-			break;
-		case 'MW':
-			isoDate = '2024-01-08,2024-01-10'; // Monday and Wednesday
-			break;
-		case 'T':
-			isoDate = '2024-01-09'; // Tuesday
-			break;
-		case 'TR':
-			isoDate = '2024-01-09,2024-01-11'; // Tuesday and Thursday
-			break;
-		case 'R':
-			isoDate = '2024-01-11'; // Thursday
-			break;
-		case 'F':
-			isoDate = '2024-01-12'; // Friday
-			break;
-		case 'MTWR':
-			isoDate = '2024-01-08,2024-01-09,2024-01-10,2024-01-11'; // Monday, Tuesday, Wednesday, Thursday
-			break;
-		case 'MWF':
-			isoDate = '2024-01-08,2024-01-09,2024-01-10'; // Monday, Tuesday, Wednesday
-			break;
-		default:
-			isoDate = 'Invalid day'; // Invalid input
-	}
 
 	const timeArray = startEndTimes.split('-');
 	let startTime = convertHours(timeArray[0]);
@@ -344,7 +313,7 @@ function convertTime(time: string) {
 	let endTime = convertHours(timeArray[1]);
 	const end = `${isoDate}T${format(parse(endTime, 'h:mma', new Date()), 'HH:mm:ss')}`;
 
-	return { start, end };
+	return { start, end};
 }
 
 function convertHours(timeStr: string) {
@@ -357,3 +326,30 @@ function convertHours(timeStr: string) {
 	}
 	return timeStr;
 }
+
+
+// once all the objects are created, add a random color to each object
+function addColors(jsonList: any[]) {
+	// console.log('Starting addColors...')
+	const colors = [
+		'#275D38',
+		'#1e482c',
+		'#00867d',
+		'#095c8',
+		'#595478',
+		'#e15230',
+		'#d45d00',
+		'#095c8',
+		'#00688c',
+		'#004c48',
+		'#4b3430',
+		'#5b2924',
+		'#b09747x'
+	]
+
+	return jsonList.map(obj => ({
+        ...obj,
+        backgroundColor: colors[Math.floor(Math.random() * colors.length)]
+    }));
+}
+		

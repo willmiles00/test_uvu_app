@@ -1,8 +1,26 @@
 <script lang="ts">
-	import {dataStore} from './mongodbData.js'
+	import {dataStore, yearAndSeason, courses, rooms} from './mongodbData.js'
 	import { file } from './modals/messageModal.js'
 	// gets the data objects from the database and reassigns them to listData
 	export let data: any
+	import Calendar from './calendar/+page.svelte'
+	import AddClass from './addClass/+page.svelte'
+	import ImportCSV from './importCSV/+page.svelte'
+	import ProgressModal from './modals/progressModal.svelte'
+	import {filteredModal, filteredModalS, closeFilterSelectors} from './modals/messageModal.js'
+	import Message from './modals/modal.svelte'
+	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
+	let addClassModal = false
+	let importCSVModal = false
+
+	let filterSelected = ""
+	let filterSelectedS = " text-primary"
+	let importSelected = ""
+	let importSelectedS = "text-primary"
+	let addSelected = ""
+	let addSelectedS = "text-primary"
+
+	// $: console.log(data?.body?.theYearAndSeason)
 
     $: if (data) {
         dataStore.set(data?.body?.events);
@@ -11,35 +29,37 @@
 		} else {
 			file.set(data?.body?.name)
 		}
+		if (data?.body?.theYearAndSeason === null) {
+			yearAndSeason.set({year: 'default', season: 'default'})
+		} else {
+			yearAndSeason.set(data?.body?.theYearAndSeason)
+		}
+		courses.set(data?.body?.courses)
+		rooms.set(data?.body?.roomsList)
     }
-
-	// $: {
-	// 	console.log(data?.body?.name)
-	// 	console.log(data?.body?.events)
-	// }
-	
-
-
-	// $: console.log(data?.body)
-
-	import Calendar from './calendar/+page.svelte'
-	import AddClass from './addClass/+page.svelte'
-	import ImportCSV from './importCSV/+page.svelte'
-	import ProgressModal from './modals/progressModal.svelte'
-
-	// function handleMessage(event) {
-	// 	alert(event.detail.text)
-	// }
-
-	let addClassModal = false
-	let importCSVModal = false
 
 	function toggleModal() {
 		addClassModal = !addClassModal
+		// checks if add button is selected and highlights the text to secondary color
+		if (addClassModal) {
+			addSelected = "md:border-b-4 md:border-secondary"
+			addSelectedS = "text-secondary md:text-primary"
+		} else if (!addClassModal) {
+			addSelected = ""
+			addSelectedS = "text-primary"
+		}
 	}
 
 	function toggleImportModal() {
 		importCSVModal = !importCSVModal
+		// checks if import button is selected and highlights the text to secondary color
+		if (importCSVModal) {
+			importSelected = "md:border-b-4 md:border-secondary"
+			importSelectedS = "text-secondary md:text-primary"
+		} else if (!importCSVModal) {
+			importSelected = ""
+			importSelectedS = "text-primary"
+		}
 	}
 
 	async function test() {
@@ -48,33 +68,77 @@
         console.log(message)
 	}
 
+	function openFilterModal() {
+		if (!$filteredModal) {
+			filteredModal.set(true)
+			filteredModalS.set(true)
+			closeFilterSelectors.set(true)
+		} else if ($filteredModal) {
+			filteredModal.set(false)
+			filteredModalS.set(false)
+			closeFilterSelectors.set(false)
+		}
+	}
+
+	function openFilterModalS() {
+		if (!$filteredModal) {
+			filteredModal.set(true)
+			filteredModalS.set(true)
+			closeFilterSelectors.set(true)
+		} else if ($filteredModal) {
+			filteredModal.set(false)
+			filteredModalS.set(false)
+			closeFilterSelectors.set(false)
+		}
+	}
+
+	// checks if filter button is selected and highlights the text to secondary color
+	$: if ($filteredModal) {
+		filterSelected = "md:border-b-4 md:border-secondary"
+		filterSelectedS = "text-secondary md:text-primary"
+	} else if (!$filteredModal) {
+		filterSelected = ""
+		filterSelectedS = "text-primary"
+	}
+
 </script>
+
+<!-- <div class="fixed z-30 w-full h-full flex justify-center items-center"> -->
+	<Message />
+<!-- </div> -->
+
+<!-- <div class="fixed z-30 w-full h-full flex justify-center items-center"> -->
+	<DeleteProgressModal />
+<!-- </div> -->
+
 
 <div class="">
 	<ProgressModal on:closeCSV={toggleImportModal}/>
 </div>
 
-<div class="bg-gray-100 static text-black ">
+<div class="bg-gray-50 static text-black ">
 	{#if addClassModal}
-		<div class="z-10 absolute right-4 left-4">
+		<div class="z-20 absolute h-screen w-full">
 			<AddClass on:closeModal={toggleModal}/>
 		</div>
 	{/if}
 
 	{#if importCSVModal}
-		<div class="z-10 absolute h-screen w-full">
+		<div class="z-20 absolute h-screen w-full">
 			<ImportCSV on:closeCSVModal={toggleImportModal} />
 		</div>
 	{/if}
 
+	
+
 	<div class="">
-		<div class="relative flex justify-center md:justify-between gap-8 bg-white border-gray-300 border-b border-l-0 border-r-0 border-t-0 py-2 px-4 shadow-md">
-			<div class="flex gap-8 items-center">
+		<div class="relative flex justify-center md:justify-between gap-8 bg-white border-primary border-opacity-40 border-b py-2 px-4 shadow-md">
+			<div class="flex gap-8 items-center py-2">
 				<img src="uvu_logo.svg" alt="" class="">
-				<h1 class="font-bold text-xl text-primary text-center hidden md:block">Academic Scheduling Aid</h1>
+				<h1 class="font-bold text-lg lg:text-xl text-primary text-center hidden md:block">Academic Scheduling Aid</h1>
 			</div>
 			
-			<div class="w-full fixed bottom-0 bg-white py-1 z-10 flex border-gray-300 border-b-0 border-l-0 border-r-0 border-t shadow-[50px_50px_50px_35px_rgba(0,0,0,0.3)] md:w-auto md:relative md:bg-transparent md:py-0 md:z-auto md:flex-none md:border-transparent md:shadow-none">
+			<div class="w-full fixed bottom-0 bg-white py-1 z-20 flex border-gray-300 border-b-0 border-l-0 border-r-0 border-t shadow-[50px_50px_50px_35px_rgba(0,0,0,0.3)] md:w-auto md:relative md:bg-transparent md:py-0 md:z-auto md:flex-none md:border-transparent md:shadow-none border-primary border-opacity-40">
 				<!-- <div class=""> -->
 				<div class="w-full flex justify-around md:gap-8">
 					<!-- <div class="">
@@ -82,32 +146,48 @@
 						<p class="text-center text-white">Test</p>
 					</div> -->
 
-					<div class="">
-						<button class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={toggleImportModal}>
-							<i class="fa-solid fa-file-import text-xl md:text-2xl block"></i>
+					<div class="hidden md:block {filterSelected} p-1">
+						<button class="{filterSelectedS} hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={openFilterModal}>
+							<i class="fa-solid fa-file-import text-xl block pr-2"></i>
+							Filter
+						</button>
+						<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10"> -->
+					</div>
+
+					<div class="md:hidden {filterSelected}  p-1">
+						<button class="{filterSelectedS} hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={openFilterModalS}>
+							<i class="fa-solid fa-file-import text-xl block"></i>
+							Filter
+						</button>
+						<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10"> -->
+					</div>
+
+					<div class="{importSelected}  p-1">
+						<button class="{importSelectedS} hover:opacity-80 font-bold transition-all duration-200 hover:text-primary " on:click={toggleImportModal}>
+							<i class="fa-solid fa-file-import text-xl block"></i>
 							Import
 						</button>
 						<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10"> -->
 					</div>
 		
-					<div class="">
-						<button class="text-primary  hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={toggleModal}>
-							<i class="fa-solid fa-circle-plus text-xl block md:text-2xl "></i>
+					<div class="{addSelected}  p-1">
+						<button class="{addSelectedS}  hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={toggleModal}>
+							<i class="fa-solid fa-circle-plus text-xl block "></i>
 							Add
 						</button>
 						<!-- <img src="add.svg" alt="Plus button called add" class="w-10 h-10"> -->
 					</div>
 					
-					<div class="">
+					<div class=" p-1">
 						<button class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary">
-							<i class="fa-solid fa-print text-xl block md:text-2xl "></i>
+							<i class="fa-solid fa-print text-xl block"></i>
 							Print
 						</button>
 					</div>
 					
-					<div class="">
+					<div class=" p-1">
 						<button class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary">
-							<i class="fa-solid fa-file-export text-xl block md:text-2xl "></i>
+							<i class="fa-solid fa-file-export text-xl block"></i>
 							Export
 						</button>
 						<!-- <img src="export.svg" alt="export icon" class="w-10 h-10"> -->
@@ -117,7 +197,8 @@
 			
 		</div>
 		
-		<div class="calendar">
+		<!-- <div class="border-2 border-primary m-4 rounded-lg"> -->
+		<div class="">
 			<!-- listData from the database gets passed down as a prop to the scheduler -->
 			<Calendar />
 		</div>

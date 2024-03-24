@@ -7,9 +7,8 @@
     import { createEventDispatcher } from 'svelte'
     import { slide } from 'svelte/transition'
     const dispatch = createEventDispatcher()
-    import Message from '../../routes/modals/modal.svelte'
-    import { showModal, messageModal, titleModal, showOneOption, showTwoOptions, file } from '../modals/messageModal.js'
-    import DeleteProgressModal from '../modals/deleteprogressModal.svelte'
+    import { showModal, messageModal, titleModal, showOneOption, showTwoOptions, file, closeFilterSelectors } from '../modals/messageModal.js'
+    
 
 
     let tempEventList
@@ -30,6 +29,8 @@
     // Open and closes the professor list
     function toggleProfessorList() {
     openProfessorList = !openProfessorList
+    openRoomList = false
+    openCourseList = false
         if (openProfessorList) {
             searchProfessor = ""
         }
@@ -62,6 +63,8 @@
     // opens and closes the room list
     function toggleRoomsList() {
         openRoomList = !openRoomList
+        openProfessorList = false
+        openCourseList = false
 
         if (openRoomList) {
             searchRoom = ""
@@ -95,6 +98,8 @@
     // opens and closes the course list
     function toggleCourseList() {
         openCourseList = !openCourseList
+        openProfessorList = false
+        openRoomList = false
 
         if (openCourseList) {
             searchCourse = ""
@@ -166,6 +171,7 @@
 
         // the data is then pushed up to the scheduler
         dispatch('filteredData', { filteredData: tempEventList })
+        // filteredData.set(tempEventList)
 
         // then we reset the filters and close the lists
         selectedProfessors = []
@@ -179,6 +185,7 @@
     function resetFilters() {
         tempEventList = []
         dispatch('filteredData', { filteredData: tempEventList })
+        // filteredData.set(tempEventList)
     }
 
     function removeData() {
@@ -188,23 +195,29 @@
         messageModal.set("Are you sure you want to remove all schedules? This action will delete all data and cannot be undone.")
         showModal.set(true)
     }
+
+    // store that if the user close the filter modal by clicking the button the filter selectors will close as well
+    $: if (!$closeFilterSelectors) {
+        openCourseList = false
+        openProfessorList = false
+        openRoomList = false
+    }
 </script>
 
-<Message />
-<DeleteProgressModal />
+
 
 <div class="">
-    <div class="w-full border border-primary border-l-8 mb-12 rounded-md">
+    <div class="w-full border border-primary border-l-8 mb-8 rounded-md">
         <p class="text-center text-black py-1 font-bold text-primary">Current File:</p>
         <p class="text-center text-sm py-1 px-4 text-gray-700">{$file.fileName}</p> 
     </div>
 
-    <div class="rounded-lg bg-primary py-4 w-full pl-3 text-white">
+    <div class=" w-full pl-3 text-primary border-b border-primary pb-2">
         <h1>Filter By...</h1>
     </div>
 
     <!--------------------------------------------------- Professors List -------------------------------------------------->
-    <div class="mt-6">
+    <div class="mt-4">
         {#if !openProfessorList}
             <button on:click={toggleProfessorList} class="flex justify-between py-2 bg-white rounded-md border border-gray-300 w-full">
                 <div class="pl-3">Professors</div>

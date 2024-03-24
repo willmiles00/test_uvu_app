@@ -3,28 +3,43 @@
 	import TimeGrid from '@event-calendar/time-grid'
 	// import ResourceTimeGrid from '@event-calendar/resource-time-grid'
 	import Filter from '../filter/+page.svelte'
-	import {dataStore} from '../mongodbData.js'
+	import {yearAndSeason} from '../mongodbData.js'
+	import {filteredModal} from '../modals/messageModal.js'
+	let width = "translate-x-[-110%]"
+	let height = "translate-y-[100%]"
+
 	
-
-	// the listData that was passed down from the parent component
-
+	
 	let eventList: any[] = []
 
-    let ec
+	// grabs the 'yearAndSeason' object from the mongodbData.js file and based on the data will configure the scheduler to show that date range and if there is no data it will default to the current date
+	let year = $yearAndSeason.year
+	let season = $yearAndSeason.season
+	let semester: any
+	if (season === 'Spring') {
+		semester = `${year}-01-08`
+	} else if (season === 'Summer') {
+		semester = `${year}-05-08`
+	} else if (season === 'Fall') {
+		semester = `${year}-08-21`
+	} else if (season === 'default') {
+		semester = new Date().toISOString().slice(0, 10)
+	}
+
+    let ec: any
 	let plugins = [TimeGrid]
 	let options = {
-		date: new Date('2024-01-08'),
+		date: semester,
 		datesAboveResources: true,
 		view: 'timeGridWeek',
 		allDaySlot: false,
 		hiddenDays: [0, 7],
-		slotDuration: '00:30:00',
+		slotDuration: '00:10:00',
 		slotMinTime: '06:00:00',
 		slotMaxTime: '22:00:00',
-		slotHeight: 128,
-        height: '78%',
+        // height: '80%',
 		titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
-        eventBackgroundColor: '#275D38',
+        // eventBackgroundColor: '#275D38',
         headerToolbar: {start: '', center: '', end: ''},
 		dayHeaderFormat: { weekday: 'long' },
 		eventSources: [
@@ -34,89 +49,54 @@
 				}
 			}
 		]
+
+		// events: [
+		// 	{
+		// 		title: 'event 1',
+		// 		start: '2024-01-08T13:00:00',
+		// 		end: '2024-01-08T14:50:00',
+		// 		backgroundColor: '#275D38'
+		// 	},
+		// 	{
+		// 		title: 'event 2',
+		// 		start: '2024-01-10T13:00:00',
+		// 		end: '2024-01-10T14:50:00',
+		// 		backgroundColor: 'red'
+		// 	}
+		// ]
         
 	}
+
 
 	// filter to only professor specified
 	function filterTheData(event) {
 		eventList = event.detail.filteredData
-
 		console.log(eventList)
-
+		filteredModal.set(false)
 		ec.refetchEvents()
+	}
+
+	$: if ($filteredModal) {
+		width = "translate-x-[0%]"
+		height = "translate-y-[9%]"
+	} else {
+		width = "translate-x-[-110%]"
+		height = "translate-y-[100%]"
 	}
 	
 </script>
 
 
-<div class="px-4 mt-8 md:flex md:justify-between text-black">
-	<div class="md:basis-4/12 mt-4">
-		<!-- the ListData prop again gets passed down to the filter component -->
-		<Filter on:filteredData={filterTheData} />
-		<!-- <Filter {data}/> -->
-	</div>
-	
-	<div class="md:basis-8/12 md:ml-4">
+<div class="z-10 absolute top-22 w-6/12 bg-white p-4 shadow-md rounded-r-lg border border-l-0 border-primary {width} transition-all duration-300 hidden md:block">
+	<Filter on:filteredData={filterTheData} />
+</div>
+
+<div class="z-10 fixed bottom-0 h-full w-full bg-white p-4 shadow-md rounded-t-lg border border-primary {height} transition-all duration-300 md:hidden">
+	<Filter on:filteredData={filterTheData} />
+</div>
+
+<div class="">
+	<div class="pb-20 px-4 md:pb-4">
 		<Calendar bind:this={ec} {plugins} {options} />
 	</div>
 </div>
-
-
-
-<style>
-	.ec {
-		--ec-bg-color: #22272e;
-	}
-</style>
-	
-	
-<!-- /* [{
-    id: "1505",
-    title: { html: "<p>DAGV 1300-001</p><p>Animation Essentials</p><p>MW 9am-9:50am</p>" },
-    extendedProps: { building_room: "CS 502" },
-    start: "2024-01-08T09:00:00",
-    end: "2024-01-08T09:50:00"
-}] */ -->
-
-
-
-
-<!-- // 	let tempEventList = {
-	// 		id: "1",
-	// 		title: "Welcome to the UVU Scheduler, please add data to the calendar to get started!",
-	// 		start: "2024-01-08T16:30:00", 
-	// 		end:"2024-01-08T17:45:00",
-	// 	}
-	// 	eventList = [...eventList, tempEventList]
-	// 	console.log(eventList)
-
-	// events: [
-	// 		{ 
-	// 		id: "1",
-	// 		title: "hello Mr.Rager",
-	// 		start: "2024-01-08T16:30:00", 
-	// 		end:"2024-01-08T17:45:00",
-	// 		display: 'auto'
-	// 	}
-	// ] -->
-
-
-
-
-	<!-- // beforeUpdate(() => {
-	// 	let tempEventList = fullEventList.filter(
-	// 		(item: any) => item?.extendedProps?.building_room === 'CS 509'
-	// 	)
-
-	// 	tempEventList.forEach((item: any) => {
-	// 		let tempEvent = {
-	// 			id: item.id,
-	// 			title: item.title,
-	// 			start: item.start,
-	// 			end: item.end
-    //             //We might add eventBackgroundColor: soon
-	// 		}
-	// 		eventList = [...eventList, tempEvent]
-	// 	})
-
-	// }) -->

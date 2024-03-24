@@ -41,3 +41,10 @@ export const deleteProgressModal = writable(false)
 
 // store for the file that gets uploaded
 export const file = writable({})
+
+// store for the filtered modal to show it has been selected
+export const filteredModal = writable(false)
+export const filteredModalS = writable(false)
+
+
+export const closeFilterSelectors = writable(false)

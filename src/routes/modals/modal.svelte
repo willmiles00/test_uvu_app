@@ -1,6 +1,6 @@
 <script lang="ts">
     import { messageModal, titleModal, showModal, showOneOption, showTwoOptions, deleteProgressModal, deleteProgressBarModal, deleteProgressBarFinished, deleteProgress, file } from './messageModal.js'
-    import {dataStore} from '../mongodbData.js'
+    import {dataStore, yearAndSeason} from '../mongodbData.js'
 
     // import fullEventList from '../data/FullEventList.json'
 
@@ -25,6 +25,7 @@
             return response.json()
 
             .then(() => {
+                yearAndSeason.set({year: 'default', season: 'default'})
                 file.set({fileName: 'No File'})
                 deleteProgress.set(1)
             })
@@ -68,13 +69,14 @@
 
 {#if $showModal} 
     {#if $showOneOption}
-        <div class="fixed flex justify-center z-50 w-full">
+        <!-- <div class="fixed flex justify-center z-50 w-full"> -->
+        <div class="fixed z-30 w-full h-full flex justify-center items-center">
             <div class="bg-white border border-primary rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12">
                 <div class="flex justify-start py-6 border-b border-gray-300 mx-8">
                     <h1 class="font-bold text-gray-600 text-xl">{$titleModal}</h1>
                 </div>
 
-                <p class="mx-8 my-16">{$messageModal}</p>
+                <p class="mx-8 my-16 text-black">{$messageModal}</p>
 
                 <div class="flex justify-center bg-gray-100 rounded-b-md py-4">
                     <button on:click={closeModal} class="py-2 px-6 border border-primary text-primary rounded-md hover:text-white hover:bg-primary">Close</button>
@@ -83,13 +85,14 @@
         </div>
     {:else if $showTwoOptions}
 
-        <div class="fixed flex justify-center z-50 w-full">
+        <!-- <div class="fixed flex justify-center z-50 w-full"> -->
+        <div class="fixed z-30 w-full h-full flex justify-center items-center">
             <div class="bg-white border border-primary rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12">
                 <div class="flex justify-start py-6 border-b border-gray-300 mx-8">
                     <h1 class="font-bold text-red-500 text-xl">{$titleModal}</h1>
                 </div>
 
-                <p class="mx-8 my-16">{$messageModal}</p>
+                <p class="mx-8 my-16 text-black">{$messageModal}</p>
 
                 <div class="flex justify-end bg-gray-100 rounded-b-md py-4 gap-4 pr-4">
                     <div class="flex justify-center">
