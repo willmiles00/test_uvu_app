@@ -10,7 +10,7 @@
 	import {filteredModal, filteredModalS, closeFilterSelectors} from './modals/messageModal.js'
 	import Message from './modals/modal.svelte'
 	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
-	let addClassModal = false
+	let addClassModal = true
 	let importCSVModal = false
 
 	let filterSelected = ""
