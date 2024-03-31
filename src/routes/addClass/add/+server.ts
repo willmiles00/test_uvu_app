@@ -7,20 +7,18 @@ import { addColor } from './backgroundColors'
 
 // based on the frequency, it will convert the event into multiple objects
 function convertToMultipleObjects(newEvent: any) {
-    const frequencyMapping = {
-        'MTWR': 4,
-        'MWF': 3,
-        'TR': 2,
-        'MW': 2,
-    }
 
-    const numberOfDuplicates = frequencyMapping[newEvent.frequency]
+    // const frequencyMapping = {
+    //     'MTWR': 4,
+    //     'MWF': 3,
+    //     'TR': 2,
+    //     'MW': 2,
+    // }
 
-    let events 
-    if (numberOfDuplicates) {
-        events = Array.from(newEvent.frequency).map(frequency => ({...newEvent, frequency, days: numberOfDuplicates}));
-        
-    }
+    // const numberOfDuplicates = frequencyMapping[newEvent.frequency]
+    // console.log(numberOfDuplicates)
+
+    let events = Array.from(newEvent.frequency).map(frequency => ({...newEvent, frequency, days: newEvent.frequency.length}));
     return events
 }
 
@@ -35,10 +33,6 @@ function convertTime(newObjects: any) {
 		{W: `${year}-08-23`},
 		{R: `${year}-08-24`},
 		{F: `${year}-08-25`},
-		// {MWF: `${year}-08-21,${year}-08-23,${year}-08-25`},
-		// {MW: `${year}-08-21,${year}-08-23`},
-		// {TR: `${year}-08-22,${year}-08-24`},
-		// {MTWR: `${year}-08-21,${year}-08-22,${year}-08-23,${year}-08-24`},
 	]
 	
 	let spring = [
@@ -47,10 +41,6 @@ function convertTime(newObjects: any) {
 		{W: `${year}-01-10`},
 		{R: `${year}-01-11`},
 		{F: `${year}-01-12`},
-		// {MWF: `${year}-01-08,${year}-01-10,${year}-01-12`},
-		// {MW: `${year}-01-08,${year}-01-10`},
-		// {TR: `${year}-01-09,${year}-01-11`},
-		// {MTWR: `${year}-01-08,${year}-01-09,${year}-01-10,${year}-01-11`},
 	]
 	
 	let summer = [
@@ -59,10 +49,6 @@ function convertTime(newObjects: any) {
 		{W: `${year}-05-10`},
 		{R: `${year}-05-11`},
 		{F: `${year}-05-12`},
-		// {MWF: `${year}-05-08,${year}-05-10,${year}-05-12`},
-		// {MW: `${year}-05-08,${year}-05-10`},
-		// {TR: `${year}-05-09,${year}-05-11`},
-		// {MTWR: `${year}-05-08,${year}-05-09,${year}-05-10,${year}-05-11`},
 	]
 
     newObjects = newObjects.map((obj: any) => {
@@ -84,7 +70,7 @@ function convertTime(newObjects: any) {
     });
     
 
-    addTime(newObjects)
+    // addTime(newObjects)
     return newObjects
 }
 
@@ -110,17 +96,37 @@ function addTime(newObjects: any) {
         let isoStartM
         let isoEndH
         let isoEndM
-        if (obj.days === 2) {
-            isoStartH = hours
-            isoStartM = parseInt(minutes)
-            isoEndH = hours + 1
-            isoEndM = parseInt(minutes) + 15
-        } else if (obj.days === 3 || obj.days === 4) {
-            isoStartH = hours
-            isoStartM = parseInt(minutes)
-            isoEndH = hours
-            isoEndM = parseInt(minutes) + 50
+        if (obj.isCustomClass) {
+            if (obj.timeLength === '50') {
+                isoStartH = hours
+                isoStartM = parseInt(minutes)
+                isoEndH = hours
+                isoEndM = parseInt(minutes) + 50
+            } else if (obj.timeLength === '75') {
+                isoStartH = hours
+                isoStartM = parseInt(minutes)
+                isoEndH = hours + 1
+                isoEndM = parseInt(minutes) + 15
+            } else if (obj.timeLength === '120') {
+                isoStartH = hours
+                isoStartM = parseInt(minutes)
+                isoEndH = hours + 2
+                isoEndM = parseInt(minutes)
+            }
+        } else if (!obj.isCustomClass) {
+            if (obj.days === 2) {
+                isoStartH = hours
+                isoStartM = parseInt(minutes)
+                isoEndH = hours + 1
+                isoEndM = parseInt(minutes) + 15
+            } else if (obj.days === 3 || obj.days === 4) {
+                isoStartH = hours
+                isoStartM = parseInt(minutes)
+                isoEndH = hours
+                isoEndM = parseInt(minutes) + 50
+            }
         }
+        
         
         // console.log(isoStartH, isoStartM, isoEndH, isoEndM)
 
@@ -146,9 +152,9 @@ function addTime(newObjects: any) {
         // almost done, I just need to now add in conditioning if the ending time goes from am to pm
         return obj
     })
-    // console.log(allTimes)
+    // // console.log(allTimes)
     newObjects = allTimes
-    // console.log(newObjects)
+    // // console.log(newObjects)
     return newObjects
 }
 
@@ -178,19 +184,20 @@ export async function POST({request}) {
 
     let newObjects = convertToMultipleObjects(newEvent)
     newObjects = convertTime(newObjects)
+    newObjects = addTime(newObjects)
 
     newObjects = addColor(newObjects)
 
     newObjects = cleanUpObjects(newObjects)
-    console.log(newObjects)
+    // console.log(newObjects)
     
-    // const client = await clientPromise
-    // const db = client?.db('scheduleDB')
-    // const collection = db?.collection('events')
-    // await collection?.insertMany(newObjects)
+    const client = await clientPromise
+    const db = client?.db('scheduleDB')
+    const collection = db?.collection('events')
+    await collection?.insertMany(newObjects)
 
     let message = {'success': "success"}
-    return json(message)
+    return json(newObjects)
 }
 
 

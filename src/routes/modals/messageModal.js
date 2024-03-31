@@ -48,3 +48,6 @@ export const filteredModalS = writable(false)
 
 
 export const closeFilterSelectors = writable(false)
+
+export const notificationsTitle = writable('')
+export const notificationsDescription = writable('')

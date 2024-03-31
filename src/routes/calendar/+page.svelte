@@ -87,7 +87,7 @@
 </script>
 
 
-<div class="z-10 absolute top-22 w-6/12 bg-white p-4 shadow-md rounded-r-lg border border-l-0 border-primary {width} transition-all duration-300 hidden md:block">
+<div class="z-10 absolute top-22 w-96 bg-white p-4 shadow-md rounded-r-lg border border-l-0 border-primary {width} transition-all duration-300 hidden md:block">
 	<Filter on:filteredData={filterTheData} />
 </div>
 
