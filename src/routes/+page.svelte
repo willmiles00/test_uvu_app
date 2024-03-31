@@ -12,6 +12,7 @@
 	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
 	let addClassModal = false
 	let importCSVModal = false
+	import html2canvas from 'html2canvas'
 
 	let filterSelected = ""
 	let filterSelectedS = " text-primary"
@@ -101,6 +102,15 @@
 		filterSelectedS = "text-primary"
 	}
 
+	async function exportScreenshot() {
+    const canvas = await html2canvas(document.body);
+    const imgData = canvas.toDataURL("image/jpeg");
+    const link = document.createElement('a');
+    link.download = 'schedule.jpg';
+    link.href = imgData;
+    link.click();
+}
+
 </script>
 
 <!-- <div class="fixed z-30 w-full h-full flex justify-center items-center"> -->
@@ -186,7 +196,7 @@
 					</div>
 					
 					<div class=" p-1">
-						<button class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary">
+						<button on:click={exportScreenshot} class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary">
 							<i class="fa-solid fa-file-export text-xl block"></i>
 							Export
 						</button>
