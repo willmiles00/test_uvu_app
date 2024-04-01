@@ -159,6 +159,7 @@ function produceEventList(data: any[]) {
 			const title = {
 				html: `<p>${item.course}</p><p>${item.course_title}</p><p>${item.instructor}<p><p>${item.building_room}</p>`
 			}
+			const className = item.course_title
 			const instructor = item.instructor
 			const section = item.section
 			const course = item.course
@@ -182,6 +183,7 @@ function produceEventList(data: any[]) {
 						id: uniqueID,
 						courseID,
 						title,
+						className,
 						instructor,
 						section,
 						course,
@@ -197,6 +199,7 @@ function produceEventList(data: any[]) {
 					id,
 					courseID,
 					title,
+					className,
 					instructor,
 					section,
 					course,

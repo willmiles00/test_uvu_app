@@ -164,6 +164,7 @@ function cleanUpObjects(newObjects: any) {
             title: {
                 html: `<p>${obj.course}</p><p>${obj.className}</p><p>${obj.profName}<p><p>${obj.room}</p>`
             },
+            className: obj.className,
             instructor: obj.profName,
             course: obj.course,
             extendedProps: {

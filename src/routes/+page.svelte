@@ -6,13 +6,16 @@
 	import Calendar from './calendar/+page.svelte'
 	import AddClass from './addClass/+page.svelte'
 	import ImportCSV from './importCSV/+page.svelte'
+	import Edit from './edit/+page.svelte'
 	import ProgressModal from './modals/progressModal.svelte'
 	import {filteredModal, filteredModalS, closeFilterSelectors} from './modals/messageModal.js'
 	import Message from './modals/modal.svelte'
 	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
+	import html2canvas from 'html2canvas'
+
 	let addClassModal = false
 	let importCSVModal = false
-	import html2canvas from 'html2canvas'
+	let editClassModal = false
 
 	let filterSelected = ""
 	let filterSelectedS = " text-primary"
@@ -20,6 +23,8 @@
 	let importSelectedS = "text-primary"
 	let addSelected = ""
 	let addSelectedS = "text-primary"
+	let editSelected = ""
+	let editSelectedS = "text-primary"
 	let hiddenHeader = ""
 
 	// $: console.log(data?.body?.theYearAndSeason)
@@ -61,6 +66,17 @@
 		} else if (!importCSVModal) {
 			importSelected = ""
 			importSelectedS = "text-primary"
+		}
+	}
+
+	function toggleEditModal() {
+		editClassModal = !editClassModal
+		if (editClassModal) {
+			editSelected = "md:border-b-4 md:border-secondary"
+			editSelectedS = "text-secondary md:text-primary"
+		} else if (!editClassModal) {
+			editSelected = ""
+			editSelectedS = "text-primary"
 		}
 	}
 
@@ -126,8 +142,16 @@
 		hiddenHeader = ""
 	}
 	
-
+	function closeEditModal() {
+		editClassModal = false
+		editSelected = ""
+		editSelectedS = "text-primary"
+	}
 </script>
+
+<div class="fixed bottom-0 z-0 h-full w-full flex justify-center items-center">
+	<img src="uvu_logo2.png" alt="" class="w-[200px] h-[200px] opacity-5">
+</div>
 
 <!-- <div class="fixed z-30 w-full h-full flex justify-center items-center"> -->
 	<Message />
@@ -155,7 +179,11 @@
 		</div>
 	{/if}
 
-	
+	{#if editClassModal}
+		<div class="z-20 absolute h-screen w-full">
+			<Edit on:closeEditModal={closeEditModal}/>
+		</div>
+	{/if}
 
 	<div class="">
 		<div class="relative flex justify-center md:justify-between gap-8 bg-white border-primary border-opacity-40 border-b py-2 px-4 shadow-md no-print {hiddenHeader}">
@@ -202,6 +230,13 @@
 							Add
 						</button>
 						<!-- <img src="add.svg" alt="Plus button called add" class="w-10 h-10"> -->
+					</div>
+
+					<div class="{editSelected}  p-1">
+						<button class="{editSelectedS}  hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={toggleEditModal}>
+							<i class="fa-solid fa-pen-to-square text-xl block "></i>
+							Edit
+						</button>
 					</div>
 					
 					<div class=" p-1">
