@@ -20,6 +20,7 @@
 	let importSelectedS = "text-primary"
 	let addSelected = ""
 	let addSelectedS = "text-primary"
+	let hiddenHeader = ""
 
 	// $: console.log(data?.body?.theYearAndSeason)
 
@@ -102,14 +103,29 @@
 		filterSelectedS = "text-primary"
 	}
 
+	function sleep(ms) {
+    	return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	async function exportScreenshot() {
-    const canvas = await html2canvas(document.body);
-    const imgData = canvas.toDataURL("image/jpeg");
-    const link = document.createElement('a');
-    link.download = 'schedule.jpg';
-    link.href = imgData;
-    link.click();
-}
+		hiddenHeader = "hidden"
+		await sleep(50)
+		initiateScreenshot()
+	}
+	async function initiateScreenshot() {
+		const canvas = await html2canvas(document.body);
+		const imgData = canvas.toDataURL("image/jpeg");
+		const link = document.createElement('a');
+		link.download = 'schedule.jpg';
+		link.href = imgData;
+		link.click();
+		await sleep(50)
+		addHeaderBack()
+	}
+	function addHeaderBack() {
+		hiddenHeader = ""
+	}
+	
 
 </script>
 
@@ -142,7 +158,7 @@
 	
 
 	<div class="">
-		<div class="relative flex justify-center md:justify-between gap-8 bg-white border-primary border-opacity-40 border-b py-2 px-4 shadow-md">
+		<div class="relative flex justify-center md:justify-between gap-8 bg-white border-primary border-opacity-40 border-b py-2 px-4 shadow-md no-print {hiddenHeader}">
 			<div class="flex gap-8 items-center py-2">
 				<img src="uvu_logo.svg" alt="" class="">
 				<h1 class="font-bold text-lg lg:text-xl text-primary text-center hidden md:block">Academic Scheduling Aid</h1>
@@ -156,7 +172,7 @@
 						<p class="text-center text-white">Test</p>
 					</div> -->
 
-					<div class="hidden md:block {filterSelected} p-1">
+					<div class="hidden md:block {filterSelected} p-1 no-print">
 						<button class="{filterSelectedS} hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={openFilterModal}>
 							<i class="fa-solid fa-file-import text-xl block pr-2"></i>
 							Filter
@@ -164,7 +180,7 @@
 						<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10"> -->
 					</div>
 
-					<div class="md:hidden {filterSelected}  p-1">
+					<div class="md:hidden {filterSelected} p-1 no-print">
 						<button class="{filterSelectedS} hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={openFilterModalS}>
 							<i class="fa-solid fa-file-import text-xl block"></i>
 							Filter
@@ -189,7 +205,7 @@
 					</div>
 					
 					<div class=" p-1">
-						<button class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary">
+						<button class="text-primary hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={() => window.print()}>
 							<i class="fa-solid fa-print text-xl block"></i>
 							Print
 						</button>
@@ -214,3 +230,11 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	@media print {
+		.no-print {
+			display: none;
+		}
+	}
+</style>
