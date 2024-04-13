@@ -1,71 +1,216 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from 'svelte'
     import {dataStore} from '../mongodbData.js'
+    import DeleteEditModal from '../modals/deleteEditModal.svelte'
+    import { editDeleteTitle, editDeleteDescription, dataToEditOrDelete } from '../modals/messageModal.js'
+    import { writable } from 'svelte/store'
     const dispatch = createEventDispatcher()
+    export const editDeleteData = writable([])
 
+    // console.log($dataStore)
+
+    let openModal = false
+    let filteredEvents
+    // this reactive statement filters out duplicates based on the instructor, course, building room, and class name
+    $: filteredEvents = $dataStore && Array.isArray($dataStore) ? $dataStore.filter((event, index, self) => {
+        const eventKey = `${event.className}-${event.instructor}-${event.course}-${event.extendedProps.building_room}`;
+        const isUnique = index === self.findIndex(e => `${e.className}-${e.instructor}-${e.course}-${e.extendedProps.building_room}` === eventKey);
+        return isUnique;
+    }) : [];
+
+    let classNameIndex = []
+    let switchToEditClassName = null
+    let tempClassName
+
+    let instructorIndex = []
+    let switchToEditInstructor = null
+    let tempInstructor
+
+    let courseIndex = []
+    let switchToEditCourse = null
+    let tempCourse
+
+    let buildingRoomIndex = []
+    let switchToEditRoom = null
+    let tempRoom
+
+    let deleteIndex = []
+
+    // // display all the events in the database in the modal and allows us to make changes to show the changes without a rerender
+    // $: currentEvents = $dataStore
+
+    // sends to the parent component to close the whole modal we are in
     function closeModal() {
         dispatch('closeEditModal')
     }
 
-    let classListOpen = false
-    let classSelected = ""
-    let rotateClassChevron = ""
-    let editClassName = null
-
-     // removes duplicate names from the professor select elements
-     $: onlyOneClass = [...new Set($dataStore.map(item => item.className))]
-
-     // sort the onlyOneProfessor array into alphabetical order
-     $: classList = onlyOneClass.sort((a, b) => a.localeCompare(b))
-
-    function openClassesList() {
-        classListOpen = !classListOpen
-        if (classListOpen) {
-            classSelected = "shadow-sm"
-            rotateClassChevron = "transform rotate-180 transition-transform duration-300 ease-in-out"
-        } else if (!classListOpen) {
-            classSelected = ""
-            rotateClassChevron = "transform rotate-0 transition-transform duration-300 ease-in-out"
-        }
+    // closes the modal for notifications of actions
+    function closeEditDeleteModal() {
+        openModal = false
+        switchToEditClassName = null
+        switchToEditInstructor = null
+        switchToEditCourse = null  
     }
 
-    function changeClassNameInDatabase() {
-        console.log('changeClassNameInDatabase')
+    // closes the notifications modal AFTER you hit submit
+    function closeAndMakeUpdate() {
+        switchToEditClassName = null
+        switchToEditInstructor = null
+        switchToEditCourse = null
+        openModal = false
+    }
+
+    //----------------- class name functions
+    function cancelClassNameChange() {
+        switchToEditClassName = null
+    }
+
+    function classNameToChange(oldName) {
+        
+        editDeleteTitle.set("Your Changing The Class Name")
+        editDeleteDescription.set(`Are you sure you want to change "${oldName}" ?`)
+        openModal = true
+        dataToEditOrDelete.set({type: 'className', oldName: oldName, newName: tempClassName})
+    }
+
+    // ----------------- instructor functions
+    function instructorToChange(oldInstructorName) {
+        
+        editDeleteTitle.set("Your Changing The Instructor's Name")
+        editDeleteDescription.set(`Are you sure you want to change "${oldInstructorName}" ?`)
+        openModal = true
+        dataToEditOrDelete.set({type: 'instructor', oldName: oldInstructorName, newName: tempInstructor})
+    }
+
+    function cancelInstructorChange() {
+        switchToEditInstructor = null
+    }
+
+    //-------------- course functions
+    function courseToChange(oldCourseName) {
+        
+        editDeleteTitle.set("Your Changing The Courses Name")
+        editDeleteDescription.set(`Are you sure you want to change "${oldCourseName}" ?`)
+        openModal = true
+        dataToEditOrDelete.set({type: 'course', oldName: oldCourseName, newName: tempCourse})
+    }
+
+    function cancelCourseChange() {
+        switchToEditCourse = null
+    }
+
+    //-------------- room number functions
+     function roomToChange(oldRoomName) {
+        
+        editDeleteTitle.set("Your Changing The Room Name")
+        editDeleteDescription.set(`Are you sure you want to change "${oldRoomName}" ?`)
+        openModal = true
+        dataToEditOrDelete.set({type: 'room', oldName: oldRoomName, newName: tempRoom})
+    }
+
+    function cancelRoomChange() {
+        switchToEditRoom = null
+    }
+
+    function removeEvent(event) {
+        editDeleteTitle.set("Your Deleting an Event")
+        editDeleteDescription.set(`Are you sure you want to delete this Event?`)
+        openModal = true
+        dataToEditOrDelete.set({type: 'delete', event: event})
     }
 
 </script>
 
 <div class="w-full h-full flex items-center justify-center">
-    <div class=" border border-primary bg-white rounded-md shadow-md shadow-gray-400 h-4/6 w-5/6 p-4">
-        <div class="w-full flex justify-end">
-            <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-opacity-70"></button>
-        </div>
-        <h1 class="text-4xl bg-white text-center text-primary">Edit Events</h1>
 
-        <div>
-            <label for="course" class="mb-1 text-primary">Edit Class:</label>
-            <button on:click={openClassesList} class="w-full border-b-4 border border-gray-300 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-b-primary text-primary flex justify-between items-center {classSelected}">
-                <p>Select a Class</p>
-                <i class="fa-solid fa-chevron-down {rotateClassChevron}"></i>
-            </button>
-            {#if classListOpen}
-                <ul class="h-28 overflow-y-scroll bg-white shadow-md py-4 rounded-md mt-2 border border-gray-200">
-                    {#each classList as classes, index}
-                        {#if editClassName !== index}
-                            <div class="flex justify-between items-center hover:bg-primary hover:bg-opacity-20 py-2 px-4">
-                                <li>{classes}</li>
-                                <button on:click={() => (editClassName = index)} class="py-1 px-4 bg-primary text-white rounded-md">Edit</button>
-                            </div>
-                        {/if}
-                        {#if editClassName === index}
-                            <div class="flex justify-between items-center hover:bg-primary hover:bg-opacity-20 py-2 px-4">
-                                <input type="text" value={classList[index]} class="border-none bg-inherit bg-opacity-5">
-                                <button on:click={changeClassNameInDatabase} class="py-1 px-4 bg-primary text-white rounded-md">Submit</button>
-                                <button on:click={() => (editClassName = null)} class="py-1 px-4 bg-primary text-white rounded-md">Cancel</button>
-                            </div>
-                        {/if}
-                    {/each}
-                </ul>
+    <div class="relative border border-primary bg-white rounded-md shadow-md shadow-gray-400 h-4/6 w-5/6 p-4">
+        {#if openModal}
+            <div class="absolute z-10 w-full h-full flex justify-center items-center">
+                <DeleteEditModal on:closeEditDeleteModal={closeEditDeleteModal} on:closeAndMakeUpdate={closeAndMakeUpdate}/>
+            </div>
+        {/if}
+
+        <div class="h-1/6">
+            <div class="w-full flex justify-end">
+                <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-opacity-70"></button>
+            </div>
+            <h1 class="text-4xl bg-white text-center text-primary">Edit Events</h1>
+        </div>
+
+        <div class="h-5/6 overflow-y-scroll">
+            {#if filteredEvents.length === 0}
+                <div class="h-full w-full flex justify-center items-center">
+                    <p class="text-center text-lg text-gray-500">There are no events currently in the scheduler</p>
+                </div>
+            {:else}
+                {#each filteredEvents as event, index}
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <div class="relative border-2 border-l-8 border-l-primary border-gray-100 px-4 py-1 my-1 shadow-md rounded-md mx-2" on:mouseenter={() => deleteIndex[index] = true} on:mouseleave={() => deleteIndex[index] = false}>
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <div class="flex" on:mouseenter={() => classNameIndex[index] = true} on:mouseleave={() => classNameIndex[index] = false}>
+                            {#if switchToEditClassName !== index}
+                                <p class="text-lg text-black">{event.className}</p>
+                                <button on:click={() => {switchToEditClassName = index; tempClassName = event.className }} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                            {/if}
+                            {#if switchToEditClassName === index}
+                                <input type="text" bind:value={tempClassName} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-4 focus:border-primary" >
+
+                                <button on:click={classNameToChange(event.className)} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
+
+                                <button on:click={cancelClassNameChange} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70  ml-4"></button>
+                            {/if}
+                        </div>
+
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <div class="flex gap-4" on:mouseenter={() => instructorIndex[index] = true} on:mouseleave={() => instructorIndex[index] = false}>
+                            {#if switchToEditInstructor !== index}
+                                <p class="text-lg text-black">{event.instructor}</p>
+                                <button on:click={() => {switchToEditInstructor = index; tempInstructor = event.instructor }} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                            {/if}
+                            {#if switchToEditInstructor === index}
+                                <input type="text" bind:value={tempInstructor} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
+
+                                <button on:click={instructorToChange(event.instructor)} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
+
+                                <button on:click={cancelInstructorChange} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
+                            {/if}
+                        </div>
+
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <div class="flex gap-4" on:mouseenter={() => courseIndex[index] = true} on:mouseleave={() => courseIndex[index] = false}>
+                            {#if switchToEditCourse !== index}
+                                <p class="text-lg text-black">{event.course}</p>
+                                <button on:click={() => {switchToEditCourse = index; tempCourse = event.course }} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                            {/if}
+                            {#if switchToEditCourse === index}
+                                <input type="text" bind:value={tempCourse} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
+
+                                <button on:click={courseToChange(event.course)} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
+
+                                <button on:click={cancelCourseChange} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
+                            {/if}
+                        </div>
+
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <div class="flex gap-4" on:mouseenter={() => buildingRoomIndex[index] = true} on:mouseleave={() => buildingRoomIndex[index] = false}>
+                            {#if switchToEditRoom !== index}
+                                <p class="text-lg text-black">{event.extendedProps?.building_room}</p>
+                                <button on:click={() => {switchToEditRoom = index; tempRoom = event.extendedProps?.building_room }} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                            {/if}
+                            {#if switchToEditRoom === index}
+                                <input type="text" bind:value={tempRoom} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
+
+                                <button on:click={roomToChange(event.extendedProps.building_room)} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
+
+                                <button on:click={cancelRoomChange} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
+                            {/if}
+                        </div>
+                        
+                        <button on:click={removeEvent(event)} class="{deleteIndex[index] ? "w-1/12" : "w-0"} w-0 transition-all duration-300 absolute z-10 top-0 right-0 h-full bg-primary flex justify-center items-center rounded-r-md">
+                            <i class="{deleteIndex[index] ? "block" : "hidden"} fa-solid fa-trash text-white text-xl"></i>
+                        </button>
+                    </div>
+                {/each}
             {/if}
         </div>
     </div>

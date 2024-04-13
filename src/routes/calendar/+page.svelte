@@ -37,7 +37,7 @@
 		slotDuration: '00:10:00',
 		slotMinTime: '06:00:00',
 		slotMaxTime: '22:00:00',
-        // height: '80%',
+        // height: '65%', 
 		titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
         // eventBackgroundColor: '#275D38',
         headerToolbar: {start: '', center: '', end: ''},

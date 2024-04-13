@@ -51,3 +51,9 @@ export const closeFilterSelectors = writable(false)
 
 export const notificationsTitle = writable('')
 export const notificationsDescription = writable('')
+
+export const editDeleteTitle = writable('')
+export const editDeleteDescription = writable('')
+
+export const dataToEditOrDelete = writable()
+export const classNameToBeDeleted = writable('')

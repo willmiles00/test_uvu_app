@@ -149,9 +149,9 @@
 	}
 </script>
 
-<div class="fixed bottom-0 z-0 h-full w-full flex justify-center items-center">
+<!-- <div class="fixed bottom-0 z-0 h-full w-full flex justify-center items-center">
 	<img src="uvu_logo2.png" alt="" class="w-[200px] h-[200px] opacity-5">
-</div>
+</div> -->
 
 <!-- <div class="fixed z-30 w-full h-full flex justify-center items-center"> -->
 	<Message />

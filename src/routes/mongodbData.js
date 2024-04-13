@@ -7,3 +7,4 @@ export const yearAndSeason = writable({})
 export const courses = writable([])
 
 export const rooms = writable([])
+
