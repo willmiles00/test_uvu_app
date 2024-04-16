@@ -7,7 +7,7 @@
     import { createEventDispatcher } from 'svelte'
     import { slide } from 'svelte/transition'
     const dispatch = createEventDispatcher()
-    import { showModal, messageModal, titleModal, showOneOption, showTwoOptions, file, closeFilterSelectors } from '../modals/messageModal.js'
+    import { showModal, messageModal, titleModal, showOneOption, showTwoOptions, file, closeFilterSelectors, filteredModal } from '../modals/messageModal.js'
     
 
 
@@ -207,33 +207,41 @@
 
 
 <div class="">
-    <div class="w-full border border-primary border-l-8 mb-8 rounded-md">
-        <p class="text-center text-black py-1 font-bold text-primary">Current File:</p>
-        <p class="text-center text-sm py-1 px-4 text-gray-700">{$file.fileName}</p> 
+    <div class="w-full flex justify-end mb-4 p-4 rounded-t-md bg-secondary">
+        <button on:click={() => {
+            filteredModal.set(false)
+            openCourseList = false
+            openProfessorList = false
+            openRoomList = false
+            }} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white "></button>
     </div>
 
-    <div class=" w-full pl-3 text-primary border-b border-primary pb-2">
-        <h1>Filter By...</h1>
+    <div class="px-4 ">
+        <div class="w-full border border-primary border-l-8 mb-4 rounded-md py-2">
+            <p class="text-center text-primary font-raj uppercase font-semibold">Current File:</p>
+            <p class="text-center text-sm px-4 text-gray-500">{$file.fileName}</p> 
+        </div>
+    </div>
+
+    <div class=" w-full mb-8">
+        <p class="text-center uppercase font-raj font-semibold text-primary ">Filters</p>
+        <div class="border-b border-primary mx-4 flex justify-center text-primary">
+            <h1 class="translate-y-[8px] text-center bg-white px-4 fa-solid fa-filter"></h1>
+        </div>
+        
     </div>
 
     <!--------------------------------------------------- Professors List -------------------------------------------------->
-    <div class="mt-4">
-        {#if !openProfessorList}
-            <button on:click={toggleProfessorList} class="flex justify-between py-2 bg-white rounded-md border border-gray-300 w-full">
-                <div class="pl-3">Professors</div>
-                <i class="fa-solid fa-chevron-down px-3 pt-1 {openProfessorList ? 'rotated' : 'rotateAgain'}"></i>
-            </button>
-        {:else } 
-            <button on:click={toggleProfessorList} class="flex justify-between py-2 bg-white rounded-md shadow-md border border-gray-300 w-full">
-                <div class="pl-3">Professors</div>
-                <i class="fa-solid fa-chevron-down px-3 mt-1 {openProfessorList ? 'rotated' : 'rotateAgain'}"></i>
-            </button>
-        {/if}
+    <div class="mt-4 mx-4">
+        <button on:click={toggleProfessorList} class="flex justify-between py-2 bg-white rounded-md {openProfessorList ? 'shadow-md border-primary' : 'shadow-none border-gray-300'} border w-full">
+            <div class="pl-3 text-primary uppercase font-raj font-semibold">Professors</div>
+            <i class="fa-solid fa-chevron-down px-3 mt-1 text-primary transition-all duration-300 {openProfessorList ? 'rotate-180' : 'rotate-0'}"></i>
+        </button>
     
         {#if openProfessorList}
             <div transition:slide class="shadow-md rounded-b-md">
                 
-                <div class="px-2 rounded-t-md mt-1 border-gray-300 border-t border-l border-r bg-white pb-2">
+                <div class="px-2 rounded-t-md mt-1 border-primary border-t border-l border-r bg-white pb-2">
                     <input 
                     bind:value={searchProfessor} 
                     type="text" 
@@ -241,12 +249,12 @@
                     />
                 </div>
 
-                <ul class="h-40 overflow-y-scroll border-b border-l border-r border-gray-300 rounded-b-md bg-white">
+                <ul class="h-28 overflow-y-scroll border-b border-l border-r border-primary rounded-b-md bg-white">
                     {#if filteredProfessors.length === 0}
                         <li class="pl-4 py-1">There are no professors listed...</li>
                     {:else}
                         {#each filteredProfessors as professor}
-                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold transition-all duration-100 text-gray-700 hover:text-black">
+                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold transition-all duration-100 text-gray-600 hover:text-black">
                                 <button on:click={() => toggleProfessor(professor)} class="flex justify-between w-full cursor-pointer rounded-b-md">
                                     <p>{professor}</p>
                                     <input type="checkbox" value={professor} bind:group={selectedProfessors} class="mr-2 mt-1 text-primary appearance-none border-none ring-none rounded-full"/>
@@ -261,36 +269,29 @@
 
 
     <!--------------------------------------------------- Rooms List -------------------------------------------------->
-    <div class="mt-2">
-        {#if !openRoomList}
-            <button on:click={toggleRoomsList} class="flex justify-between py-2 bg-white rounded-md border border-gray-300 w-full">
-                <div class="pl-3">Rooms</div>
-                <i class="fa-solid fa-chevron-down px-3 pt-1 {openRoomList ? 'rotated' : 'rotateAgain'}"></i>
-            </button>
-        {:else } 
-            <button on:click={toggleRoomsList} class="flex justify-between py-2 bg-white rounded-md shadow-md border border-gray-300 w-full">
-                <div class="pl-3">Rooms</div>
-                <i class="fa-solid fa-chevron-down px-3 mt-1 {openRoomList ? 'rotated' : 'rotateAgain'}"></i>
-            </button>
-        {/if}
-
+    <div class="mt-2 mx-4">
+        <button on:click={toggleRoomsList} class="flex justify-between py-2 bg-white rounded-md {openRoomList ? 'shadow-md border-primary' : 'shadow-none border-gray-300'} border w-full">
+             <div class="pl-3 text-primary uppercase font-raj font-semibold">Rooms</div>
+             <i class="fa-solid fa-chevron-down px-3 mt-1 text-primary transition-all duration-300 {openRoomList ? 'rotate-180' : 'rotate-0'}"></i>
+        </button>
+        
     
         {#if openRoomList}
             <div transition:slide class="shadow-md rounded-b-md">
                 
-                <div class="px-2 rounded-t-md mt-1 border-gray-300 border-t border-l border-r bg-white pb-2">
+                <div class="px-2 rounded-t-md mt-1 border-primary border-t border-l border-r bg-white pb-2">
                     <input 
                     bind:value={searchRoom} 
                     type="text" 
                     class="h-10 focus:border-b-gray-300 px-2 w-full border-gray-300 border-b border-l-0 border-r-0 border-t-0 focus:ring-0 placeholder-gray-300 highlight" placeholder="Filter Room..." />
                 </div>
 
-                <ul class="h-40 overflow-y-scroll border-b border-l border-r border-gray-300 rounded-b-md bg-white">
+                <ul class="h-28 overflow-y-scroll border-b border-l border-r border-primary rounded-b-md bg-white">
                     {#if filteredRooms.length === 0}
                         <li class="pl-4 py-1">There are no rooms listed...</li>
                     {:else}
                         {#each filteredRooms as room}
-                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100 text-gray-700 hover:text-black">
+                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100 text-gray-600 hover:text-black">
                                 <button on:click={() => toggleRoom(room)} class="flex justify-between w-full cursor-pointer rounded-b-md">
                                     <p>{room}</p>
                                     <input type="checkbox" value={room} bind:group={selectedRooms} class="mr-2 mt-1 text-primary appearance-none border-none ring-none rounded-full"/>
@@ -305,36 +306,28 @@
 
 
     <!--------------------------------------------------- Course List -------------------------------------------------->
-    <div class="mt-2">
-        {#if !openCourseList}
-            <button on:click={toggleCourseList} class="flex justify-between py-2 bg-white rounded-md border border-gray-300 w-full">
-                <div class="pl-3">Course</div>
-                <i class="fa-solid fa-chevron-down px-3 pt-1 {openCourseList ? 'rotated' : 'rotateAgain'}"></i>
-            </button>
-        {:else } 
-            <button on:click={toggleCourseList} class="flex justify-between py-2 bg-white rounded-md shadow-md border border-gray-300 w-full">
-                <div class="pl-3">Course</div>
-                <i class="fa-solid fa-chevron-down px-3 mt-1 {openCourseList ? 'rotated' : 'rotateAgain'}"></i>
-            </button>
-        {/if}
-
+    <div class="mt-2 mx-4">
+        <button on:click={toggleCourseList} class="flex justify-between py-2 bg-white rounded-lg {openCourseList ? 'shadow-lg border-primary' : 'shadow-none border-gray-300'} border w-full">
+            <div class="pl-3 text-primary uppercase font-raj font-semibold">Course</div>
+            <i class="fa-solid fa-chevron-down text-primary px-3 mt-1 transition-all duration-300 {openCourseList ? 'rotate-180' : 'rotate-0'}"></i>
+        </button>
     
         {#if openCourseList}
-            <div transition:slide class="shadow-md rounded-b-md">
+            <div transition:slide class="shadow-lg rounded-b-md">
                 
-                <div class="px-2 rounded-t-md mt-1 border-gray-300 border-t border-l border-r bg-white pb-2">
+                <div class="px-2 rounded-t-md mt-1 border-primary border-t border-l border-r bg-white pb-2">
                     <input 
                     bind:value={searchCourse} 
                     type="text" 
                     class="h-10 focus:border-b-gray-300 px-2 w-full border-gray-300 border-b border-l-0 border-r-0 border-t-0 focus:ring-0 placeholder-gray-300 highlight" placeholder="Filter Course..." />
                 </div>
 
-                <ul class="h-40 overflow-y-scroll border-b border-l border-r border-gray-300 rounded-b-md bg-white">
+                <ul class="h-28 overflow-y-scroll border-b border-l border-r border-primary rounded-b-md bg-white">
                     {#if filteredCourses.length === 0}
                         <li class="pl-4 py-1">There are no courses listed...</li>
                     {:else}
                         {#each filteredCourses as course}
-                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100 text-gray-700 hover:text-black">
+                            <li class="mx-1 pl-2 py-1 hover:bg-primary hover:bg-opacity-30 hover:border hover:border-primary rounded-md hover:font-semibold  transition-all duration-100 text-gray-600 hover:text-black">
                                 <button on:click={() => toggleCourse(course)} class="flex justify-between w-full cursor-pointer rounded-b-md">
                                     <p>{course}</p>
                                     <input type="checkbox" value={course} bind:group={selectedCourses} class="mr-2 mt-1 text-primary appearance-none border-none ring-none rounded-full"/>
@@ -348,21 +341,29 @@
     </div>
 
     <!------------------------------------------------- Submit Button ------------------------------------------------------->
-    <div class="w-full flex gap-4 mt-6">
-        <button on:click={filterData} class="py-2 w-full text-white bg-primary rounded-md border border-primary hover:bg-inherit hover:text-primary" >Show Results</button> 
-        <button on:click={resetFilters} class="py-2 w-full text-primary rounded-md border border-primary hover:bg-primary hover:text-white" >Reset Filters</button>
+    <div class="w-full  mt-6">
+        <div class="mx-4 flex gap-4">
+            <button on:click={filterData} class="py-2 w-full text-white bg-primary rounded-md hover:bg-primaryDark font-medium font-raj uppercase text-sm flex items-center justify-center gap-2 " >
+                <div class="fa-solid fa-calendar-days"></div>
+                Show Results
+            </button> 
+
+            <button on:click={resetFilters} class="py-2 w-full text-primary rounded-md bg-third hover:bg-primary hover:text-white flex items-center justify-center gap-2 font-medium font-raj uppercase text-sm " >
+                <div class="fa-solid fa-arrow-rotate-right"></div>
+                Reset Filters
+            </button>
+        </div>
     </div>
 
-   <button on:click={removeData} class="py-2 w-full text-red-600 rounded-md mt-12 border border-red-600 hover:bg-red-600 hover:text-white" >Remove All Schedules</button>
+   <div class="mx-4 mb-4" >
+        <button on:click={removeData} class="py-2 w-full text-red-600 rounded-md mt-12 border border-red-600 hover:bg-red-600 hover:text-white flex justify-center items-center gap-2 font-medium font-raj uppercase text-sm " >
+            <i class="fa-solid fa-trash"></i>
+            Remove All Schedules
+        </button>
+   </div>
 </div>
 
 <style>
-    .rotated {
-        transform: rotate(180deg);
-    }
-    .rotateAgain {
-        transform: rotate(360deg);
-    }
     .highlight::selection {
         background: rgb(229 231 235);
     }

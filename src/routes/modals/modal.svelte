@@ -71,15 +71,15 @@
     {#if $showOneOption}
         <!-- <div class="fixed flex justify-center z-50 w-full"> -->
         <div class="fixed z-30 w-full h-full flex justify-center items-center">
-            <div class="bg-white border border-primary rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12">
+            <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12">
                 <div class="flex justify-start py-6 border-b border-gray-300 mx-8">
-                    <h1 class="font-bold text-gray-600 text-xl">{$titleModal}</h1>
+                    <h1 class="font-bold text-primary text-xl font-raj">{$titleModal}</h1>
                 </div>
 
                 <p class="mx-8 my-16 text-black">{$messageModal}</p>
 
                 <div class="flex justify-center bg-gray-100 rounded-b-md py-4">
-                    <button on:click={closeModal} class="py-2 px-6 border border-primary text-primary rounded-md hover:text-white hover:bg-primary">Close</button>
+                    <button on:click={closeModal} class="py-2 px-6 text-white rounded-md bg-primary hover:bg-primaryDark font-raj uppercase font-semibold">Close</button>
                 </div>
             </div>
         </div>
@@ -87,21 +87,24 @@
 
         <!-- <div class="fixed flex justify-center z-50 w-full"> -->
         <div class="fixed z-30 w-full h-full flex justify-center items-center">
-            <div class="bg-white border border-primary rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12">
-                <div class="flex justify-start py-6 border-b border-gray-300 mx-8">
-                    <h1 class="font-bold text-red-500 text-xl">{$titleModal}</h1>
+            <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12">
+                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i>
+                    <h1 class="font-bold text-red-500 text-xl font-raj">{$titleModal}</h1>
                 </div>
 
                 <p class="mx-8 my-16 text-black">{$messageModal}</p>
 
                 <div class="flex justify-end bg-gray-100 rounded-b-md py-4 gap-4 pr-4">
                     <div class="flex justify-center">
-                        <button on:click={closeModal} class="py-2 px-6 border border-primary text-primary rounded-md hover:text-white hover:bg-primary">cancel</button>
-                    </div>
-                    <div class="flex justify-center">
-                        <button on:click={removeSchedules} class="py-2 px-6 border border-primary text-white rounded-md hover:text-primary bg-primary hover:bg-inherit">Remove Schedules</button>
+                        <button on:click={removeSchedules} class="py-2 px-6 text-white rounded-md bg-primary hover:bg-primaryDark uppercase font-raj font-semibold">Remove Schedules</button>
                         <!-- <button on:click={removeName}>DELETE ME</button> -->
                     </div>
+
+                    <div class="flex justify-center">
+                        <button on:click={closeModal} class="py-2 px-6 bg-third text-primary hover:text-white hover:bg-primary  uppercase font-raj font-semibold rounded-md">cancel</button>
+                    </div>
+                    
                 </div>
             </div>
         </div>

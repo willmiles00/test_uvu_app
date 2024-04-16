@@ -87,11 +87,11 @@
 </script>
 
 
-<div class="z-10 absolute top-22 w-96 bg-white p-4 shadow-md rounded-r-lg border border-l-0 border-primary {width} transition-all duration-300 hidden md:block">
+<div class="z-10 fixed top-0 w-96 bg-white shadow-md rounded-r-lg border border-l-0 border-gray-300 {width} transition-all duration-300 hidden md:block">
 	<Filter on:filteredData={filterTheData} />
 </div>
 
-<div class="z-10 fixed bottom-0 h-full w-full bg-white p-4 shadow-md rounded-t-lg border border-primary {height} transition-all duration-300 md:hidden">
+<div class="z-10 fixed bottom-0 h-full w-full bg-white p-4 shadow-md rounded-t-lg border border-gray-300 {height} transition-all duration-300 md:hidden">
 	<Filter on:filteredData={filterTheData} />
 </div>
 

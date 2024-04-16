@@ -11,8 +11,13 @@ export default {
 		extend: {
 			colors: {
 				'primary': '#275D38',
-				'secondary': '#4ba23f',
-			}
+				'secondary': '#00843D',
+				'third': '#dddddd',
+				'primaryDark': '#1E3D24',
+			},
+			fontFamily: {
+                'raj': ['Rajdhani', 'sans-serif'],
+            },
 		},
 	},
 	plugins: [

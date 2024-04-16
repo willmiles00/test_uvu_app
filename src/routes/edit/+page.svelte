@@ -123,7 +123,7 @@
 
 <div class="w-full h-full flex items-center justify-center">
 
-    <div class="relative border border-primary bg-white rounded-md shadow-md shadow-gray-400 h-4/6 w-5/6 p-4">
+    <div class="relative border border-gray-300 bg-white rounded-md shadow-md shadow-gray-400 h-5/6 w-5/6 p-4">
         {#if openModal}
             <div class="absolute z-10 w-full h-full flex justify-center items-center">
                 <DeleteEditModal on:closeEditDeleteModal={closeEditDeleteModal} on:closeAndMakeUpdate={closeAndMakeUpdate}/>
@@ -132,9 +132,14 @@
 
         <div class="h-1/6">
             <div class="w-full flex justify-end">
-                <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-opacity-70"></button>
+                <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-primaryDark"></button>
             </div>
-            <h1 class="text-4xl bg-white text-center text-primary">Edit Events</h1>
+            <div class="border-b border-primary translate-y-[-8px]">
+                <h1 class="text-4xl text-center text-primary font-raj pb-2 mb-2">Edit Events</h1>
+            </div>
+            <div class="flex justify-center translate-y-[-23px] ">
+                <i class="fa-solid fa-pen-to-square text-2xl text-primary bg-white px-4"><i/>
+            </div>
         </div>
 
         <div class="h-5/6 overflow-y-scroll">

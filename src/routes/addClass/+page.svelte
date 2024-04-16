@@ -5,6 +5,7 @@
     import AddedClassModal from '../modals/classAddedModal.svelte'
     import Notifications from '../modals/addClassNotifications.svelte'
     import {notificationsTitle, notificationsDescription} from '../modals/messageModal.js'
+    import { fly } from 'svelte/transition'
  
     function closeModal() {
       dispatch('closeModal')
@@ -41,91 +42,91 @@
     }
     let timeLength = ''
 
-    let bgColor1 = 'bg-secondary'
-    let bgColor2 = 'bg-secondary'
-    let bgColor3 = 'bg-secondary'
-    let bgColor4 = 'bg-secondary'
+    let bgColor1 = 'bg-primary'
+    let bgColor2 = 'bg-primary'
+    let bgColor3 = 'bg-primary'
+    let bgColor4 = 'bg-primary'
 
-    let cc1 = 'bg-secondary'
-    let cc2 = 'bg-secondary'
-    let cc3 = 'bg-secondary'
-    let cc4 = 'bg-secondary'
-    let cc5 = 'bg-secondary'
+    let cc1 = 'bg-primary'
+    let cc2 = 'bg-primary'
+    let cc3 = 'bg-primary'
+    let cc4 = 'bg-primary'
+    let cc5 = 'bg-primary'
 
     let newClassAdded = false
 
     function timeSelected1() {
-        bgColor1 = 'bg-primary'
-        bgColor2 = 'bg-secondary'
-        bgColor3 = 'bg-secondary'
-        bgColor4 = 'bg-secondary'
+        bgColor1 = 'bg-primaryDark'
+        bgColor2 = 'bg-primary'
+        bgColor3 = 'bg-primary'
+        bgColor4 = 'bg-primary'
         newClass.frequency = 'MTWR'
     }
 
     function timeSelected2() {
-        bgColor2 = 'bg-primary'
-        bgColor1 = 'bg-secondary'
-        bgColor3 = 'bg-secondary'
-        bgColor4 = 'bg-secondary'
+        bgColor2 = 'bg-primaryDark'
+        bgColor1 = 'bg-primary'
+        bgColor3 = 'bg-primary'
+        bgColor4 = 'bg-primary'
         newClass.frequency = 'MWF'
     }
 
     function timeSelected3() {
-        bgColor3 = 'bg-primary'
-        bgColor1 = 'bg-secondary'
-        bgColor2 = 'bg-secondary'
-        bgColor4 = 'bg-secondary'
+        bgColor3 = 'bg-primaryDark'
+        bgColor1 = 'bg-primary'
+        bgColor2 = 'bg-primary'
+        bgColor4 = 'bg-primary'
         newClass.frequency = 'TR'
     }
 
     function timeSelected4() {
-        bgColor4 = 'bg-primary'
-        bgColor1 = 'bg-secondary'
-        bgColor2 = 'bg-secondary'
-        bgColor3 = 'bg-secondary'
+        bgColor4 = 'bg-primaryDark'
+        bgColor1 = 'bg-primary'
+        bgColor2 = 'bg-primary'
+        bgColor3 = 'bg-primary'
         newClass.frequency = 'MW'
     }
 
     
 
     function cTimeSelected1() {
-        if (cc1 === 'bg-secondary') {
-            cc1 = 'bg-primary'
+        if (cc1 === 'bg-primary') {
+            cc1 = 'bg-primaryDark'
         } else {
-            cc1 = 'bg-secondary'
+            cc1 = 'bg-primary'
         }
         // STILL NEED TO FIND A WAY TO ADD THE CUSTOM FREQUENCY DETAILS TO SEND TO THE SERVER
     }
 
     function cTimeSelected2() {
-        if (cc2 === 'bg-secondary') {
-            cc2 = 'bg-primary'
+        if (cc2 === 'bg-primary') {
+            cc2 = 'bg-primaryDark'
         } else {
-            cc2 = 'bg-secondary'
+            cc2 = 'bg-primary'
         }
     }
 
     function cTimeSelected3() {
-        if (cc3 === 'bg-secondary') {
-            cc3 = 'bg-primary'
+        if (cc3 === 'bg-primary') {
+            cc3 = 'bg-primaryDark'
         } else {
-            cc3 = 'bg-secondary'
+            cc3 = 'bg-primary'
         }
     }
 
     function cTimeSelected4() {
-        if (cc4 === 'bg-secondary') {
-            cc4 = 'bg-primary'
+        if (cc4 === 'bg-primary') {
+            cc4 = 'bg-primaryDark'
         } else {
-            cc4 = 'bg-secondary'
+            cc4 = 'bg-primary'
         }
     }
 
     function cTimeSelected5() {
-        if (cc5 === 'bg-secondary') {
-            cc5 = 'bg-primary'
+        if (cc5 === 'bg-primary') {
+            cc5 = 'bg-primaryDark'
         } else {
-            cc5 = 'bg-secondary'
+            cc5 = 'bg-primary'
         }
     }
 
@@ -138,19 +139,19 @@
         newClass.profName = `${lastName}, ${firstName}`
         if (customClasses) {
             newClass.frequency = ''
-            if (cc1 === 'bg-primary') {
+            if (cc1 === 'bg-primaryDark') {
                 newClass.frequency += 'M'
             }
-            if (cc2 === 'bg-primary') {
+            if (cc2 === 'bg-primaryDark') {
                 newClass.frequency += 'T'
             }
-            if (cc3 === 'bg-primary') {
+            if (cc3 === 'bg-primaryDark') {
                 newClass.frequency += 'W'
             }
-            if (cc4 === 'bg-primary') {
+            if (cc4 === 'bg-primaryDark') {
                 newClass.frequency += 'R'
             }
-            if (cc5 === 'bg-primary') {
+            if (cc5 === 'bg-primaryDark') {
                 newClass.frequency += 'F'
             }
             newClass.timeLength = timeLength
@@ -177,15 +178,15 @@
         newClass.time = ''
         newClass.isCustomClass = false
         timeLength = ''
-        bgColor1 = 'bg-secondary'
-        bgColor2 = 'bg-secondary'
-        bgColor3 = 'bg-secondary'
-        bgColor4 = 'bg-secondary'
-        cc1 = 'bg-secondary'
-        cc2 = 'bg-secondary'
-        cc3 = 'bg-secondary'
-        cc4 = 'bg-secondary'
-        cc5 = 'bg-secondary'
+        bgColor1 = 'bg-primary'
+        bgColor2 = 'bg-primary'
+        bgColor3 = 'bg-primary'
+        bgColor4 = 'bg-primary'
+        cc1 = 'bg-primary'
+        cc2 = 'bg-primary'
+        cc3 = 'bg-primary'
+        cc4 = 'bg-primary'
+        cc5 = 'bg-primary'
 
         const data = await response.json()
         let pushingNewData = $dataStore
@@ -273,7 +274,7 @@
 
 
 <div class="w-full flex justify-center {normalClassH}"><!-- right here -->
-  <div class="bg-white rounded-md shadow-lg w-5/6 border border-primary">
+  <div class="bg-white rounded-md shadow-lg w-5/6 border border-gray-300">
 
     {#if newClassAdded}
         <div class="fixed z-40 h-5/6 w-5/6 flex items-center justify-center">
@@ -289,29 +290,35 @@
 
     <div class="p-4">
         <div class="w-full flex justify-end">
-            <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-opacity-70"></button>
+            <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-primaryDark"></button>
         </div>
         <div class="">
             <div>
-                <h1 class="text-4xl text-primary text-center">Add Class</h1>
+                <div class="border-b border-primary pb-4">
+                    <h1 class="text-4xl text-primary text-center font-raj ">Add Schedules</h1>
+                </div>
 
-                <form class="mt-8 mb-4" on:submit={e => addNew(e)}>
+                <div class="flex justify-center translate-y-[-15px]">
+                    <i class="fa-solid fa-circle-plus text-2xl bg-white px-4 text-primary"></i>
+                </div>
+
+                <form class="mt-4 mb-4" on:submit={e => addNew(e)}>
 
                     <!-- class and professor inputs -->
                     <div class="flex gap-8 mb-4">
                         <div class="basis-6/12">
-                            <label for="className" class="mb-1 text-primary">Class Name:</label>
+                            <label for="className" class="mb-1 text-primary font-raj font-semibold">Class Name:</label>
                             <input bind:value={newClass.className} type="text" id="className" name="className" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary"  placeholder="Type class name (E.R. Web Languages II)" required>
                         </div>
     
                         <div class="basis-6/12 flex">
                             <div class="basis-6/12 pr-2">
-                                <label for="firstName" class="mb-1 text-primary">First Name:</label>
+                                <label for="firstName" class="mb-1 text-primary font-raj font-semibold">First Name:</label>
                                 <input bind:value={firstName}  type="text" id="firstName" name="firstName" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary"  placeholder="Type professor name..." required>
                             </div>
 
                             <div class="basis-6/12 pl-2">
-                                <label for="lastName" class="mb-1 text-primary">Last Name:</label>
+                                <label for="lastName" class="mb-1 text-primary font-raj font-semibold">Last Name:</label>
                                 <input bind:value={lastName}  type="text" id="lastName" name="lastName" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary"  placeholder="Type professor name..." required>
                             </div>
                         </div>
@@ -321,7 +328,7 @@
                     <div class="flex gap-8 mb-8">
                         <div class="basis-6/12">
                             {#if courseAvailable}
-                                <label for="course" class="mb-1 text-primary">Select Course:</label>
+                                <label for="course" class="mb-1 text-primary font-raj font-semibold">Select Course:</label>
                                 <select bind:value={newClass.course} id="course" name="course" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" required>
                                     <option value="">Select a course</option>
                                     {#each $courses as course (course)}
@@ -329,25 +336,29 @@
                                     {/each}
                                 </select>
                                 <div class="flex text-sm mt-1 ml-1">
-                                    <p>Course not in here?</p>
-                                    <div on:click={switchToAddCourse} class="text-secondary cursor-pointer ml-1 font-semibold hover:text-primary">Add Course</div>
+                                    <p class="font-raj">Course not in here?</p>
+                                    <div on:click={switchToAddCourse} class="text-primary cursor-pointer ml-1 font-semibold hover:text-primaryDark font-raj">Add Course</div>
                                 </div>
                             {/if}
                             {#if !courseAvailable}
-                                <label for="newCourse" class="mb-1 text-primary">Add New Course:</label>
+                                <label for="newCourse" class="mb-1 text-primary font-raj font-semibold">Add New Course:</label>
                                 <div class="flex gap-1">
                                     <input type="text" bind:value={addNewCourse} id="course" name="course" class="w-8/12 bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" />
 
-                                    <div on:click={addNewCourseToList} class="py-2 border border-primary rounded-md w-2/12 text-center shadow-md uppercase text-primary font-bold hover:bg-primary hover:text-white cursor-pointer">Submit</div>
+                                    <div on:click={addNewCourseToList} class="py-2 bg-primary rounded-md w-2/12 text-white text-center cursor-pointer hover:bg-primaryDark bg-primary">
+                                        <i class="fa-solid fa-circle-plus text-xl"></i>
+                                    </div>
 
-                                    <div on:click={switchToAddCourse} class="py-2 bg-primary rounded-md w-2/12 text-white shadow-md uppercase font-bold border border-primary hover:bg-white hover:text-primary text-center cursor-pointer">Cancel</div>
+                                    <div on:click={switchToAddCourse} class="py-2 bg-third rounded-md w-2/12 text-primary text-center cursor-pointer hover:text-white hover:bg-primary">
+                                        <i class="fa-solid fa-ban text-xl"></i>
+                                    </div>
                                 </div>
                             {/if}
                         </div>
     
                         <div class="basis-6/12">
                             {#if roomAvailable}
-                                <label for="room" class="mb-1 text-primary">Room #:</label>
+                                <label for="room" class="mb-1 text-primary font-raj font-semibold">Room #:</label>
                                 <select bind:value={newClass.room} id="room" name="room" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" required>
                                     <option value="">Select a room number</option>
                                     {#each $rooms as room (room)}
@@ -355,18 +366,22 @@
                                     {/each}
                                 </select>
                                 <div class="flex text-sm mt-1 ml-1">
-                                    <p>Room not in here?</p>
-                                    <div on:click={switchToAddRoom} class="text-secondary cursor-pointer ml-1 font-semibold hover:text-primary">Add Room</div>
+                                    <p class="font-raj">Room not in here?</p>
+                                    <div on:click={switchToAddRoom} class="text-primary cursor-pointer ml-1 font-semibold hover:text-primaryDark font-raj">Add Room</div>
                                 </div>
                             {/if}
                             {#if !roomAvailable}
-                                <label for="newRoom" class="mb-1 text-primary">Add New Room:</label>
+                                <label for="newRoom" class="mb-1 text-primary font-raj font-semibold">Add New Room:</label>
                                 <div class="flex gap-1">
                                     <input type="text" bind:value={addNewRoom} id="room" name="room" class="w-8/12 bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" />
 
-                                    <div on:click={addNewRoomToList} class="py-2 border border-primary rounded-md w-2/12 text-center shadow-md uppercase text-primary font-bold hover:bg-primary hover:text-white cursor-pointer">Submit</div>
+                                    <div on:click={addNewRoomToList} class="py-2 bg-primary rounded-md w-2/12 text-white text-center cursor-pointer hover:bg-primaryDark bg-primary">
+                                        <i class="fa-solid fa-circle-plus text-xl"></i>
+                                    </div>
 
-                                    <div on:click={switchToAddRoom} class="py-2 bg-primary rounded-md w-2/12 text-white shadow-md uppercase font-bold border border-primary hover:bg-white hover:text-primary text-center cursor-pointer">Cancel</div>
+                                    <div on:click={switchToAddRoom} class="py-2 bg-third rounded-md w-2/12 text-primary text-center cursor-pointer hover:text-white hover:bg-primary">
+                                        <i class="fa-solid fa-ban text-xl"></i>
+                                    </div>
                                 </div>
                             {/if}
                         </div>
@@ -374,42 +389,44 @@
 
                     {#if normalClasses}
                         <!-- frequency selection buttons -->
-                        <div>
-                            <label for="frequency" class="mb-1 text-primary">Class Schedule:</label>
+                        <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }}>
+                            <label for="frequency" class="mb-1 text-primary font-raj font-semibold">Select a Class Schedule:</label>
                             <div class="flex gap-4 justify-between mb-12">
-                                <div class="basis-1/6 p-4 {bgColor1} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected1}>
+                                <div class="basis-1/6 p-4 {bgColor1} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected1}>
                                     <div>
-                                        <p class="text-center text-lg">mtwr</p>
-                                        <p class="text-center text-sm">50 min</p>
+                                        <p class="text-center text-lg font-raj">mtwr</p>
+                                        <p class="text-center text-sm font-raj">50 min</p>
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {bgColor2} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected2}>
+                                <div class="basis-1/6 p-4 {bgColor2} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected2}>
                                     <div>
-                                        <p class="text-center text-lg">mwf</p>
-                                        <p class="text-center text-sm">50 min</p>
+                                        <p class="text-center text-lg font-raj">mwf</p>
+                                        <p class="text-center text-sm font-raj">50 min</p>
                                         <!-- <p class="text-center font-thin text-xs">50 min Friday</p> -->
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {bgColor3} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected3}>
+                                <div class="basis-1/6 p-4 {bgColor3} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected3}>
                                     <div>
-                                        <p class="text-center text-lg">tr</p>
-                                        <p class="text-center text-sm">75 min</p>
+                                        <p class="text-center text-lg font-raj">tr</p>
+                                        <p class="text-center text-sm font-raj">75 min</p>
                                         <!-- <p class="text-center font-thin text-xs">50 min Friday</p> -->
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {bgColor4} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected4}>
+                                <div class="basis-1/6 p-4 {bgColor4} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={timeSelected4}>
                                     <div>
-                                        <p class="text-center text-lg">mw</p>
-                                        <p class="text-center text-sm">75 min</p>
+                                        <p class="text-center text-lg font-raj">mw</p>
+                                        <p class="text-center text-sm font-raj">75 min</p>
                                     </div>
                                 </div>
 
-                                <div on:click={switchToCustom} class="basis-1/6 p-4 border-4 border-secondary rounded-lg text-secondary font-bold uppercase flex items-center justify-center hover:bg-primary hover:border-primary hover:text-white transition-all duration-300 cursor-pointer shadow-md">
-                                    <div>
-                                        <p class="text-center text-lg">custom</p>
+                                <div on:click={switchToCustom} class="basis-1/6 p-4 bg-third rounded-lg text-primary font-bold uppercase flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer shadow-md">
+
+                                    <div class="flex justify-center items-center gap-2">
+                                        <i class="fa-solid fa-wrench text-lg"></i>
+                                        <p class="text-lg font-raj">custom</p>
                                     </div>
                                 </div>
                                 
@@ -417,44 +434,45 @@
                         </div> <!-- end of button time selection -->
                     {/if}
 
+                    <!-- CUSTOM CLASSES -->
                     {#if customClasses}
-                        <div class="flex justify-start mb-12">
-                            <div on:click={goBack} class="bg-primary px-4 py-2 rounded-lg text-white uppercase cursor-pointer hover:bg-opacity-90 shadow-md">
-                                <i class="fa-solid fa-chevron-left mr-2 text-white"></i>
+                        <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }} class="flex justify-start mb-12">
+                            <div on:click={goBack} class="bg-primary px-4 py-2 rounded-lg text-white uppercase cursor-pointer hover:bg-opacity-90 shadow-md font-raj font-medium text-sm">
+                                <i class="fa-solid fa-chevron-left mr-2 text-white "></i>
                                 Go Back
                             </div>
                         </div>
 
-                        <div>
-                            <label for="frequency" class="mb-1 text-primary">Occurs Every:</label>
+                        <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }}>
+                            <label for="frequency" class="mb-1 text-primary font-raj font-semibold">Select Custom Schedule:</label>
                             <div class="flex gap-4 justify-between mb-12">
-                                <div class="basis-1/6 p-4 {cc1} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected1}>
+                                <div class="basis-1/6 p-4 {cc1} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected1}>
                                     <div>
-                                        <p class="text-center text-lg">m</p>
+                                        <p class="text-center text-lg font-raj">mon</p>
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {cc2} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected2}>
+                                <div class="basis-1/6 p-4 {cc2} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected2}>
                                     <div>
-                                        <p class="text-center text-lg">t</p>
+                                        <p class="text-center text-lg font-raj">tues</p>
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {cc3} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected3}>
+                                <div class="basis-1/6 p-4 {cc3} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected3}>
                                     <div>
-                                        <p class="text-center text-lg">w</p>
+                                        <p class="text-center text-lg font-raj">wed</p>
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {cc4} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected4}>
+                                <div class="basis-1/6 p-4 {cc4} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected4}>
                                     <div>
-                                        <p class="text-center text-lg">r</p>
+                                        <p class="text-center text-lg font-raj">thur</p>
                                     </div>
                                 </div>
 
-                                <div class="basis-1/6 p-4 {cc5} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primary transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected5}>
+                                <div class="basis-1/6 p-4 {cc5} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md" on:click={cTimeSelected5}>
                                     <div>
-                                        <p class="text-center text-lg">f</p>
+                                        <p class="text-center text-lg font-raj">fri</p>
                                     </div>
                                 </div>
                                 
@@ -467,7 +485,7 @@
                     <div class="flex justify-center mb-8 flex-wrap">
                         <div class="basis-6/12">
                             <div class="pr-4">
-                                <label for="semester" class="mb-1 text-primary">Select Semester:</label>
+                                <label for="semester" class="mb-1 text-primary font-raj font-semibold">Select Semester:</label>
                                 <select bind:value={newClass.semester} id="semester" name="semester" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" required>
                                     <option value="">Select a semester</option>
                                     <option value="Spring">Spring</option>
@@ -479,7 +497,7 @@
 
                         <div class="basis-6/12">
                             <div class="ml-4">
-                                <label for="semester" class="mb-1 text-primary">Select Start Time:</label>
+                                <label for="semester" class="mb-1 text-primary font-raj font-semibold">Select Start Time:</label>
                                 <div class="flex gap-1 justify-start items-center">
                                     <div>
                                         <input type="number" bind:value={timeH} id="semester" name="semester" class=" bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary w-14" min="1" max="12" required />
@@ -509,10 +527,10 @@
                         </div>
 
                         {#if customClasses}
-                            <div class="basis-full mt-4">
+                            <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }} class="basis-full mt-4">
                                 <div class=" flex justify-start flex-wrap">
                                     <div class="basis-full flex justify-start">
-                                        <label for="timeLength" class="mb-1 w-6/12 text-primary">Class Length</label>
+                                        <label for="timeLength" class="mb-1 w-6/12 text-primary font-raj font-semibold">Class Length</label>
                                     </div>
                                     <div class=" basis-6/12 pr-4">
                                         <select bind:value={timeLength} class=" bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary w-full" required>
@@ -529,7 +547,11 @@
                     
 
                     <div class="flex justify-center">
-                        <button class="py-2 w-2/6 border border-primary text-primary rounded-lg uppercase font-bold hover:bg-primary hover:text-white transition-all duration-300">Submit</button>
+                        <button class="py-2 w-2/6 bg-primary text-white rounded-lg uppercase font-raj font-medium hover:bg-primary hover:bg-primaryDark transition-all duration-300">
+                        <div class="flex justify-center items-center gap-2 text-sm">
+                            <i class="fa-solid fa-circle-plus text-lg"></i>
+                            Add Class
+                        </button>
                     </div>
                 </form>
             </div>
