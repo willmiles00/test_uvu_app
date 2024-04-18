@@ -17,7 +17,7 @@
         <div class="fixed flex justify-center z-50 w-full top top-1/4 mt-3">
             <div class="bg-white border border-gray-300 rounded-md w-8/12 md:w-6/12 shadow-gray-400 shadow-md ">
 
-                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 gap-4">
+                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 gap-4 items-center">
                     {#if $progressBarModal}
                         <i class="fa-solid fa-arrow-rotate-right fa-spin text-primary text-xl"></i>
                         <h1 class="font-bold text-primary text-xl font-raj ">Loading...</h1>

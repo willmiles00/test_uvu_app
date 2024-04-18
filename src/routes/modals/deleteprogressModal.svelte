@@ -14,7 +14,7 @@
         <div class="fixed z-30 w-full h-full flex justify-center items-center">
             <div class="bg-white border border-gray-300 rounded-md  shadow-gray-400 shadow-md w-8/12 md:w-6/12">
 
-                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 gap-4">
+                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 gap-4 items-center">
                     {#if $deleteProgressBarModal}
                         <i class="fa-solid fa-arrow-rotate-right fa-spin text-red-600 text-xl"></i>
                         <h1 class="font-bold text-red-600 text-xl font-raj">Deleting Schedules...</h1>

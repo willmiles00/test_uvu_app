@@ -11,7 +11,7 @@
 {#if $showImportModal}
     <div class="fixed flex justify-center z-50 w-full top-1/4 mt-3">
         <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12 border-l-8 border-l-primary">
-            <div class="flex justify-start py-4 border-b border-gray-300 mx-8 gap-4">
+            <div class="flex justify-start py-4 border-b border-gray-300 mx-8 gap-4 items-center">
                 <i class="fa-solid fa-circle-exclamation text-primary text-xl"></i>
                 <h1 class="font-bold text-primary font-raj text-xl">{$titleModal}</h1>
                 <!-- <h1 class="font-bold text-primary font-raj text-xl">No File Selected</h1> -->

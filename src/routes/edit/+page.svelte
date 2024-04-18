@@ -2,7 +2,7 @@
     import { createEventDispatcher } from 'svelte'
     import {dataStore} from '../mongodbData.js'
     import DeleteEditModal from '../modals/deleteEditModal.svelte'
-    import { editDeleteTitle, editDeleteDescription, dataToEditOrDelete } from '../modals/messageModal.js'
+    import { editDeleteTitle, editDeleteDescription, dataToEditOrDelete, editDeleteWarning } from '../modals/messageModal.js'
     import { writable } from 'svelte/store'
     const dispatch = createEventDispatcher()
     export const editDeleteData = writable([])
@@ -10,7 +10,13 @@
     // console.log($dataStore)
 
     let openModal = false
-    let filteredEvents
+    let filteredEvents = []
+    let deleteIndex = []
+
+    $: {
+        deleteIndex = new Array(filteredEvents.length).fill(false)
+    }
+
     // this reactive statement filters out duplicates based on the instructor, course, building room, and class name
     $: filteredEvents = $dataStore && Array.isArray($dataStore) ? $dataStore.filter((event, index, self) => {
         const eventKey = `${event.className}-${event.instructor}-${event.course}-${event.extendedProps.building_room}`;
@@ -34,7 +40,7 @@
     let switchToEditRoom = null
     let tempRoom
 
-    let deleteIndex = []
+
 
     // // display all the events in the database in the modal and allows us to make changes to show the changes without a rerender
     // $: currentEvents = $dataStore
@@ -47,6 +53,7 @@
     // closes the modal for notifications of actions
     function closeEditDeleteModal() {
         openModal = false
+        editDeleteWarning.set(false)
         // THESE ARE OPTIONAL, IF THE USER CANCELS THEIR ACTION TO SAVE CHANGES THEN THESE WILL CANCEL THEIR EDIT ALL TOGETHER, WITHOUT THEM YOU WILL GO BACK TO CHANGING THE INPUT (IT LOOKS BETTER WITHOUT THEM)
         // switchToEditClassName = null
         // switchToEditInstructor = null
@@ -61,6 +68,7 @@
         switchToEditCourse = null
         switchToEditRoom = null
         openModal = false
+        editDeleteWarning.set(false)
     }
 
     //----------------- class name functions
@@ -116,6 +124,7 @@
     }
 
     function removeEvent(event) {
+        editDeleteWarning.set(true)
         editDeleteTitle.set("Your Deleting an Event")
         editDeleteDescription.set(`Are you sure you want to delete this Event?`)
         openModal = true

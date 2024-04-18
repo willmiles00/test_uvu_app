@@ -59,6 +59,7 @@ export const notificationsWarning = writable(false)
 
 export const editDeleteTitle = writable('')
 export const editDeleteDescription = writable('')
-
 export const dataToEditOrDelete = writable()
+export const editDeleteWarning = writable(false)
+
 export const classNameToBeDeleted = writable('')

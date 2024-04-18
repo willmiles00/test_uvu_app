@@ -10,7 +10,7 @@
 
 {#if $notificationsWarning}
     <div class="border-l-8 border-l-primary bg-white border border-gray-300 rounded-md w-6/12 m-4 shadow-gray-400 shadow-md">
-        <div class="flex justify-start py-6 border-b border-gray-300 mx-8">
+        <div class="flex justify-start py-6 border-b border-gray-300 mx-8 items-center">
             <i class="fa-solid fa-circle-exclamation text-primary text-xl mr-4"></i>
             <h1 class="font-bold text-primary text-xl font-raj ">{$notificationsTitle}</h1>
         </div>
