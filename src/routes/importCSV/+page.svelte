@@ -131,31 +131,31 @@ async function updateFileName() {
 
 <div class="w-full h-full flex items-center justify-center">
 
-    <div class=" border border-gray-300 bg-white rounded-md shadow-md shadow-gray-400 h-4/6 w-5/6">
-        <div class="h-1/6 border-primary border-b border-l-0 border-r-0 border-t-0 mx-4 flex items-center justify-center">
-            <div>
-                <h1 class="text-4xl import mt-4 text-primary font-raj">Import CSV</h1>
-                <div class="flex justify-center translate-y-[10px]">
-                    <i class="fa-solid fa-file-import text-2xl bg-white px-4 text-primary"></i>
-                </div>
+    <div class=" border border-gray-300 bg-white rounded-md shadow-md shadow-gray-400 h-4/6 w-4/6">
+        
+        <div class="h-1/6 relative bg-secondary rounded-t-md">
+            <div class="absolute z-10 right-4 w-full h-full flex justify-end items-center">
+                <button on:click={closeCSVModal} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white"></button>
+            </div>
+            <div class="h-full flex items-center justify-center py-4">
+                <h1 class="text-4xl text-white text-center font-raj">Import CSV</h1>
             </div>
         </div>
-        
         
 
         <div class="h-4/6 flex justify-center items-center">
             <div>
                 <div class="basis-full flex justify-center">
-                    <button class="fa-solid fa-upload bg-primary rounded-full  text-white text-4xl text-center p-6 hover:shadow-md hover:shadow-gray-400 hover:translate-y-[-4px] hover:bg-primaryDark transition-all duration-300" on:click={openFiles}></button>
+                    <button class="fa-solid fa-upload bg-primary rounded-full text-white text-4xl text-center p-6 hover:shadow-md hover:shadow-gray-400 hover:translate-y-[-4px] hover:bg-primaryDark transition-all duration-300" on:click={openFiles}></button>
                 </div>
 
                 <div class="basis-full flex justify-center mt-4">
                     {#if emptyFile}
                         <p class="font-bold font-raj">Click to upload CSV file</p>
                     {:else if existingfile && selectedFile.name.toLowerCase().endsWith('.csv')}
-                        <p class="filename font-bold text-gray-700 font-raj">{selectedFile.name}</p>
+                        <p class="filename font-bold text-gray-500">{selectedFile.name}</p>
                     {:else if existingfile}
-                        <p class="font-bold text-red-600 font-raj">Unable to process this type of file</p>
+                        <p class="font-bold text-red-600">Unable to process this type of file</p>
                     {/if}
                 </div>
             </div>

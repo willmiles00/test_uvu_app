@@ -18,19 +18,19 @@
         return isUnique;
     }) : [];
 
-    let classNameIndex = []
+    let classNameIndex: any[] = []
     let switchToEditClassName = null
     let tempClassName
 
-    let instructorIndex = []
+    let instructorIndex: any[] = []
     let switchToEditInstructor = null
     let tempInstructor
 
-    let courseIndex = []
+    let courseIndex: any[] = []
     let switchToEditCourse = null
     let tempCourse
 
-    let buildingRoomIndex = []
+    let buildingRoomIndex: any[] = []
     let switchToEditRoom = null
     let tempRoom
 
@@ -47,9 +47,11 @@
     // closes the modal for notifications of actions
     function closeEditDeleteModal() {
         openModal = false
-        switchToEditClassName = null
-        switchToEditInstructor = null
-        switchToEditCourse = null  
+        // THESE ARE OPTIONAL, IF THE USER CANCELS THEIR ACTION TO SAVE CHANGES THEN THESE WILL CANCEL THEIR EDIT ALL TOGETHER, WITHOUT THEM YOU WILL GO BACK TO CHANGING THE INPUT (IT LOOKS BETTER WITHOUT THEM)
+        // switchToEditClassName = null
+        // switchToEditInstructor = null
+        // switchToEditCourse = null  
+        // switchToEditRoom = null
     }
 
     // closes the notifications modal AFTER you hit submit
@@ -57,6 +59,7 @@
         switchToEditClassName = null
         switchToEditInstructor = null
         switchToEditCourse = null
+        switchToEditRoom = null
         openModal = false
     }
 
@@ -89,7 +92,7 @@
     //-------------- course functions
     function courseToChange(oldCourseName) {
         
-        editDeleteTitle.set("Your Changing The Courses Name")
+        editDeleteTitle.set("Your Changing The Course Name")
         editDeleteDescription.set(`Are you sure you want to change "${oldCourseName}" ?`)
         openModal = true
         dataToEditOrDelete.set({type: 'course', oldName: oldCourseName, newName: tempCourse})
@@ -123,7 +126,7 @@
 
 <div class="w-full h-full flex items-center justify-center">
 
-    <div class="relative border border-gray-300 bg-white rounded-md shadow-md shadow-gray-400 h-5/6 w-5/6 p-4">
+    <div class="relative border border-gray-300 bg-white rounded-md shadow-md shadow-gray-400 h-5/6 w-4/6">
         {#if openModal}
             <div class="absolute z-10 w-full h-full flex justify-center items-center">
                 <DeleteEditModal on:closeEditDeleteModal={closeEditDeleteModal} on:closeAndMakeUpdate={closeAndMakeUpdate}/>
@@ -131,15 +134,17 @@
         {/if}
 
         <div class="h-1/6">
-            <div class="w-full flex justify-end">
-                <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-primary hover:text-primaryDark"></button>
+            <div class="relative bg-secondary rounded-t-md">
+                <div class="absolute z-10 right-4 w-full h-full flex justify-end items-center">
+                    <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white"></button>
+                </div>
+                <div class="h-full flex items-center justify-center py-4">
+                    <h1 class="text-4xl text-white text-center font-raj">Edit Events</h1>
+                </div>
             </div>
-            <div class="border-b border-primary translate-y-[-8px]">
-                <h1 class="text-4xl text-center text-primary font-raj pb-2 mb-2">Edit Events</h1>
-            </div>
-            <div class="flex justify-center translate-y-[-23px] ">
+            <!-- <div class="flex justify-center">
                 <i class="fa-solid fa-pen-to-square text-2xl text-primary bg-white px-4"><i/>
-            </div>
+            </div> -->
         </div>
 
         <div class="h-5/6 overflow-y-scroll">
@@ -150,70 +155,72 @@
             {:else}
                 {#each filteredEvents as event, index}
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <div class="relative border-2 border-l-8 border-l-primary border-gray-100 px-4 py-1 my-1 shadow-md rounded-md mx-2" on:mouseenter={() => deleteIndex[index] = true} on:mouseleave={() => deleteIndex[index] = false}>
-                        <!-- svelte-ignore a11y-no-static-element-interactions -->
-                        <div class="flex" on:mouseenter={() => classNameIndex[index] = true} on:mouseleave={() => classNameIndex[index] = false}>
-                            {#if switchToEditClassName !== index}
-                                <p class="text-lg text-black">{event.className}</p>
-                                <button on:click={() => {switchToEditClassName = index; tempClassName = event.className }} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
-                            {/if}
-                            {#if switchToEditClassName === index}
-                                <input type="text" bind:value={tempClassName} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-4 focus:border-primary" >
-
-                                <button on:click={classNameToChange(event.className)} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
-
-                                <button on:click={cancelClassNameChange} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70  ml-4"></button>
-                            {/if}
+                    <div class="flex justify-center">
+                        <div class="w-11/12 relative border-2 border-l-8 border-l-primary border-gray-200 px-4 py-1 mb-4 shadow-md rounded-md mx-2" on:mouseenter={() => deleteIndex[index] = true} on:mouseleave={() => deleteIndex[index] = false}>
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <div class="flex" on:mouseenter={() => classNameIndex[index] = true} on:mouseleave={() => classNameIndex[index] = false}>
+                                {#if switchToEditClassName !== index}
+                                    <p class="text-lg font-semibold text-black">{event.className}</p>
+                                    <button on:click={() => {switchToEditClassName = index; tempClassName = event.className }} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                                {/if}
+                                {#if switchToEditClassName === index}
+                                    <input type="text" bind:value={tempClassName} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-4 focus:border-primary" >
+    
+                                    <button on:click={classNameToChange(event.className)} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-check text-primary text-lg hover:text-opacity-70  ml-4"></button>
+    
+                                    <button on:click={cancelClassNameChange} class="{classNameIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70  ml-4"></button>
+                                {/if}
+                            </div>
+    
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <div class="flex gap-4" on:mouseenter={() => instructorIndex[index] = true} on:mouseleave={() => instructorIndex[index] = false}>
+                                {#if switchToEditInstructor !== index}
+                                    <p class="text-lg font-medium">{event.instructor}</p>
+                                    <button on:click={() => {switchToEditInstructor = index; tempInstructor = event.instructor }} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                                {/if}
+                                {#if switchToEditInstructor === index}
+                                    <input type="text" bind:value={tempInstructor} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
+    
+                                    <button on:click={instructorToChange(event.instructor)} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-check text-primary text-lg hover:text-opacity-70  ml-4"></button>
+    
+                                    <button on:click={cancelInstructorChange} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
+                                {/if}
+                            </div>
+    
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <div class="flex gap-4" on:mouseenter={() => courseIndex[index] = true} on:mouseleave={() => courseIndex[index] = false}>
+                                {#if switchToEditCourse !== index}
+                                    <p class="text-lg text-gray-600">{event.course}</p>
+                                    <button on:click={() => {switchToEditCourse = index; tempCourse = event.course }} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                                {/if}
+                                {#if switchToEditCourse === index}
+                                    <input type="text" bind:value={tempCourse} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
+    
+                                    <button on:click={courseToChange(event.course)} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-check text-primary text-lg hover:text-opacity-70  ml-4"></button>
+    
+                                    <button on:click={cancelCourseChange} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
+                                {/if}
+                            </div>
+    
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <div class="flex gap-4" on:mouseenter={() => buildingRoomIndex[index] = true} on:mouseleave={() => buildingRoomIndex[index] = false}>
+                                {#if switchToEditRoom !== index}
+                                    <p class="text-lg text-gray-600">{event.extendedProps?.building_room}</p>
+                                    <button on:click={() => {switchToEditRoom = index; tempRoom = event.extendedProps?.building_room }} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
+                                {/if}
+                                {#if switchToEditRoom === index}
+                                    <input type="text" bind:value={tempRoom} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
+    
+                                    <button on:click={roomToChange(event.extendedProps.building_room)} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-check text-primary text-lg hover:text-opacity-70  ml-4"></button>
+    
+                                    <button on:click={cancelRoomChange} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
+                                {/if}
+                            </div>
+                            
+                            <button on:click={removeEvent(event)} class="{deleteIndex[index] ? "w-1/12" : "w-0"} w-0 transition-all duration-300 absolute z-10 top-0 right-0 h-full bg-primary flex justify-center items-center rounded-r-md">
+                                <i class="{deleteIndex[index] ? "block" : "hidden"} fa-solid fa-trash text-white text-xl"></i>
+                            </button>
                         </div>
-
-                        <!-- svelte-ignore a11y-no-static-element-interactions -->
-                        <div class="flex gap-4" on:mouseenter={() => instructorIndex[index] = true} on:mouseleave={() => instructorIndex[index] = false}>
-                            {#if switchToEditInstructor !== index}
-                                <p class="text-lg text-black">{event.instructor}</p>
-                                <button on:click={() => {switchToEditInstructor = index; tempInstructor = event.instructor }} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
-                            {/if}
-                            {#if switchToEditInstructor === index}
-                                <input type="text" bind:value={tempInstructor} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
-
-                                <button on:click={instructorToChange(event.instructor)} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
-
-                                <button on:click={cancelInstructorChange} class="{instructorIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
-                            {/if}
-                        </div>
-
-                        <!-- svelte-ignore a11y-no-static-element-interactions -->
-                        <div class="flex gap-4" on:mouseenter={() => courseIndex[index] = true} on:mouseleave={() => courseIndex[index] = false}>
-                            {#if switchToEditCourse !== index}
-                                <p class="text-lg text-black">{event.course}</p>
-                                <button on:click={() => {switchToEditCourse = index; tempCourse = event.course }} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
-                            {/if}
-                            {#if switchToEditCourse === index}
-                                <input type="text" bind:value={tempCourse} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
-
-                                <button on:click={courseToChange(event.course)} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
-
-                                <button on:click={cancelCourseChange} class="{courseIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
-                            {/if}
-                        </div>
-
-                        <!-- svelte-ignore a11y-no-static-element-interactions -->
-                        <div class="flex gap-4" on:mouseenter={() => buildingRoomIndex[index] = true} on:mouseleave={() => buildingRoomIndex[index] = false}>
-                            {#if switchToEditRoom !== index}
-                                <p class="text-lg text-black">{event.extendedProps?.building_room}</p>
-                                <button on:click={() => {switchToEditRoom = index; tempRoom = event.extendedProps?.building_room }} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-pencil text-primary text-lg hover:text-opacity-70 ml-8"></button>
-                            {/if}
-                            {#if switchToEditRoom === index}
-                                <input type="text" bind:value={tempRoom} class="border-b border-l-0 border-r-0 border-t-0 border-primary text-primary focus:ring-0 focus:outline-none p-0 text-lg mr-0 focus:border-primary" >
-
-                                <button on:click={roomToChange(event.extendedProps.building_room)} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-paper-plane text-primary text-lg hover:text-opacity-70  ml-4"></button>
-
-                                <button on:click={cancelRoomChange} class="{buildingRoomIndex[index] ? "block" : "hidden"} fa-solid fa-ban text-primary text-lg hover:text-opacity-70"></button>
-                            {/if}
-                        </div>
-                        
-                        <button on:click={removeEvent(event)} class="{deleteIndex[index] ? "w-1/12" : "w-0"} w-0 transition-all duration-300 absolute z-10 top-0 right-0 h-full bg-primary flex justify-center items-center rounded-r-md">
-                            <i class="{deleteIndex[index] ? "block" : "hidden"} fa-solid fa-trash text-white text-xl"></i>
-                        </button>
                     </div>
                 {/each}
             {/if}

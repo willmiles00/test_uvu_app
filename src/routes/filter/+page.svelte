@@ -207,29 +207,31 @@
 
 
 <div class="">
-    <div class="w-full flex justify-end mb-4 p-4 rounded-t-md bg-secondary">
+    <div class="w-full flex justify-between mb-4 p-4 rounded-t-md bg-secondary items-center">
+        <p class="uppercase font-raj font-semibold text-white text-xl">Filters</p>
+
         <button on:click={() => {
             filteredModal.set(false)
             openCourseList = false
             openProfessorList = false
             openRoomList = false
-            }} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white "></button>
+        }} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white "></button>
     </div>
 
-    <div class="px-4 ">
+    <div class="px-4 mb-12">
         <div class="w-full border border-primary border-l-8 mb-4 rounded-md py-2">
             <p class="text-center text-primary font-raj uppercase font-semibold">Current File:</p>
             <p class="text-center text-sm px-4 text-gray-500">{$file.fileName}</p> 
         </div>
     </div>
 
-    <div class=" w-full mb-8">
+    <!-- <div class=" w-full mb-8">
         <p class="text-center uppercase font-raj font-semibold text-primary ">Filters</p>
         <div class="border-b border-primary mx-4 flex justify-center text-primary">
             <h1 class="translate-y-[8px] text-center bg-white px-4 fa-solid fa-filter"></h1>
         </div>
         
-    </div>
+    </div> -->
 
     <!--------------------------------------------------- Professors List -------------------------------------------------->
     <div class="mt-4 mx-4">
