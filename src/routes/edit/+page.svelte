@@ -11,6 +11,7 @@
 
     let openModal = false
     let filteredEvents = []
+    // holds the index of the events that are being edited to display the delete button
     let deleteIndex = []
 
     $: {
@@ -18,12 +19,14 @@
     }
 
     // this reactive statement filters out duplicates based on the instructor, course, building room, and class name
+    // this and the above reactive statement allow us to display only one of each event in the modal
     $: filteredEvents = $dataStore && Array.isArray($dataStore) ? $dataStore.filter((event, index, self) => {
         const eventKey = `${event.className}-${event.instructor}-${event.course}-${event.extendedProps.building_room}`;
         const isUnique = index === self.findIndex(e => `${e.className}-${e.instructor}-${e.course}-${e.extendedProps.building_room}` === eventKey);
         return isUnique;
     }) : [];
 
+    // these are the indexes that will be used to show the edit buttons
     let classNameIndex: any[] = []
     let switchToEditClassName = null
     let tempClassName
@@ -76,6 +79,7 @@
         switchToEditClassName = null
     }
 
+    // this function is called when the user wants to change the class name
     function classNameToChange(oldName) {
         
         editDeleteTitle.set("Your Changing The Class Name")
@@ -93,6 +97,7 @@
         dataToEditOrDelete.set({type: 'instructor', oldName: oldInstructorName, newName: tempInstructor})
     }
 
+    // this function is called when the user wants to cancel the change of the instructor
     function cancelInstructorChange() {
         switchToEditInstructor = null
     }
@@ -106,6 +111,7 @@
         dataToEditOrDelete.set({type: 'course', oldName: oldCourseName, newName: tempCourse})
     }
 
+    // this function is called when the user wants to cancel the change of the course
     function cancelCourseChange() {
         switchToEditCourse = null
     }
@@ -119,10 +125,12 @@
         dataToEditOrDelete.set({type: 'room', oldName: oldRoomName, newName: tempRoom})
     }
 
+    // this function is called when the user wants to cancel the change of the room
     function cancelRoomChange() {
         switchToEditRoom = null
     }
 
+    // this function is called when the user wants to delete an event
     function removeEvent(event) {
         editDeleteWarning.set(true)
         editDeleteTitle.set("Your Deleting an Event")
@@ -163,6 +171,7 @@
                 </div>
             {:else}
                 {#each filteredEvents as event, index}
+                    <!-- CLASS NAME COMPONENT -->
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <div class="flex justify-center">
                         <div class="w-11/12 relative border-2 border-l-8 border-l-primary border-gray-200 px-4 py-1 mb-4 shadow-md rounded-md mx-2" on:mouseenter={() => deleteIndex[index] = true} on:mouseleave={() => deleteIndex[index] = false}>
@@ -181,6 +190,7 @@
                                 {/if}
                             </div>
     
+                            <!-- INSTRUCTOR COMPONENT -->
                             <!-- svelte-ignore a11y-no-static-element-interactions -->
                             <div class="flex gap-4" on:mouseenter={() => instructorIndex[index] = true} on:mouseleave={() => instructorIndex[index] = false}>
                                 {#if switchToEditInstructor !== index}
@@ -196,6 +206,7 @@
                                 {/if}
                             </div>
     
+                            <!-- COURSE COMPONENT -->
                             <!-- svelte-ignore a11y-no-static-element-interactions -->
                             <div class="flex gap-4" on:mouseenter={() => courseIndex[index] = true} on:mouseleave={() => courseIndex[index] = false}>
                                 {#if switchToEditCourse !== index}
@@ -211,6 +222,7 @@
                                 {/if}
                             </div>
     
+                            <!-- ROOM COMPONENT -->
                             <!-- svelte-ignore a11y-no-static-element-interactions -->
                             <div class="flex gap-4" on:mouseenter={() => buildingRoomIndex[index] = true} on:mouseleave={() => buildingRoomIndex[index] = false}>
                                 {#if switchToEditRoom !== index}
@@ -226,6 +238,7 @@
                                 {/if}
                             </div>
                             
+                            <!-- BUTTON COMPONENT -->
                             <button on:click={removeEvent(event)} class="{deleteIndex[index] ? "w-1/12" : "w-0"} w-0 transition-all duration-300 absolute z-10 top-0 right-0 h-full bg-primary flex justify-center items-center rounded-r-md">
                                 <i class="{deleteIndex[index] ? "block" : "hidden"} fa-solid fa-trash text-white text-xl"></i>
                             </button>

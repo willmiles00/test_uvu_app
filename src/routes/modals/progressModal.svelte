@@ -14,28 +14,29 @@
 
 {#if $progressModal}
     
-        <div class="fixed flex justify-center z-50 w-full top top-1/4 mt-3">
-            <div class="bg-white border border-gray-300 rounded-md w-8/12 md:w-6/12 shadow-gray-400 shadow-md ">
-
-                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 gap-4 items-center">
+    <div class="h-full w-full fixed flex justify-center items-center z-50">
+        <div class="w-full flex justify-center ">
+            <div class="bg-white border border-gray-300 rounded-md w-7/12 md:w-6/12 lg:w-5/12 shadow-gray-400 shadow-md ">
+    
+                <div class="flex justify-start py-4 border-b border-gray-300 mx-4 gap-4 items-center">
                     {#if $progressBarModal}
                         <i class="fa-solid fa-arrow-rotate-right fa-spin text-primary text-xl"></i>
                         <h1 class="font-bold text-primary text-xl font-raj ">Loading...</h1>
                     {:else if $progressBarFinished}
-                        <h1 class="font-bold text-gray-600 text-xl font-raj">Upload Successful</h1>
+                        <h1 class="font-bold text-primary text-xl font-raj">Upload Successful</h1>
                     {/if}
                 </div>
-
+    
                 {#if $progressBarModal}
-                    <p class="mx-8 my-8 text-black">Please wait while the file is being processed.</p>
+                    <p class="m-4 text-black">Please wait while the file is being processed.</p>
                 {:else if $progressBarFinished}
-                    <p class="mx-8 my-8 text-black">Your file has been uploaded Sucessfully!</p>
+                    <p class="m-4 text-black">Your file has been uploaded Sucessfully!</p>
                 {/if}
-
-
-
+    
+    
+    
                 {#if $progressBarModal}
-                    <div class="flex justify-center bg-gray-100 rounded-b-md py-4 px-2">
+                    <div class="flex justify-center bg-gray-100 rounded-b-md p-4">
                         <!-- <div class="progressBar w-full border border-black rounded-full bg-white"> -->
                         <div class="w-full">
                             <!-- <div class="w-{$progress} progress bg-primary transition-all duration-1000 rounded-full"></div> -->
@@ -43,14 +44,15 @@
                         </div>
                     </div>
                 {:else if $progressBarFinished}
-                    <div class="flex justify-center bg-gray-100 rounded-b-md py-4">
+                    <div class="flex justify-start bg-gray-100 rounded-b-md py-2 pl-4">
                         <button on:click={close} class="py-2 px-6 bg-primary text-white rounded-md hover:bg-primaryDark uppercase font-raj font-semibold">Close</button>
                     </div>
                 {/if}
-
+    
                 
             </div>
         </div>
+    </div>
 {/if}
 
 <style>

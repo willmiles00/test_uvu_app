@@ -71,15 +71,15 @@
     {#if $showOneOption}
         <!-- <div class="fixed flex justify-center z-50 w-full"> -->
         <div class="fixed z-30 w-full h-full flex justify-center items-center">
-            <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12 border-l-8 border-l-primary">
-                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 gap-4 items-center">
+            <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md w-7/12 md:w-6/12 lg:w-5/12 border-l-8 border-l-primary">
+                <div class="flex justify-start py-4 border-b border-gray-300 mx-4 gap-4 items-center">
                     <i class="fa-solid fa-circle-exclamation text-primary text-xl"></i>
                     <h1 class="font-bold text-primary text-xl font-raj">{$titleModal}</h1>
                 </div>
 
-                <p class="mx-8 my-8 text-black">{$messageModal}</p>
+                <p class="mx-4 my-6 text-black">{$messageModal}</p>
 
-                <div class="flex justify-center bg-gray-100 rounded-b-md py-4">
+                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 ml-4">
                     <button on:click={closeModal} class="py-2 px-6 text-white rounded-md bg-primary hover:bg-primaryDark font-raj uppercase font-semibold">Close</button>
                 </div>
             </div>
@@ -88,15 +88,15 @@
 
         <!-- <div class="fixed flex justify-center z-50 w-full"> -->
         <div class="fixed z-30 w-full h-full flex justify-center items-center">
-            <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md w-8/12 md:w-6/12 border-l-8 border-l-red-600">
-                <div class="flex justify-start py-6 border-b border-gray-300 mx-8 items-center gap-4">
+            <div class="bg-white border border-gray-300 rounded-md shadow-gray-400 shadow-md  w-7/12 md:w-6/12 lg:w-5/12 border-l-8 border-l-red-600">
+                <div class="flex justify-start py-4 border-b border-gray-300 mx-4 items-center gap-4">
                     <i class="fa-solid fa-triangle-exclamation text-red-600 text-xl"></i>
                     <h1 class="font-bold text-red-600 text-xl font-raj">{$titleModal}</h1>
                 </div>
 
-                <p class="mx-8 my-8 text-black">{$messageModal}</p>
+                <p class="mx-4 my-6 text-black">{$messageModal}</p>
 
-                <div class="flex justify-end bg-gray-100 rounded-b-md py-4 gap-4 pr-4">
+                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 gap-4 pr-4 ml-4">
                     <div class="flex justify-center">
                         <button on:click={removeSchedules} class="py-2 px-6 text-white rounded-md bg-primary hover:bg-primaryDark uppercase font-raj font-semibold">Remove Schedules</button>
                         <!-- <button on:click={removeName}>DELETE ME</button> -->

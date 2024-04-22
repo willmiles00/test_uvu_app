@@ -1,24 +1,27 @@
 <script lang="ts">
     // export let data: any
     // $: console.log(data?.body?.fileName) 
-
+    // dataStore holds all the events from the mongodb database
     import {dataStore} from '../mongodbData.js'
-
     import { createEventDispatcher } from 'svelte'
     import { slide } from 'svelte/transition'
     const dispatch = createEventDispatcher()
+    // These are all just modals and the modal components
     import { showModal, messageModal, titleModal, showOneOption, showTwoOptions, file, closeFilterSelectors, filteredModal } from '../modals/messageModal.js'
     
 
 
     let tempEventList
     // let message = ""
+    // professor, room, and course "search" variables are used to filter the select elements
     let searchProfessor = ""
     let searchRoom = ""
     let searchCourse = ""
+    // selectedProfessors, selectedRooms, and selectedCourses are the selected filters that the user has selected
     let selectedProfessors = []
     let selectedRooms = []
     let selectedCourses = []
+    // openProfessorList, openRoomList, and openCourseList are used to help open and close the select elements
     let openProfessorList = false
     let openRoomList = false
     let openCourseList = false
@@ -26,7 +29,7 @@
     
 
     // -------------------------------------------- PROFESSOR FUNCTIONS ---------------------------------------------------
-    // Open and closes the professor list
+    // function to open and closes the professor list
     function toggleProfessorList() {
     openProfessorList = !openProfessorList
     openRoomList = false
@@ -182,12 +185,14 @@
         openCourseList = false
     }
 
+    // dispatches a empty array to clear the scheduler display
     function resetFilters() {
         tempEventList = []
         dispatch('filteredData', { filteredData: tempEventList })
         // filteredData.set(tempEventList)
     }
 
+    // when the "remove all schedules" button has been clicked a modal will popup to continue with the action
     function removeData() {
         showTwoOptions.set(true)
         showOneOption.set(false)

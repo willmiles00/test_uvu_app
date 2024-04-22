@@ -11,8 +11,10 @@
       dispatch('closeModal')
     }
 
+    // these variables help switch between normal class inputs and custom class inputs
     let normalClasses = true
     let customClasses = false
+    // switches full height modal when it's a custom class because it becomes too long
     let normalClassH = "h-full items-center"
 
     let courseAvailable = true
@@ -22,14 +24,18 @@
     let roomAvailable = true
     let addNewRoom = ''
 
+    // stores the hours in the time input
     let timeH = ''
+    // stores the second digit of the minutes time input
     let timeM1 = ''
+    // stores the first digit of the minutes time input
     let timeM2 = ''
+    // stores the am or pm of the time input
     let timeAmPm = ''
 
+    // these variables store the data from the inputs
     let firstName = ''
     let lastName = ''
-
     let newClass = {
         className: '',
         profName: '',
@@ -42,19 +48,24 @@
     }
     let timeLength = ''
 
+    // starting color for the frequency buttons
     let bgColor1 = 'bg-primary'
     let bgColor2 = 'bg-primary'
     let bgColor3 = 'bg-primary'
     let bgColor4 = 'bg-primary'
 
+    // starting color for the custom frequency buttons
     let cc1 = 'bg-primary'
     let cc2 = 'bg-primary'
     let cc3 = 'bg-primary'
     let cc4 = 'bg-primary'
     let cc5 = 'bg-primary'
 
+    // this variable helps with switching between the custom and normal classes
     let newClassAdded = false
 
+    // function to highlight the selected frequency button and deselect the others
+    // THis is also the case with all the functions below
     function timeSelected1() {
         bgColor1 = 'bg-primaryDark'
         bgColor2 = 'bg-primary'
@@ -89,6 +100,7 @@
 
     
 
+    // same as the previous function but for the custom classes
     function cTimeSelected1() {
         if (cc1 === 'bg-primary') {
             cc1 = 'bg-primaryDark'
@@ -131,6 +143,7 @@
 
 
 
+    // function to add the new class to the database
     async function addNew(e) {
         e.preventDefault()
         let newData = newClass
@@ -162,6 +175,7 @@
             body: JSON.stringify(newData),
         })
 
+        // reset all the variables
         timeH = ''
         timeM1 = ''
         timeM2 = ''
@@ -196,31 +210,44 @@
         newClassAdded = true
     }
 
+    // function to switch to custom classes
     function switchToCustom() {
         normalClasses = false
         customClasses = true
         normalClassH = ""
     }
 
+    // function to go back to normal classes
     function goBack() {
         normalClasses = true
         customClasses = false
         normalClassH = "h-full items-center"
+        timeLength = ''
+        cc1 = 'bg-primary'
+        cc2 = 'bg-primary'
+        cc3 = 'bg-primary'
+        cc4 = 'bg-primary'
+        cc5 = 'bg-primary'
     }
 
+    // function to close the input for the new class added modal
     function closeTheModal() {
         newClassAdded = false
         dispatch('closeModal')
         // location.reload()
     }
+
+    // function to switch between adding a new course and selecting a course
     function switchToAddCourse() {
         courseAvailable = !courseAvailable
     }
 
+    // function to switch between adding a new room and selecting a room
     function switchToAddRoom() {
         roomAvailable = !roomAvailable
     }
 
+    // function to add a new course to the list of existing courses
     async function addNewCourseToList() {
         console.log("hello")
         if (addNewCourse === '') {
@@ -250,6 +277,7 @@
         
     }
 
+    // function to add a new room to the list of existing rooms
     async function addNewRoomToList() {
         console.log("hello")
 
@@ -280,6 +308,7 @@
         }
     }
 
+    // function to close the notifications modal
     function closeNotifications() {
         newCourseAddedModal = false
         courseAvailable = true
@@ -357,6 +386,7 @@
                                     <div on:click={switchToAddCourse} class="text-primary cursor-pointer ml-1 font-semibold hover:text-primaryDark font-raj">Add Course</div>
                                 </div>
                             {/if}
+                            <!-- if they click "add new course" this will be viewable -->
                             {#if !courseAvailable}
                                 <label for="newCourse" class="mb-1 text-primary font-raj font-semibold">Add New Course:</label>
                                 <div class="flex gap-1">
@@ -373,6 +403,7 @@
                             {/if}
                         </div>
     
+                        <!-- Room# select -->
                         <div class="basis-6/12">
                             {#if roomAvailable}
                                 <label for="room" class="mb-1 text-primary font-raj font-semibold">Room #:</label>
@@ -387,6 +418,8 @@
                                     <div on:click={switchToAddRoom} class="text-primary cursor-pointer ml-1 font-semibold hover:text-primaryDark font-raj">Add Room</div>
                                 </div>
                             {/if}
+
+                            <!-- if they click to add a new room this will be available -->
                             {#if !roomAvailable}
                                 <label for="newRoom" class="mb-1 text-primary font-raj font-semibold">Add New Room:</label>
                                 <div class="flex gap-1">
@@ -547,6 +580,7 @@
                         </div>
 
                         {#if customClasses}
+                        <!-- custom classes timeframe selector -->
                             <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }} class="basis-full mt-4">
                                 <div class=" flex justify-start flex-wrap">
                                     <div class="basis-full flex justify-start">

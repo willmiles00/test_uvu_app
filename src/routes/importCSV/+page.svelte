@@ -105,13 +105,14 @@ async function insertFileToFilters() {
     }
 }
 
-
+// updates the datastore list of events 
 async function updateLists() {
     const response = await fetch('./importCSV/updateList')
     const data = await response.json()
     dataStore.set(data)
 }
 
+// adds the filename to the database
 async function updateFileName() {
     const response = await fetch ('./importCSV/fileName', {
         method: 'POST',

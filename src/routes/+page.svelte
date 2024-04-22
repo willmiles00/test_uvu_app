@@ -31,6 +31,7 @@
 
 	// $: console.log(data?.body?.theYearAndSeason)
 
+	// if there is any changes to the data in our database it will update the file, yearAndSeason, courses, and rooms stores
     $: if (data) {
         dataStore.set(data?.body?.events);
 		if (data?.body?.name === null) {
@@ -47,6 +48,7 @@
 		rooms.set(data?.body?.roomsList)
     }
 
+	// This opens and closes the "add schedules" modal
 	function toggleModal() {
 		addClassModal = !addClassModal
 		// checks if add button is selected and highlights the text to secondary color
@@ -63,6 +65,7 @@
 		}
 	}
 
+	// This opens and closes the "import csv" modal
 	function toggleImportModal() {
 		importCSVModal = !importCSVModal
 		// checks if import button is selected and highlights the text to secondary color
@@ -79,6 +82,7 @@
 		}
 	}
 
+	// This opens and closes the "edit schedules" modal
 	function toggleEditModal() {
 		editClassModal = !editClassModal
 		if (editClassModal) {
@@ -94,6 +98,7 @@
 		}
 	}
 
+	// This opens and closes the "filter" modal
 	function openFilterModal() {
 		if (!$filteredModal) {
 			filteredModal.set(true)
@@ -108,6 +113,7 @@
 		}
 	}
 
+	// if the filterModal store is true it will slide open the filter modal
 	$: if ($filteredModal) {
 		filterSelected = "w-full"
 	} else if (!$filteredModal) {
@@ -128,10 +134,11 @@
 	// }
 
 
+
+	// sleep, exportScreenshot, initiateScreenshot, and addHeaderBack are used to take a screenshot of the schedule and download it as a jpg
 	function sleep(ms) {
     	return new Promise(resolve => setTimeout(resolve, ms));
 	}
-
 	async function exportScreenshot() {
 		hiddenHeader = "hidden"
 		await sleep(50)
@@ -151,6 +158,7 @@
 		hiddenHeader = ""
 	}
 	
+	// This also closes the edit modal
 	function closeEditModal() {
 		editClassModal = false
 		editSelected = "w-0"

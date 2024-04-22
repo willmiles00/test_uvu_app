@@ -29,3 +29,4 @@ try {
 }
 
 export default clientPromise
+// THis file will make the connection to mongodb
