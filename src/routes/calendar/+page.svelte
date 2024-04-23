@@ -4,7 +4,7 @@
 	// import ResourceTimeGrid from '@event-calendar/resource-time-grid'
 	import Filter from '../filter/+page.svelte'
 	import {yearAndSeason} from '../mongodbData.js'
-	import {filteredModal} from '../modals/messageModal.js'
+	import {filteredModal, filteredModalPrint} from '../modals/messageModal.js'
 	let width = "translate-x-[-110%]"
 	let height = "translate-y-[100%]"
 
@@ -84,16 +84,27 @@
 		height = "translate-y-[100%]"
 	}
 	
+	let printing = "block"
+	$: if ($filteredModalPrint) {
+		printing = "hidden"
+		console.log("printing")
+	} else {
+		printing = "block"
+		console.log("not printing")
+	}
 </script>
 
 
-<div class="z-10 fixed top-0 w-96 bg-white shadow-md rounded-r-lg border border-l-0 border-gray-300 {width} transition-all duration-300 hidden md:block">
+<div class="{printing} z-10 fixed top-0 w-96 bg-white shadow-md rounded-r-lg border border-l-0 border-gray-300 {width} transition-all duration-300 ">
 	<Filter on:filteredData={filterTheData} />
 </div>
 
-<div class="z-10 fixed bottom-0 h-full w-full bg-white p-4 shadow-md rounded-t-lg border border-gray-300 {height} transition-all duration-300 md:hidden">
+<!-- THis Was the way the modal popped up from the bottom when it was in mobile but we are not doing that -->
+<!-- <div class=" {printing} z-10 fixed bottom-0 h-full w-full bg-white p-4 shadow-md rounded-t-lg border border-gray-300 {height} transition-all duration-300 md:hidden">
 	<Filter on:filteredData={filterTheData} />
-</div>
+</div> -->
+
+
 
 <div class="">
 	<div class="pb-20 px-4 md:pb-4">

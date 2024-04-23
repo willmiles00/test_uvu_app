@@ -14,8 +14,6 @@
     // these variables help switch between normal class inputs and custom class inputs
     let normalClasses = true
     let customClasses = false
-    // switches full height modal when it's a custom class because it becomes too long
-    let normalClassH = "h-full items-center"
 
     let courseAvailable = true
     let addNewCourse = ''
@@ -214,14 +212,12 @@
     function switchToCustom() {
         normalClasses = false
         customClasses = true
-        normalClassH = ""
     }
 
     // function to go back to normal classes
     function goBack() {
         normalClasses = true
         customClasses = false
-        normalClassH = "h-full items-center"
         timeLength = ''
         cc1 = 'bg-primary'
         cc2 = 'bg-primary'
@@ -318,8 +314,8 @@
 </script>
 
 
-<div class="w-full flex justify-center {normalClassH}"><!-- right here -->
-  <div class="bg-white rounded-md shadow-lg w-4/6 border border-gray-300">
+<div class="w-full flex justify-center h-full items-center">
+  <div class="bg-white rounded-md shadow-lg w-4/6 h-5/6 border border-gray-300">
 
     {#if newClassAdded}
         <div class="fixed z-40 h-full w-4/6 flex items-center justify-center">
@@ -333,17 +329,19 @@
         </div>
     {/if}
 
-    <div class="">
-        <div class="relative bg-secondary rounded-t-md">
-            <div class="absolute z-10 right-4 w-full h-full flex justify-end items-center">
-                <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white"></button>
-            </div>
-            <div class="h-full flex items-center justify-center py-4">
-                <h1 class="text-4xl text-white text-center font-raj">Add Schedules</h1>
+    <div class="relative h-full">
+        <div class="absolute z-10 w-full">
+            <div class="relative bg-secondary rounded-t-md">
+                <div class="absolute z-10 right-4 w-full h-full flex justify-end items-center">
+                    <button on:click={closeModal} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white"></button>
+                </div>
+                <div class="h-full flex items-center justify-center py-4">
+                    <h1 class="text-4xl text-white text-center font-raj">Add Schedules</h1>
+                </div>
             </div>
         </div>
-        <div class="px-12">
-            <div>
+        <div class="px-12 overflow-y-scroll h-full">
+            <div class=" mt-20">
                 <!-- <div class="flex justify-center translate-y-[-15px]">
                     <i class="fa-solid fa-circle-plus text-2xl bg-white px-4 text-primary"></i>
                 </div> -->
@@ -375,7 +373,7 @@
                         <div class="basis-6/12">
                             {#if courseAvailable}
                                 <label for="course" class="mb-1 text-primary font-raj font-semibold">Select Course:</label>
-                                <select bind:value={newClass.course} id="course" name="course" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" required>
+                                <select bind:value={newClass.course} id="course" name="course" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-gray-400" required>
                                     <option value="">Select a course</option>
                                     {#each $courses as course (course)}
                                         <option value={course.course}>{course.course}</option>
@@ -407,7 +405,7 @@
                         <div class="basis-6/12">
                             {#if roomAvailable}
                                 <label for="room" class="mb-1 text-primary font-raj font-semibold">Room #:</label>
-                                <select bind:value={newClass.room} id="room" name="room" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary" required>
+                                <select bind:value={newClass.room} id="room" name="room" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-gray-400" required>
                                     <option value="">Select a room number</option>
                                     {#each $rooms as room (room)}
                                         <option value={room.room}>{room.room}</option>
@@ -489,48 +487,59 @@
 
                     <!-- CUSTOM CLASSES -->
                     {#if customClasses}
-                        <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }} class="flex justify-start mb-12">
-                            <div on:click={goBack} class="bg-primary px-4 py-2 rounded-lg text-white uppercase cursor-pointer hover:bg-primaryDark shadow-md font-raj font-medium text-sm transition-all duration-300">
-                                <i class="fa-solid fa-chevron-left mr-2 text-white "></i>
-                                Go Back
+                        <div class="relative" in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }}>
+                            <div class="absolute z-0 right-0">
+                                <div class="">
+                                    <p class="text-primary uppercase font-raj font-bold text-sm transition-all duration-300">More options below</p>
+                                    <div class="flex justify-center mt-2">
+                                        <i class="fa-solid fa-chevron-down text-white p-1 rounded-full bg-primary moving-button"></i>
+                                    </div>
+                                </div>
                             </div>
+    
+                            <div class="flex justify-between mb-12">
+                                <div on:click={goBack} class="bg-primary px-4 py-2 rounded-lg text-white uppercase cursor-pointer hover:bg-primaryDark shadow-md font-raj font-medium text-sm transition-all duration-300">
+                                    <i class="fa-solid fa-chevron-left mr-2 text-white "></i>
+                                    Go Back
+                                </div>
+                            </div>
+    
+                            <div >
+                                <label for="frequency" class="mb-1 text-primary font-raj font-semibold">Select Custom Schedule:</label>
+                                <div class="flex gap-4 justify-between mb-12">
+                                    <div class="basis-1/6 p-4 {cc1} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected1}>
+                                        <div>
+                                            <p class="text-center text-lg font-raj">mon</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="basis-1/6 p-4 {cc2} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected2}>
+                                        <div>
+                                            <p class="text-center text-lg font-raj">tues</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="basis-1/6 p-4 {cc3} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected3}>
+                                        <div>
+                                            <p class="text-center text-lg font-raj">wed</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="basis-1/6 p-4 {cc4} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected4}>
+                                        <div>
+                                            <p class="text-center text-lg font-raj">thur</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="basis-1/6 p-4 {cc5} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected5}>
+                                        <div>
+                                            <p class="text-center text-lg font-raj">fri</p>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div> <!-- end of custom days -->
                         </div>
-
-                        <div in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }}>
-                            <label for="frequency" class="mb-1 text-primary font-raj font-semibold">Select Custom Schedule:</label>
-                            <div class="flex gap-4 justify-between mb-12">
-                                <div class="basis-1/6 p-4 {cc1} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected1}>
-                                    <div>
-                                        <p class="text-center text-lg font-raj">mon</p>
-                                    </div>
-                                </div>
-
-                                <div class="basis-1/6 p-4 {cc2} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected2}>
-                                    <div>
-                                        <p class="text-center text-lg font-raj">tues</p>
-                                    </div>
-                                </div>
-
-                                <div class="basis-1/6 p-4 {cc3} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected3}>
-                                    <div>
-                                        <p class="text-center text-lg font-raj">wed</p>
-                                    </div>
-                                </div>
-
-                                <div class="basis-1/6 p-4 {cc4} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected4}>
-                                    <div>
-                                        <p class="text-center text-lg font-raj">thur</p>
-                                    </div>
-                                </div>
-
-                                <div class="basis-1/6 p-4 {cc5} rounded-lg text-white font-bold uppercase flex items-center justify-center hover:bg-primaryDark transition-all duration-300 cursor-pointer shadow-md border-b-4 border-b-secondary hover:border-b-primary" on:click={cTimeSelected5}>
-                                    <div>
-                                        <p class="text-center text-lg font-raj">fri</p>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                        </div> <!-- end of custom days -->
                     {/if}
 
                         
@@ -624,4 +633,20 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 } */
+
+.moving-button {
+    animation: move 1s infinite;
+}
+
+@keyframes move {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
 </style>

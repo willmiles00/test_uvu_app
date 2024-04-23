@@ -21,7 +21,7 @@
                 <p class="mx-4 my-6">{$messageModal}</p>
                 <!-- <p class="mx-8 my-8">No file was detected at import. Please try again.</p> -->
     
-                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 ml-4">
+                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 pl-4">
                     <button on:click={closeModal} class="py-2 px-6 bg-primary text-white rounded-md hover:bg-primaryDark uppercase font-raj font-semibold">Close</button>
                 </div>
             </div>

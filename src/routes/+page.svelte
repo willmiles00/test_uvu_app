@@ -8,7 +8,7 @@
 	import ImportCSV from './importCSV/+page.svelte'
 	import Edit from './edit/+page.svelte'
 	import ProgressModal from './modals/progressModal.svelte'
-	import {filteredModal, filteredModalS, closeFilterSelectors} from './modals/messageModal.js'
+	import {filteredModal, filteredModalS, closeFilterSelectors, filteredModalPrint} from './modals/messageModal.js'
 	import Message from './modals/modal.svelte'
 	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
 	import html2canvas from 'html2canvas'
@@ -164,6 +164,23 @@
 		editSelected = "w-0"
 		// editSelectedS = "text-primary"
 	}
+
+	// allows you to print the schedule and hides the filter modal
+	async function printScreen() {
+		// hides the filter modal
+		filteredModalPrint.set(true)
+		await sleep(50)
+		// we then open the print dialog
+		window.print()
+
+		// then after a few seconds we put the modal back
+		await sleep(50)
+		putModalBack()
+	}
+
+	function putModalBack() {
+		filteredModalPrint.set(false)
+	}
 </script>
 
 <!-- <div class="fixed bottom-0 z-0 h-full w-full flex justify-center items-center">
@@ -203,15 +220,15 @@
 	{/if}
 
 	<div class="bg-white">
-		<div class="flex items-center justify-between gap-4 bg-white px-4 py-2 shadow-md no-print {hiddenHeader}">
-			<div class="flex gap-8 items-center py-4">
+		<div class="flex items-center justify-between gap-4 bg-white p-4 no-print {hiddenHeader}">
+			<div class="flex gap-8 items-center ">
 				<img src="uvu_logo2.png" alt="" class="">
-				<h1 class="text-lg lg:text-xl text-primary text-center hidden md:block font-raj">Academic Scheduling Aid</h1>
+				<h1 class="text-lg lg:text-xl text-primary text-center hidden md:block font-raj transition-all duration-300">Academic Scheduling Aid</h1>
 			</div>
 			
-			<div class="w-full bottom-0 py-1 z-20 md:w-auto md:relative md:bg-transparent md:py-0 md:z-auto md:flex-none md:border-transparent">
+			<div class="">
 				<!-- <div class=""> -->
-				<div class="w-full flex justify-around md:gap-4 items-center">
+				<div class="flex justify-end gap-4 items-center">
 					<!-- <div class="">
 						<button class="fa-solid fa-flask text-white text-2xl pl-2 hover:translate-y-[-4px] transition-all duration-200" on:click={test}></button>
 						<p class="text-center text-white">Test</p>
@@ -219,20 +236,21 @@
 					
 					<!-- print button -->
 					<div class="">
-						<button on:mouseover={() => hoverPrint = true} on:mouseleave={() => hoverPrint = false} class="px-6 py-1 rounded-full {hoverPrint ? "bg-primary" : "bg-third"}" on:click={() => window.print()} >
-							<div class="{hoverPrint ? "text-white" : "text-primary"} flex items-center font-medium font-raj uppercase text-sm transition-all duration-300" >
-								<i class="fa-solid fa-print text-md pr-2"></i>
-								Print Schedule
+						<button on:mouseover={() => hoverPrint = true} on:mouseleave={() => hoverPrint = false} class="px-6 py-1 rounded-full {hoverPrint ? "bg-primary" : "bg-third"} shadow-sm" 
+							on:click={printScreen} >
+							<div class="{hoverPrint ? "text-white" : "text-primary"} flex items-center font-medium font-raj uppercase text-md md:text-sm transition-all duration-300" >
+								<i class="fa-solid fa-print py-0.5 md:pr-2 md:py-0"></i>
+								<p class="hidden md:block">Print Schedule</p>
 							</div>
 						</button>
 					</div>
 					
 					<!-- export button -->
 					<div class="">
-						<button on:mouseover={() => hoverExport = true} on:mouseleave={() => hoverExport = false} class="px-6 py-1 {hoverExport ? "bg-primary" : "bg-third"} rounded-full" on:click={exportScreenshot}>
-							<div class="{hoverExport ? "text-white" : "text-primary"} flex items-center font-medium font-raj uppercase text-sm transition-all duration-300">
-								<i class="fa-solid fa-file-export text-md pr-2"></i>
-								Export Schedule
+						<button on:mouseover={() => hoverExport = true} on:mouseleave={() => hoverExport = false} class="px-6 py-1 {hoverExport ? "bg-primary" : "bg-third"} rounded-full shadow-sm" on:click={exportScreenshot}>
+							<div class="{hoverExport ? "text-white" : "text-primary"} flex items-center font-medium font-raj uppercase text-md md:text-sm transition-all duration-300">
+								<i class="fa-solid fa-file-export text-md py-0.5 md:pr-2 md:py-0"></i>
+								<p class="hidden md:block">Export Schedule</p>
 							</div>
 						</button>
 						<!-- <img src="export.svg" alt="export icon" class="w-10 h-10"> -->
@@ -242,13 +260,14 @@
 			
 		</div>
 
-		<div class="py-2 w-full border-t border-b bg-gray-100 flex gap-4 justify-end pr-4 no-print {hiddenHeader}"> <!-- start -->
+		<div class="py-2 w-full border-t border-b bg-gray-100 flex gap-4 justify-end pr-4 no-print shadow-sm {hiddenHeader}"> <!-- start -->
+
 			<!-- filter button  -->
-			<div class="hidden md:block no-print ">
-				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm" on:click={openFilterModal}>
-					<div class="text-white flex items-center font-medium font-raj uppercase text-sm transition-all duration-300" >
-						<i class="fa-solid fa-filter text-md pr-2"></i>
-						Filter
+			<div class="">
+				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full transition-all duration-300 shadow-sm" on:click={openFilterModal}>
+					<div class="text-white flex items-center font-medium font-raj uppercase text-md md:text-sm transition-all duration-300" >
+						<i class="fa-solid fa-filter py-0.5 md:pr-2 md:py-0"></i>
+						<p class="hidden md:block">Filter</p>
 					</div>
 				</button>
 
@@ -259,21 +278,12 @@
 				<!-- <img src="upload.svg" alt="upload icon" class="w-10 h-10">  -->
 			</div>
 
-			<!-- MOBILE VERSION NEEDS TO BE FIXED VVVVVVVVVVVVVVVVVVVV -->
-			<!-- <div class="md:hidden {filterSelected} p-1 no-print">
-				<button class="{filterSelectedS} hover:opacity-80 font-bold transition-all duration-200 hover:text-primary" on:click={openFilterModalS}>
-					<i class="fa-solid fa-file-import text-xl block"></i>
-					Filter
-				</button>
-				<img src="upload.svg" alt="upload icon" class="w-10 h-10"> 
-			</div> -->
-
 			<!-- Import CSV button -->
 			<div class="">
-				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm" on:click={toggleImportModal}>
-					<div class="text-white flex items-center font-medium font-raj uppercase text-sm transition-all duration-300">
-						<i class="fa-solid fa-file-import text-md mr-2 "></i>
-						Import CSV
+				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm transition-all duration-300" on:click={toggleImportModal}>
+					<div class="text-white flex items-center font-medium font-raj uppercase text-md md:text-sm transition-all duration-300">
+						<i class="fa-solid fa-file-import py-0.5 md:pr-2 md:py-0"></i>
+						<p class="hidden md:block">Import CSV</p>
 					</div>
 				</button>
 				
@@ -285,10 +295,10 @@
 
 			<!-- add button  -->
 			<div>
-				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm" on:click={toggleModal}>
-					<div class="text-white flex items-center font-medium font-raj uppercase text-sm transition-all duration-300">
-						<i class="fa-solid fa-circle-plus text-md mr-2  "></i>
-						Add Schedules
+				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm transition-all duration-300" on:click={toggleModal}>
+					<div class="text-white flex items-center font-medium font-raj uppercase text-md md:text-sm transition-all duration-300">
+						<i class="fa-solid fa-circle-plus py-0.5 md:pr-2 md:py-0"></i>
+						<p class="hidden md:block">Add Schedules</p>
 					</div>
 				</button>
 				<div class="flex justify-center {addSelected} transition-all duration-300  translate-y-[6px]">
@@ -299,10 +309,10 @@
 
 			<!-- edit button  -->
 			<div class="">
-				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm" on:click={toggleEditModal}>
-					<div class="text-white flex items-center font-medium font-raj uppercase text-sm transition-all duration-300">
-						<i class="fa-solid fa-pen-to-square text-md mr-2"></i>
-						Edit Schedules
+				<button class="px-6 py-1 bg-primary hover:bg-primaryDark rounded-full shadow-sm transition-all duration-300" on:click={toggleEditModal}>
+					<div class="text-white flex items-center font-medium font-raj uppercase text-md md:text-sm transition-all duration-300">
+						<i class="fa-solid fa-pen-to-square py-0.5 md:pr-2 md:py-0"></i>
+						<p class="hidden md:block">Edit Schedules</p>
 					</div>
 				</button>
 				<div class="flex justify-center {editSelected} transition-all duration-300 translate-y-[6px]">

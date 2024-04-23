@@ -49,6 +49,7 @@ export const file = writable({})
 // store for the filtered modal to show it has been selected
 export const filteredModal = writable(false)
 export const filteredModalS = writable(false)
+export const filteredModalPrint = writable(false)
 
 
 export const closeFilterSelectors = writable(false)

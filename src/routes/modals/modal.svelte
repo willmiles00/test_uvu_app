@@ -79,7 +79,7 @@
 
                 <p class="mx-4 my-6 text-black">{$messageModal}</p>
 
-                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 ml-4">
+                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 pl-4">
                     <button on:click={closeModal} class="py-2 px-6 text-white rounded-md bg-primary hover:bg-primaryDark font-raj uppercase font-semibold">Close</button>
                 </div>
             </div>
@@ -96,7 +96,7 @@
 
                 <p class="mx-4 my-6 text-black">{$messageModal}</p>
 
-                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 gap-4 pr-4 ml-4">
+                <div class="flex justify-start bg-gray-100 rounded-b-md py-2 gap-4 pr-4 pl-4">
                     <div class="flex justify-center">
                         <button on:click={removeSchedules} class="py-2 px-6 text-white rounded-md bg-primary hover:bg-primaryDark uppercase font-raj font-semibold">Remove Schedules</button>
                         <!-- <button on:click={removeName}>DELETE ME</button> -->
