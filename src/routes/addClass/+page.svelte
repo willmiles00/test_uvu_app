@@ -373,10 +373,10 @@
                         <div class="basis-6/12">
                             {#if courseAvailable}
                                 <label for="course" class="mb-1 text-primary font-raj font-semibold">Select Course:</label>
-                                <select bind:value={newClass.course} id="course" name="course" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-gray-400" required>
-                                    <option value="">Select a course</option>
+                                <select bind:value={newClass.course} id="course" name="course" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-gray-400 focus:text-black" required>
+                                    <option value="" class="text-black">Select a course</option>
                                     {#each $courses as course (course)}
-                                        <option value={course.course}>{course.course}</option>
+                                        <option class="text-black" value={course.course}>{course.course}</option>
                                     {/each}
                                 </select>
                                 <div class="flex text-sm mt-1 ml-1">
@@ -405,10 +405,10 @@
                         <div class="basis-6/12">
                             {#if roomAvailable}
                                 <label for="room" class="mb-1 text-primary font-raj font-semibold">Room #:</label>
-                                <select bind:value={newClass.room} id="room" name="room" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-gray-400" required>
-                                    <option value="">Select a room number</option>
+                                <select bind:value={newClass.room} id="room" name="room" class="w-full bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-4 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-gray-400 focus:text-black" required>
+                                    <option value="" class="text-black">Select a room number</option>
                                     {#each $rooms as room (room)}
-                                        <option value={room.room}>{room.room}</option>
+                                        <option class="text-black" value={room.room}>{room.room}</option>
                                     {/each}
                                 </select>
                                 <div class="flex text-sm mt-1 ml-1">
@@ -488,7 +488,7 @@
                     <!-- CUSTOM CLASSES -->
                     {#if customClasses}
                         <div class="relative" in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }}>
-                            <div class="absolute z-0 right-0">
+                            <div class="absolute z-10 right-0">
                                 <div class="">
                                     <p class="text-primary uppercase font-raj font-bold text-sm transition-all duration-300">More options below</p>
                                     <div class="flex justify-center mt-2">
@@ -578,7 +578,7 @@
                                     </div>
 
                                     <div>
-                                        <select bind:value={timeAmPm} id="semester" name="semester" class=" bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-2 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary w-16" required>
+                                        <select bind:value={timeAmPm} id="semester" name="semester" class=" bg-gray-100 border-b-4 border-gray-300 border-l-1 border-r-1 border-t-1 border-t-gray-200 border-l-gray-200 border-r-gray-200 rounded-md py-2 px-2 placeholder-gray-400 focus:ring-primary focus:outline-none focus:border-primary text-primary w-16 uppercase" required>
                                             <option value=""></option>
                                             <option class="uppercase" value="am">am</option>
                                             <option class="uppercase" value="pm">pm</option>
