@@ -488,7 +488,7 @@
                     <!-- CUSTOM CLASSES -->
                     {#if customClasses}
                         <div class="relative" in:fly={{ x:200, duration:300 }} out:fly={{ x:200, duration:400 }}>
-                            <div class="absolute z-10 right-0">
+                            <div class="absolute z-0 right-0">
                                 <div class="">
                                     <p class="text-primary uppercase font-raj font-bold text-sm transition-all duration-300">More options below</p>
                                     <div class="flex justify-center mt-2">
