@@ -25,6 +25,7 @@
     }
 
     function handleFileChange(event) {
+        // console.log('event:', event)
         // we take the selectedFile variable and set it to the first file in the event target
         selectedFile = event.target.files[0] 
         // switches the shown text to the file name
@@ -39,7 +40,7 @@
 async function insertFileToFilters() {
     try {
         if (selectedFile && selectedFile.name) {
-            if ($file.fileName !== 'No File') {
+            if ($file.fileName == 'No File') {
                 titleModal.set('File Already Exists')
                 messageModal.set('There is already a file uploaded. Please delete the current file and try again.')
                 showImportModal.set(true)
