@@ -10,9 +10,9 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
-    "@event-calendar/core": "^2.6.1",
+    "@event-calendar/core": "^2.7.2",
     "@event-calendar/resource-time-grid": "^2.6.1",
-    "@event-calendar/time-grid": "^2.6.1",
+    "@event-calendar/time-grid": "^2.7.2",
     "@skeletonlabs/skeleton": "2.9.0",
     "@skeletonlabs/tw-plugin": "0.3.1",
     "@sveltejs/adapter-auto": "^3.0.0",
@@ -20,6 +20,8 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tailwindcss/forms": "0.5.7",
     "@tailwindcss/typography": "0.5.10",
+    "@types/event-calendar__core": "^3.4.3",
+    "@types/event-calendar__time-grid": "^3.4.0",
     "@types/formidable": "^3.4.5",
     "@types/node": "20.11.24",
     "autoprefixer": "10.4.18",
@@ -40,6 +42,6 @@
     "dotenv": "^16.4.5",
     "formidable": "^3.5.1",
     "html2canvas": "^1.4.1",
-    "mongodb": "^6.4.0"
+    "mongodb": "^6.8.1"
   }
 }
