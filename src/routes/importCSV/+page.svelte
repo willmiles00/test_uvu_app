@@ -5,7 +5,7 @@
     import ImportModal from '../modals/importModal.svelte'
     import {dataStore} from '../mongodbData.js'
     // import { simulateMain } from './convertCSV2JSON'
-
+//testing merge
     const dispatch = createEventDispatcher()
     let selectedFile = {}
     let emptyFile = true
