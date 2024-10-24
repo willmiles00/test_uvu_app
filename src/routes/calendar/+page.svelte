@@ -25,7 +25,7 @@
 	} else if (season === 'default') {
 		semester = new Date().toISOString().slice(0, 10)
 	}
-
+// changes made to the 30 min//
     let ec: any
 	let plugins = [TimeGrid]
 	let options = {
@@ -34,9 +34,9 @@
 		view: 'timeGridWeek',
 		allDaySlot: false,
 		hiddenDays: [0, 7],
-		slotDuration: '00:10:00',
-		slotMinTime: '06:00:00',
-		slotMaxTime: '22:00:00',
+		slotDuration: '00:15:00',
+		slotMinTime: '07:30:00',
+		slotMaxTime: '21:30:00',
         // height: '65%', 
 		titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
         // eventBackgroundColor: '#275D38',
