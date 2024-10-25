@@ -26,6 +26,7 @@
 		semester = new Date().toISOString().slice(0, 10)
 	}
 // changes made to the 30 min//
+//changes 7AM-10PM//
     let ec: any
 	let plugins = [TimeGrid]
 	let options = {
