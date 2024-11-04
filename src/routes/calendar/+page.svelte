@@ -26,6 +26,7 @@
 		semester = new Date().toISOString().slice(0, 10)
 	}
 // changes made to the 30 min//
+//changes 7AM-10PM//
     let ec: any
 	let plugins = [TimeGrid]
 	let options = {
@@ -35,8 +36,8 @@
 		allDaySlot: false,
 		hiddenDays: [0, 7],
 		slotDuration: '00:15:00',
-		slotMinTime: '07:30:00',
-		slotMaxTime: '21:30:00',
+		slotMinTime: '06:30:00',
+		slotMaxTime: '22:30:00',
         // height: '65%', 
 		titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
         // eventBackgroundColor: '#275D38',
