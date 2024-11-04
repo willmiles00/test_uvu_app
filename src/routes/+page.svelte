@@ -13,6 +13,8 @@
 	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
 	import html2canvas from 'html2canvas'
 
+	console.log('this will only appear on the stale branch')
+
 	let addClassModal = false
 	let importCSVModal = false
 	let editClassModal = false
