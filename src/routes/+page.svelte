@@ -13,6 +13,8 @@
 	import DeleteProgressModal from './modals/deleteprogressModal.svelte'
 	import html2canvas from 'html2canvas'
 
+	console.log('this will only show on the main site')
+
 	let addClassModal = false
 	let importCSVModal = false
 	let editClassModal = false
