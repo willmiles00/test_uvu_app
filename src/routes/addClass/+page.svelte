@@ -11,6 +11,20 @@
       dispatch('closeModal')
     }
 
+    function addNewCalendarItem() {
+        const newEvent = {
+            id: '1',
+            title: 'New Event',
+            start: new Date().toISOString(),
+            end: new Date().toISOString()
+        };
+    }
+
+    //Will Miles 11/07/24 Creating a new add class function to replace the old one
+    let successMessage = () => {
+    console.log("class has been added... or has it?")
+    }
+
     // these variables help switch between normal class inputs and custom class inputs
     let normalClasses = true
     let customClasses = false
@@ -610,7 +624,7 @@
                     
 
                     <div class="flex justify-center">
-                        <button class="py-2 w-2/6 bg-primary text-white rounded-lg uppercase font-raj font-medium hover:bg-primary hover:bg-primaryDark transition-all duration-300">
+                        <button class="py-2 w-2/6 bg-primary text-white rounded-lg uppercase font-raj font-medium hover:bg-primary hover:bg-primaryDark transition-all duration-300" on:click={successMessage}>
                         <div class="flex justify-center items-center gap-2 text-sm">
                             <i class="fa-solid fa-circle-plus text-lg"></i>
                             Add Class
