@@ -1,7 +1,6 @@
 <script lang="ts">
     import Calendar from '@event-calendar/core'
 	import TimeGrid from '@event-calendar/time-grid'
-	// import ResourceTimeGrid from '@event-calendar/resource-time-grid'
 	import Filter from '../filter/+page.svelte'
 	import {yearAndSeason} from '../mongodbData.js'
 	import {filteredModal, filteredModalPrint} from '../modals/messageModal.js'
@@ -51,20 +50,6 @@
 			}
 		]
 
-		// events: [
-		// 	{
-		// 		title: 'event 1',
-		// 		start: '2024-01-08T13:00:00',
-		// 		end: '2024-01-08T14:50:00',
-		// 		backgroundColor: '#275D38'
-		// 	},
-		// 	{
-		// 		title: 'event 2',
-		// 		start: '2024-01-10T13:00:00',
-		// 		end: '2024-01-10T14:50:00',
-		// 		backgroundColor: 'red'
-		// 	}
-		// ]
         
 	}
 
@@ -99,11 +84,6 @@
 <div class="{printing} z-10 fixed top-0 w-96 bg-white shadow-md rounded-r-lg border border-l-0 border-gray-300 {width} transition-all duration-300 ">
 	<Filter on:filteredData={filterTheData} />
 </div>
-
-<!-- THis Was the way the modal popped up from the bottom when it was in mobile but we are not doing that -->
-<!-- <div class=" {printing} z-10 fixed bottom-0 h-full w-full bg-white p-4 shadow-md rounded-t-lg border border-gray-300 {height} transition-all duration-300 md:hidden">
-	<Filter on:filteredData={filterTheData} />
-</div> -->
 
 
 

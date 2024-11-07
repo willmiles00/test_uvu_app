@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Calendar from '$lib/components/Calendar.svelte'
     import { createEventDispatcher } from 'svelte'
     import { messageModal, titleModal, progressBarModal, progress, progressBarFinished, progressModal, showImportModal, file } from '../modals/messageModal.js'
     import Message from '../modals/modal.svelte'
@@ -140,7 +141,7 @@ async function updateFileName() {
                 <button on:click={closeCSVModal} class="fa-solid fa-circle-xmark text-xl text-third hover:text-white"></button>
             </div>
             <div class="h-full flex items-center justify-center py-4">
-                <h1 class="text-4xl text-white text-center font-raj">Import CSV</h1>
+                <h1 class="text-4xl text-white text-center font-raj">Import CSV </h1>
             </div>
         </div>
         
