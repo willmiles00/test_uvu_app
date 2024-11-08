@@ -13,11 +13,7 @@ export default {
 			themes: {
 				preset: [
 					{
-						name: 'sahara',
-						enhancements: true,
-					},
-					{
-						name: 'gold-nouveau',
+						name: 'seafoam',
 						enhancements: true,
 					},
 					{
@@ -25,7 +21,11 @@ export default {
 						enhancements: true,
 					},
 					{
-						name: 'seafoam',
+						name: 'gold-nouveau',
+						enhancements: true,
+					},
+					{
+						name: 'sahara',
 						enhancements: true,
 					},
 				],
