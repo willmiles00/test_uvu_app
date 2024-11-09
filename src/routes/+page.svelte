@@ -5,5 +5,7 @@
 </script>
 
 <main>
+	<h1>calendar</h1>
+	<button>add event</button>
 	<CalendarView />
 </main>
