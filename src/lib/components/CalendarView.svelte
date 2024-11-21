@@ -25,22 +25,21 @@
     }
 
 //functional event adder
-function addEvent() {
+export function addEvent() {
     ec.addEvent(
         {
             title: 'New Event',
-            start: '2024-11-07T12:00:00',
-            end: '2024-11-07T13:00:00',
+            start: '2024-11-20T12:00:00',
+            end: '2024-11-21T13:00:00',
         }
     )
   
     ec.refetchEvents()
     ec.getEvents()
-    console.log($events)
 }
 </script>
 
-<button on:click={addEvent}>Add event</button>
+<button class="btn variant-filled" on:click={addEvent}>Add event</button>
 
 <Calendar bind:this={ec} {plugins} {options} />
 
