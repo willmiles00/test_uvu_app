@@ -1,6 +1,7 @@
 import { join } from 'path'
 import type { Config } from 'tailwindcss'
 import { skeleton } from '@skeletonlabs/tw-plugin'
+import { myCustomTheme } from './schedulingapptheme'
 
 export default {
 	darkMode: 'class',
@@ -11,24 +12,9 @@ export default {
 	plugins: [
 		skeleton({
 			themes: {
-				preset: [
-					{
-						name: 'seafoam',
-						enhancements: true,
-					},
-					{
-						name: 'vintage',
-						enhancements: true,
-					},
-					{
-						name: 'gold-nouveau',
-						enhancements: true,
-					},
-					{
-						name: 'sahara',
-						enhancements: true,
-					},
-				],
+				custom: [
+					myCustomTheme
+				]
 			},
 		}),
 	],

@@ -15,8 +15,9 @@
 
 	
 
+	// CSV file handling
   let fileInput: any;
-  let csvData: string = '';
+  let csvData: any[] = [];
 
   onMount(() => {
     fileInput.addEventListener('change', handleFileChange);
@@ -27,28 +28,44 @@
 	if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-            csvData = reader.result as string;
-            console.log(csvData);
+			// this is the data that was uploaded
+           let uploadedData = reader.result as string;
+			// CourseLeaf has two lines of metadata at the beginning of the file, so we need to remove them
+
+			//In order to remove the first two lines, we need to split the string into lines, remove the first two lines, and then join the remaining lines back into a string.:
+			const lines = uploadedData.split('\n'); // Split the string into lines
+
+			// Remove the first two lines
+			const removeHeaders = lines.slice(2);
+
+			// Join the remaining lines back into a string
+			const uploadedDataHeadersRemoved = removeHeaders.join('\n');
+
+			// csvData is the data that we will be using
+			let csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true });
+		
+		
+			console.log(csvData);
+
         };
         reader.readAsText(file);
     }
-
-    // Process the file here
   }
+//   end CSV file handling
 
 
 </script>
 
 <main>
 	<h1>calendar</h1>
-	<button on:click={handleAddEventModal}>Add Event</button>
-	<input type="file" accept=".csv" bind:this={fileInput} />
+	<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Event</button>
+	<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
 	{#if $addEventModalActive}
 		<AddEvent />
 	{/if}
-	<div>
+	<div class="border-2">
         <h2>File Content:</h2>
-        <pre>{csvData}</pre> <!-- Display the file content -->
+        <pre class="w-full">{csvData}</pre> <!-- Display the file content -->
     </div>
 	<CalendarView />
 </main>
