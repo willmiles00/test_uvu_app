@@ -15,8 +15,17 @@
     let ec: any; 
     let plugins = [TimeGrid];
     let options: CalendarOptions = {
+        date: '2024-11-20',
         view: 'timeGridWeek',
         events: $events,
+        slotDuration: '00:15:00',
+        slotMinTime: '06:30:00',
+        slotMaxTime: '22:30:00',
+        // hides Sunday, supposed to hide sat too but it doesn't
+        hiddenDays: [0, 7],
+        titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
+       headerToolbar:{start: '', center: '', end: ''},
+       dayHeaderFormat: { weekday: 'long' },
     };
 
 

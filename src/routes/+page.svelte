@@ -17,7 +17,7 @@
 
 	// CSV file handling
   let fileInput: any;
-  let csvData: any[] = [];
+  let csvData: any[] = ['default'];
 
   onMount(() => {
     fileInput.addEventListener('change', handleFileChange);
@@ -42,13 +42,14 @@
 			const uploadedDataHeadersRemoved = removeHeaders.join('\n');
 
 			// csvData is the data that we will be using
-			let csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true });
+			csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 		
 		
 			console.log(csvData);
 
         };
         reader.readAsText(file);
+
     }
   }
 //   end CSV file handling
@@ -65,7 +66,17 @@
 	{/if}
 	<div class="border-2">
         <h2>File Content:</h2>
-        <pre class="w-full">{csvData}</pre> <!-- Display the file content -->
+{#each csvData as row}
+{#if row.CRN}
+<div class="flex flex-wrap flex-col border-2">
+	<p>Course Catalog Name: {row.Course}</p>
+	<p>Course Title: {row["Course Title"]}</p>
+	<p>Meeting Time: {row["Meeting Pattern"]}</p>
+	<p>Professor: {row.Instructor}</p>
+	<p>Room Number: {row["Building and Room"]}</p>
+</div>
+{/if}
+{/each}
     </div>
 	<CalendarView />
 </main>
