@@ -58,8 +58,12 @@
 </script>
 
 <main>
-	<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Event</button>
-	<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
+	<div class="flex">
+		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Filter</button>
+		<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
+		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Schedules</button>
+		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Edit Schedules</button>
+		</div>
 	{#if $addEventModalActive}
 		<AddEvent />
 	{/if}
