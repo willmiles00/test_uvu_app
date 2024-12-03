@@ -3,22 +3,10 @@
 @tailwind utilities;
 @tailwind variants;
 
-/* modern theme */
+/* seafoam theme */
 @font-face {
-	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
-	font-display: swap;
-}
-/* rocket theme */
-@font-face {
-	font-family: 'Space Grotesk';
-	src: url('/fonts/SpaceGrotesk.ttf');
-	font-display: swap;
-}
-/* gold-nouveau theme */
-@font-face {
-	font-family: 'Quicksand';
-	src: url('/fonts/Quicksand.ttf');
+	font-family: 'Playfair Display';
+	src: url('/fonts/PlayfairDisplay-Italic.ttf');
 	font-display: swap;
 }
 /* vintage theme */
@@ -27,12 +15,33 @@
 	src: url('/fonts/AbrilFatface.ttf');
 	font-display: swap;
 }
-/* seafoam theme */
+/* gold-nouveau theme */
 @font-face {
-	font-family: 'Playfair Display';
-	src: url('/fonts/PlayfairDisplay-Italic.ttf');
+	font-family: 'Quicksand';
+	src: url('/fonts/Quicksand.ttf');
 	font-display: swap;
 }
 
-body {background: white;}
-.dark body { background: white; }
+
+    .ec-day.ec-today {
+    background-color: transparent !important;
+}
+
+@font-face {
+	font-family: 'Rajdhani';
+	src: url('/fonts/Rajdhani-Regular.ttf');
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Rajdhani';
+	src: url('/fonts/Rajdhani-Bold.ttf');
+	font-weight: 700;
+	font-display: swap;
+}
+
+
+h1{
+	font-family: 'Rajdhani', sans-serif;
+}
