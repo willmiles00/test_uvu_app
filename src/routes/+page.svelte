@@ -58,7 +58,6 @@
 </script>
 
 <main>
-	<h1>calendar</h1>
 	<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Event</button>
 	<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
 	{#if $addEventModalActive}
@@ -81,4 +80,3 @@
 	<CalendarView />
 </main>
 
-<!-- papaparse -->
