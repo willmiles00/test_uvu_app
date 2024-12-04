@@ -29,11 +29,11 @@
 
   onMount(() => {
 	fileInput.addEventListener('change', grabFile);
-    fileInput.addEventListener('change', handleFileChange);
   });
 
   function grabFile(event: { target: { files: any[]; }; }){
     file = event.target.files[0];
+	handleFileChange();
   }
 
   function handleFileChange() {
@@ -135,7 +135,7 @@ events.subscribe(value => {
 			<p>Upload a Schedule</p>
 			<input class="input text-black" type="file" accept=".csv" id="fileInput" />
 			<button>Upload</button>
-			<button>Cancel</button>
+			<button on:click={handleUploadModal}>Cancel</button>
 		</div>
 	</div>
 {/if}
