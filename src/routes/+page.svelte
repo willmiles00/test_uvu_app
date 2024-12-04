@@ -1,9 +1,10 @@
 <script lang="ts">
 	// imports
 	import CalendarView from "$lib/components/CalendarView.svelte";
-	import AddEvent from "$lib/components/modals/AddEvent.svelte";
+	// import AddEvent from "$lib/components/modals/AddEvent.svelte";
 	import { addEventModalActive } from "$lib/stores/modals";
 	import { onMount } from 'svelte';
+	import { events } from "$lib/stores/events";
 	import Papa from 'papaparse';
 	
 	// modal setters
@@ -13,7 +14,8 @@
 		$addEventModalActive = true;
 	}
 
-	
+	// clears events store for testing DELETE LATER
+	events.set([]);
 
 	// CSV file handling
   let fileInput: any;
@@ -45,30 +47,57 @@
 			csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 		
 		
-			console.log(csvData);
-
+			
+			csvData.forEach((row) => {
+				if (row.CRN) {
+					addImportedCourses(row["Course Title"]);
+				}
+			});
+		
+			// console.log('raw csv data:', csvData);
         };
         reader.readAsText(file);
 
     }
   }
 //   end CSV file handling
+function addImportedCourses(courseTitle: string) {
 
+	events.update(newEvent => {
+        newEvent.push({ title: courseTitle, start: '2023-01-01', end: '2023-01-02' });
+        return newEvent;
+    });
 
+}
+
+// add courses modal
+events.subscribe(value => {
+    console.log(value);
+  });
 </script>
 
 <main>
+
+
+	<!-- main functionality buttons -->
 	<div class="flex">
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Filter</button>
 		<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Schedules</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Edit Schedules</button>
 		</div>
-	{#if $addEventModalActive}
+
+
+		<!-- commented out add event modual until I get it to work -->
+	<!-- {#if $addEventModalActive}
 		<AddEvent />
-	{/if}
-	<div class="border-2">
-        <h2>File Content:</h2>
+	{/if} -->
+
+
+
+	<!-- file upload and parse until I figure out another way -->
+<div class="border-2">
+<h2>File Content:</h2>
 {#each csvData as row}
 {#if row.CRN}
 <div class="flex flex-wrap flex-col border-2">
@@ -81,6 +110,8 @@
 {/if}
 {/each}
     </div>
+
+	<!-- calendar view -->
 	<CalendarView />
 </main>
 

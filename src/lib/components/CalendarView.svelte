@@ -15,16 +15,21 @@
     let ec: any; 
     let plugins = [TimeGrid];
     let options: CalendarOptions = {
-        date: '2024-11-20',
+  
+        // sets the date to July 1. All calendar events will fall on this week unless we implement a 'view by semester' feature down the line
+        date: '2024-07-01',
         view: 'timeGridWeek',
         events: $events,
+
+        // sets the time slots to 15 minutes, min time to 6:30am, max time to 10:30pm
         slotDuration: '00:15:00',
         slotMinTime: '06:30:00',
         slotMaxTime: '22:30:00',
-        // hides Sunday, supposed to hide sat too but it doesn't
-        hiddenDays: [0, 7],
+        // hides weekends
+        hiddenDays: [0, 6],
         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
        headerToolbar:{start: '', center: '', end: ''},
+    //    gets rid of specific day of the week in header. We will be adding all events to the same 'week' to avoid events falling off the face of the earth
        dayHeaderFormat: { weekday: 'long' },
     };
 
@@ -38,8 +43,8 @@ export function addEvent() {
     ec.addEvent(
         {
             title: 'New Event',
-            start: '2024-11-20T12:00:00',
-            end: '2024-11-21T13:00:00',
+            start: '2024-07-01T12:00:00',
+            end: '2024-07-01T13:00:00',
         }
     )
   
