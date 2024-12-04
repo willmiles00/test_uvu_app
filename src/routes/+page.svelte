@@ -14,7 +14,6 @@
 	}
 
 	$addEventModalActive = false;
-
 	let	handleAddEventModal = () => {
 		$addEventModalActive = true;
 	}
@@ -22,23 +21,20 @@
 	// clears events store for testing DELETE LATER
 	events.set([]);
 
-	// CSV file handling
-  let fileInput: any;
+// CSV file handling
   let csvData: any[] = ['default'];
   let file: any;
 
 
-//   const upload = data.get('fileUpload');
+//   this submits the upload form and grabs the file
 function handleUpload(event: { target: any; }) {
 	file = event.target[0].files[0];
-	handleFileChange();
+	parseCSV();
 	handleUploadModal();
 }
 
-
-
-  function handleFileChange() {
-
+// this takes the uploaded file and parses it into a usable format
+  function parseCSV() {
 	if (file) {
         const reader = new FileReader();
         reader.onload = () => {
@@ -73,16 +69,17 @@ function handleUpload(event: { target: any; }) {
     }
   }
 //   end CSV file handling
-function addImportedCourses(courseTitle: string) {
 
+
+function addImportedCourses(courseTitle: string) {
+	// eventually, this will be a loop that adds all of the courses in the csvData array to the events store
 	events.update(newEvent => {
         newEvent.push({ title: courseTitle, start: '2023-01-01', end: '2023-01-02' });
         return newEvent;
     });
-
 }
 
-// add courses modal
+// this is for testing
 events.subscribe(value => {
     console.log(value);
   });
@@ -96,7 +93,6 @@ events.subscribe(value => {
 	<div class="flex">
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Filter</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleUploadModal}>Upload</button>
-		<!-- <input class="input text-black" type="file" accept=".csv" bind:this={fileInput} /> -->
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Schedules</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Edit Schedules</button>
 		</div>
@@ -111,7 +107,7 @@ events.subscribe(value => {
 
 
 
-	<!-- file upload and parse until I figure out another way -->
+	<!-- this is temporarily where the uploaded data is going -->
 <div class="border-2">
 <h2>File Content:</h2>
 {#each csvData as row}
@@ -130,6 +126,7 @@ events.subscribe(value => {
 	<!-- calendar view -->
 	<CalendarView />
 
+	
 	<!-- modals -->
 
 	<!-- upload modal -->
