@@ -27,14 +27,15 @@
   let csvData: any[] = ['default'];
   let file: any;
 
-  onMount(() => {
-	fileInput.addEventListener('change', grabFile);
-  });
 
-  function grabFile(event: { target: { files: any[]; }; }){
-    file = event.target.files[0];
+//   const upload = data.get('fileUpload');
+function handleUpload(event: { target: any; }) {
+	file = event.target[0].files[0];
 	handleFileChange();
-  }
+	handleUploadModal();
+}
+
+
 
   function handleFileChange() {
 
@@ -85,6 +86,7 @@ function addImportedCourses(courseTitle: string) {
 events.subscribe(value => {
     console.log(value);
   });
+
 </script>
 
 <main>
@@ -94,10 +96,12 @@ events.subscribe(value => {
 	<div class="flex">
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Filter</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleUploadModal}>Upload</button>
-		<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
+		<!-- <input class="input text-black" type="file" accept=".csv" bind:this={fileInput} /> -->
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Schedules</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Edit Schedules</button>
 		</div>
+
+		
 
 
 		<!-- commented out add event modual until I get it to work -->
@@ -133,8 +137,11 @@ events.subscribe(value => {
 	<div class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0 min-h-full max-h-full">
 		<div class="flex flex-wrap bg-white m-10">
 			<p>Upload a Schedule</p>
-			<input class="input text-black" type="file" accept=".csv" id="fileInput" />
-			<button>Upload</button>
+			<form on:submit|preventDefault={handleUpload}>
+			<input class="input text-black" type="file" accept=".csv" name="fileUpload" />
+			<button type="submit">Upload</button>
+			</form>
+		
 			<button on:click={handleUploadModal}>Cancel</button>
 		</div>
 	</div>
