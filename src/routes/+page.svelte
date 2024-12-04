@@ -131,9 +131,9 @@
 	<!-- upload modal -->
 	{#if isUploadModalActive}
 		<div
-			class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0 min-h-full max-h-full flex justify-center"
+			class="bg-black bg-opacity-50 w-full h-fit absolute top-0 left-0 min-h-full  flex justify-center"
 		>
-			<div class="flex flex-wrap bg-gray-400 m-10 p-10 rounded-xl w-fit h-fit md:min-w-[620px]">
+			<div class="flex flex-wrap bg-gray-400 m-10 p-10 rounded-xl w-fit md:min-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar">
 				{#if csvData.length < 1}
 				<p class="w-full text-xl text-uvu-green font-bold text-center">Upload a Schedule</p>
 				<form class="w-full" on:submit|preventDefault={handleUpload}>
@@ -172,3 +172,10 @@
 		</div>
 	{/if}
 </main>
+
+<style postcss>
+	/* .custom-scrollbar {
+	  scrollbar-color: red orange !important;
+	  scrollbar-width: thick !important;
+	} */
+</style>
