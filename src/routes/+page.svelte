@@ -8,6 +8,11 @@
 	import Papa from 'papaparse';
 	
 	// modal setters
+	let isUploadModalActive = false;
+	function handleUploadModal() {
+	isUploadModalActive = !isUploadModalActive;
+	}
+
 	$addEventModalActive = false;
 
 	let	handleAddEventModal = () => {
@@ -88,7 +93,7 @@ events.subscribe(value => {
 	<!-- main functionality buttons -->
 	<div class="flex">
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Filter</button>
-		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Upload</button>
+		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleUploadModal}>Upload</button>
 		<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Schedules</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Edit Schedules</button>
@@ -120,5 +125,19 @@ events.subscribe(value => {
 
 	<!-- calendar view -->
 	<CalendarView />
+
+	<!-- modals -->
+
+	<!-- upload modal -->
+	{#if isUploadModalActive}
+	<div class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0 min-h-full max-h-full">
+		<div class="flex flex-wrap bg-white m-10">
+			<p>Upload a Schedule</p>
+			<input class="input text-black" type="file" accept=".csv" id="fileInput" />
+			<button>Upload</button>
+			<button>Cancel</button>
+		</div>
+	</div>
+{/if}
 </main>
 
