@@ -126,20 +126,21 @@ events.subscribe(value => {
 	<!-- calendar view -->
 	<CalendarView />
 
-	
+
 	<!-- modals -->
 
 	<!-- upload modal -->
 	{#if isUploadModalActive}
-	<div class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0 min-h-full max-h-full">
-		<div class="flex flex-wrap bg-white m-10">
-			<p>Upload a Schedule</p>
-			<form on:submit|preventDefault={handleUpload}>
-			<input class="input text-black" type="file" accept=".csv" name="fileUpload" />
-			<button type="submit">Upload</button>
+	<div class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0 min-h-full max-h-full flex justify-center">
+		<div class="flex flex-wrap bg-white m-10 p-10 rounded-xl w-fit h-fit">
+			<p class="w-full text-xl text-uvu-green font-bold text-center">Upload a Schedule</p>
+			<form class="w-full" on:submit|preventDefault={handleUpload}>
+			<input class="input text-black w-full" type="file" accept=".csv" name="fileUpload" />
+			<button class="btn bg-gradient-to-br variant-gradient-primary-secondary" type="submit">Upload</button>
+			<button on:click={handleUploadModal}>Cancel</button>
 			</form>
 		
-			<button on:click={handleUploadModal}>Cancel</button>
+	
 		</div>
 	</div>
 {/if}
