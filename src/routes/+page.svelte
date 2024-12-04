@@ -20,13 +20,19 @@
 	// CSV file handling
   let fileInput: any;
   let csvData: any[] = ['default'];
+  let file: any;
 
   onMount(() => {
+	fileInput.addEventListener('change', grabFile);
     fileInput.addEventListener('change', handleFileChange);
   });
 
-  function handleFileChange(event: { target: { files: any[]; }; }) {
-    const file = event.target.files[0];
+  function grabFile(event: { target: { files: any[]; }; }){
+    file = event.target.files[0];
+  }
+
+  function handleFileChange() {
+
 	if (file) {
         const reader = new FileReader();
         reader.onload = () => {
@@ -82,6 +88,7 @@ events.subscribe(value => {
 	<!-- main functionality buttons -->
 	<div class="flex">
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Filter</button>
+		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Upload</button>
 		<input class="input text-black" type="file" accept=".csv" bind:this={fileInput} />
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Add Schedules</button>
 		<button type="button" class="btn bg-gradient-to-br variant-gradient-primary-secondary" on:click={handleAddEventModal}>Edit Schedules</button>
