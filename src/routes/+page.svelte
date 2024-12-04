@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	// modal setters
 	let isUploadModalActive = false;
@@ -24,6 +25,7 @@
 	// CSV file handling
 	let csvData: any[] = [];
 	let file: any;
+	let loadingPromise: Promise<number>;
 
 	//   this submits the upload form and grabs the file
 	function handleUpload(event: { target: any }) {
@@ -59,6 +61,13 @@
 					}
 				});
 
+				// a promise to simulate loading time
+				loadingPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(1);
+                    }, 2000);
+                });
+
 				// console.log('raw csv data:', csvData);
 			};
 			reader.readAsText(file);
@@ -80,6 +89,8 @@
 	});
 
 	console.log(csvData);
+
+	
 </script>
 
 <main>
@@ -122,19 +133,23 @@
 		<div
 			class="bg-black bg-opacity-50 w-full h-full absolute top-0 left-0 min-h-full max-h-full flex justify-center"
 		>
-			<div class="flex flex-wrap bg-white m-10 p-10 rounded-xl w-fit h-fit">
+			<div class="flex flex-wrap bg-gray-400 m-10 p-10 rounded-xl w-fit h-fit md:min-w-[620px]">
+				{#if csvData.length < 1}
 				<p class="w-full text-xl text-uvu-green font-bold text-center">Upload a Schedule</p>
 				<form class="w-full" on:submit|preventDefault={handleUpload}>
-					<input class="input text-black w-full" type="file" accept=".csv" name="fileUpload" />
+					<input class="input text-black max-w-[620px]" type="file" accept=".csv" name="fileUpload" />
 					<button class="btn bg-gradient-to-br variant-gradient-primary-secondary" type="submit"
 						>Upload</button
 					>
 					<button on:click={handleUploadModal}>Cancel</button>
 				</form>
-
+				{/if}
 				<!-- this is temporarily where the uploaded data is going -->
-				 {#if csvData.length > 0}
-				 <p>Confirm Imported Data</p>
+				{#if csvData.length > 0}
+				{#await loadingPromise}
+				<ProgressRadial />
+				{:then}
+				 <p class="w-full text-xl text-uvu-green font-bold text-center">Confirm Imported Data</p>
 				<div class="border-2">
 					{#each csvData as row}
 						{#if row.CRN}
@@ -150,7 +165,9 @@
 						{/if}
 					{/each}
 				</div>
+				{/await}
 				{/if}
+			
 			</div>
 		</div>
 	{/if}
