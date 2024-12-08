@@ -62,7 +62,7 @@
 
 				csvData.forEach((row) => {
 					if (row.CRN) {
-						addImportedCourses(row['Course Title']);
+						sendImportedCoursesToReview(row['Course Title']);
 					}
 				});
 
@@ -80,12 +80,17 @@
 	}
 	//   end CSV file handling
 
-	function addImportedCourses(courseTitle: string) {
+	function sendImportedCoursesToReview(courseTitle: string) {
 		// eventually, this will be a loop that adds all of the courses in the csvData array to the events store
 		events.update((newEvent) => {
 			newEvent.push({ title: courseTitle, start: '2023-01-01', end: '2023-01-02' });
 			return newEvent;
+	
 		});
+	}
+
+	function confirmImportedCourses(){
+		isUploadModalActive = !isUploadModalActive;
 	}
 
 	// this is for testing
@@ -146,7 +151,7 @@
 			<!-- svelte-ignore empty-block -->
 			{#await loadingPromise}
 			{:then}
-			<button type="button" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg">Confirm Schedule</button>
+			<button type="button" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg" on:click={confirmImportedCourses}>Confirm Schedule</button>
 			{/await}
 			{/if}
 			<!-- end submit block, start rest of content -->
@@ -219,8 +224,8 @@
 	} */
 
 	.confirm-schedule {
-	position: relative;
-	top: 660px !important;
+	position: absolute !important;
+	top: 623px !important;
 	left: 34% !important;
 	background-color: #00834d !important;
 	font-weight: bold !important;
