@@ -22,6 +22,9 @@
 	// clears events store for testing DELETE LATER
 	events.set([]);
 
+	// temp events store for testing DELETE LATER
+	let tempEvents = [];
+
 	// CSV file handling
 	let csvData: any[] = [];
 	let file: any;
@@ -89,9 +92,30 @@
 		});
 	}
 
-	function confirmImportedCourses(){
-		isUploadModalActive = !isUploadModalActive;
+	function confirmImportedCourses(event: any){
+	event.preventDefault();
+    const form = event.target;
+    const courses: any = [];
+
+	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
+    csvData.forEach((row, index) => {
+      if (row.CRN) {
+        const course = {
+          name: form[`name-${index}`].value,
+          crn: form[`crn-${index}`].value,
+          meetingTime: form[`meeting-time-${index}`].value,
+          instructor: form[`instructor-${index}`].value,
+          buildingRoom: form[`building-room-${index}`].value
+        };
+        courses.push(course);
+      }
+    });
+
+    console.log('here is the pushed courses,', courses);
+	isUploadModalActive = !isUploadModalActive;
 	}
+
+  
 
 	// this is for testing
 	events.subscribe((value) => {
@@ -151,7 +175,7 @@
 			<!-- svelte-ignore empty-block -->
 			{#await loadingPromise}
 			{:then}
-			<button type="button" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg" on:click={confirmImportedCourses}>Confirm Schedule</button>
+			<button type="submit" form="confirmedClasses" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg">Confirm Schedule</button>
 			{/await}
 			{/if}
 			<!-- end submit block, start rest of content -->
@@ -188,25 +212,25 @@
 	
 			
 				 <p class="w-full text-2xl text-uvu-green font-bold text-center mb-2">Confirm Imported Data</p>
-				<div class="min-w-[400px] w-full">
-					{#each csvData as row}
+				<form id="confirmedClasses" class="min-w-[400px] w-full" on:submit|preventDefault={confirmImportedCourses}>
+					{#each csvData as row, index}
 						{#if row.CRN}
-							<div class="flex flex-wrap flex-col border border-[#275D38] mb-2 p-2 rounded-lg">
-							<label for="name"><b>Course Catalog Name:</b></label>
-							<input class="editable-input" type="text" id="name" name="name" required value="{row.Course}"/>
-							<label for="crn"><b>CRN:</b></label>
-							<input class="editable-input" type="text" id="crn" name="crn" required value="{row.CRN}"/>
-							<label for="meeting-time"><b>Meeting Time:</b></label>
-							<input class="editable-input" type="text" id="meeting-time" name="meeting-time"  value="{row['Meeting Pattern']}"/>
-							<label class="font-bold" for="instructor">Instructor(s):</label>
-							<textarea class="editable-input" rows="2" id="instructor" name="instructor" value="{row.Instructor}"/>
-							<label class="font-bold" for="building-room">Building and Room:</label>
-							<input class="editable-input" type="text" id="building-room" name="building-room"  value="{row['Building and Room']}"/>
+							<div id="course-{index}" class="flex flex-wrap flex-col border border-[#275D38] mb-2 p-2 rounded-lg">
+								<label for="name-{index}"><b>Course Catalog Name:</b></label>
+								<input class="editable-input" type="text" id="name-{index}" name="name-{index}" required value={row.Course} />
+								<label for="crn-{index}"><b>CRN:</b></label>
+								<input class="editable-input" type="text" id="crn-{index}" name="crn-{index}" required value={row.CRN} />
+								<label for="meeting-time-{index}"><b>Meeting Time:</b></label>
+								<input class="editable-input" type="text" id="meeting-time-{index}" name="meeting-time-{index}" value={row['Meeting Pattern']} />
+								<label class="font-bold" for="instructor-{index}">Instructor(s):</label>
+								<textarea class="editable-input" rows="2" id="instructor-{index}" name="instructor-{index}">{row.Instructor}</textarea>
+								<label class="font-bold" for="building-room-{index}">Building and Room:</label>
+								<input class="editable-input" type="text" id="building-room-{index}" name="building-room-{index}" value={row['Building and Room']} />
 							</div>
 
 						{/if}
 					{/each}
-				</div>
+						</form>
 				{/await}
 				{/if}
 			
