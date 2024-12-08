@@ -98,7 +98,7 @@
 	
 </script>
 
-<main>
+<main class="h-full">
 	<!-- main functionality buttons -->
 	<div class="flex">
 		<button
@@ -135,26 +135,41 @@
 
 	<!-- upload modal -->
 	{#if isUploadModalActive}
+
 		<div
-			class="bg-black bg-opacity-50 w-full h-fit absolute top-0 left-0 min-h-full  flex justify-center"
+			class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full  flex justify-center"
 		>
+	
 		<div class="relative">
-			<div class="flex flex-wrap bg-white m-10 p-10 rounded-xl w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar ">
-				<button class="absolute top-8 right-[4.5%]  font-bold h-[30px] w-[30px] bg-red-500 p-2 rounded-full flex flex-col justify-center items-center shadow-2xl"><img src="/xmark-solid.svg" alt="close div"></button>
+			<!-- this is the submit button that I couldn't quite figure out where the right place to put it -->
+			{#if csvData.length > 0}
+			<!-- svelte-ignore empty-block -->
+			{#await loadingPromise}
+			{:then}
+			<button type="button" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg">Confirm Schedule</button>
+			{/await}
+			{/if}
+			<!-- end submit block, start rest of content -->
+			<div class="flex flex-wrap bg-white m-10 p-10 rounded-xl w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal">
+				<button class="absolute top-8 right-[4.5%]  font-bold h-[30px] w-[30px] bg-red-500 p-2 rounded-full flex flex-col justify-center items-center shadow-2xl" on:click={handleUploadModal}><img src="/xmark-solid.svg" alt="close div"></button>
 				{#if csvData.length < 1}
-				<p class="w-full text-xl text-uvu-green font-bold text-center m-5">Upload a Schedule</p>
+				<p class="w-full text-2xl text-uvu-green font-bold text-center m-5">Upload a Schedule</p>
 				<form class="w-full" on:submit|preventDefault={parseCSV}>
 					<button type="button" class=" w-full flex flex-wrap justify-center items-center">
 					<label for="file-upload" class="custom-file-upload flex flex-col justify-center items-center">
-						<img src="/arrow-up-solid.svg" alt="upload arrow" class="h-[60px] w-[60px] p-2 bg-uvu-green rounded-full cursor-pointer">
+						<img src="/arrow-up-solid.svg" alt="upload arrow" class="h-[80px] w-[80px] p-2 bg-uvu-green rounded-full cursor-pointer underline mb-6 hover:bg-[#00834d]">
+						{#if fileName === "No file chosen"}
 					<p>{fileName}</p>
+					{:else}
+					<p>Uploaded file: {fileName}</p>
+					{/if}
 					</label>
 				</button>
 					<input class="my-3 input text-black max-w-[620px] rounded-none bg-white border-2 !border-black" type="file" accept=".csv" name="fileUpload" id="file-upload" on:change={handleFileChange}/>
+					<div class=" flex justify-center m-2">
 					<button class="btn bg-gradient-to-br variant-gradient-primary-secondary" type="submit"
-						>Upload</button
-					>
-					<button on:click={handleUploadModal}>Cancel</button>
+						>Upload</button>
+					</div>
 				</form>
 				{/if}
 				<!-- this is temporarily where the uploaded data is going -->
@@ -162,24 +177,34 @@
 				{#await loadingPromise}
 				<ProgressRadial />
 				{:then}
-				 <p class="w-full text-xl text-uvu-green font-bold text-center">Confirm Imported Data</p>
-				<div class="border-2">
+				
+				
+			
+	
+			
+				 <p class="w-full text-2xl text-uvu-green font-bold text-center mb-2">Confirm Imported Data</p>
+				<div class="min-w-[400px] w-full">
 					{#each csvData as row}
 						{#if row.CRN}
-							<div class="flex flex-wrap flex-col border-2">
-							<label for="name">Course Catalog Name:</label>
-							<input class="input" type="text" id="name" name="name" required value="{row.Course}"/>
-								<!-- <p>Course Catalog Name: {row.Course}</p> -->
-								<p>Course Title: {row['Course Title']}</p>
-								<p>Meeting Time: {row['Meeting Pattern']}</p>
-								<p>Professor: {row.Instructor}</p>
-								<p>Room Number: {row['Building and Room']}</p>
+							<div class="flex flex-wrap flex-col border border-[#275D38] mb-2 p-2 rounded-lg">
+							<label for="name"><b>Course Catalog Name:</b></label>
+							<input class="editable-input" type="text" id="name" name="name" required value="{row.Course}"/>
+							<label for="crn"><b>CRN:</b></label>
+							<input class="editable-input" type="text" id="crn" name="crn" required value="{row.CRN}"/>
+							<label for="meeting-time"><b>Meeting Time:</b></label>
+							<input class="editable-input" type="text" id="meeting-time" name="meeting-time"  value="{row['Meeting Pattern']}"/>
+							<label class="font-bold" for="instructor">Instructor(s):</label>
+							<textarea class="editable-input" rows="2" id="instructor" name="instructor" value="{row.Instructor}"/>
+							<label class="font-bold" for="building-room">Building and Room:</label>
+							<input class="editable-input" type="text" id="building-room" name="building-room"  value="{row['Building and Room']}"/>
 							</div>
+
 						{/if}
 					{/each}
 				</div>
 				{/await}
 				{/if}
+			
 			
 			</div>
 		</div>
@@ -187,15 +212,35 @@
 	{/if}
 </main>
 
-<style postcss>
+<style lang='postcss'>
 	/* .custom-scrollbar {
 	  scrollbar-color: red orange !important;
 	  scrollbar-width: thick !important;
 	} */
 
+	.confirm-schedule {
+	position: relative;
+	top: 660px !important;
+	left: 34% !important;
+	background-color: #00834d !important;
+	font-weight: bold !important;
+	text-transform: uppercase !important;
+	color: white !important;
+	z-index: 1000 !important;
+	}
+
 	input[type="file"] {
   display: none;
 }
 
+.editable-input {
+ @apply input border-none shadow-inner p-2 !border-black rounded-lg !bg-yellow-100;
+}
+
+.upload-modal {
+	overflow: scroll !important;
+	overflow-y:scroll;
+
+}
 
 </style>
