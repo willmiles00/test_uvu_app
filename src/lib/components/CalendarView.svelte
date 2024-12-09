@@ -61,6 +61,8 @@
        headerToolbar:{start: '', center: '', end: ''},
     //    gets rid of specific day of the week in header. We will be adding all events to the same 'week' to avoid events falling off the face of the earth
        dayHeaderFormat: { weekday: 'long' },
+       slotHeight: 40,
+       slotEventOverlap: false,
     };
 
 

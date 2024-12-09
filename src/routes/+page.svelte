@@ -139,11 +139,12 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
 
 
       if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
+		// since our calendar doesn't allow repeating events, we need to map the days to specific dates
 		let calendarFriendlyDays = mapMeetingDays(row.meetingDays);
 		calendarFriendlyDays.forEach((day: any) => {
-			console.log('day:', day);
         const course = {
-          title: form[`name-${index}`].value,
+        //   title: form[`name-${index}`].value + form[`crn-${index}`].value,
+		title:	{html: form[`name-${index}`].value + "<br> CRN: " + form[`crn-${index}`].value + "<br> Instructor: " + form[`instructor-${index}`].value + "<br> Building and Room: " + form[`building-room-${index}`].value},
           crn: form[`crn-${index}`].value,
           instructor: form[`instructor-${index}`].value,
           buildingRoom: form[`building-room-${index}`].value,
@@ -365,5 +366,11 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
 	overflow-y:scroll;
 
 }
+
+.ec-day {
+  min-width: fit-content !important;
+  min-height: fit-content !important;
+}
+
 
 </style>
