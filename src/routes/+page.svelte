@@ -147,11 +147,11 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
           crn: form[`crn-${index}`].value,
           instructor: form[`instructor-${index}`].value,
           buildingRoom: form[`building-room-${index}`].value,
-		//   these values are for testing
+
 			meetingDays: mapMeetingDays(row.meetingDays),
 		  start: calendarFriendlyDays + form[`start-time-${index}`].value,
 		  end: calendarFriendlyDays + form[`end-time-${index}`].value,
-		  
+		  backgroundColor: `#${form[`crn-${index}`].value}e`
         };
         courses.push(course);
 		events.update((value: any) => {
