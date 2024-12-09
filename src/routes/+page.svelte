@@ -1,7 +1,7 @@
 <script lang="ts">
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
@@ -65,18 +65,47 @@
                         resolve(1);
                     }, 2000);
                 });
+
+				const dayMapping = {
+    m: 'Monday',
+    t: 'Tuesday',
+    w: 'Wednesday',
+    r: 'Thursday',
+    f: 'Friday'
+};
+
+function convertTo24Hour(time) {
+    const [timePart, modifier] = time.split(/(am|pm)/i);
+    let [hours, minutes] = timePart.split(':').map(Number);
+
+    if (modifier.toLowerCase() === 'pm' && hours < 12) {
+      hours += 12;
+    }
+    if (modifier.toLowerCase() === 'am' && hours === 12) {
+      hours = 0;
+    }
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes || 0).padStart(2, '0')}`;
+  }
+
 				
 				csvData.forEach((row) => {
 					if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
 					// console.log('Meeting Pattern:', row['Meeting Pattern']);
 
 					const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
-            		row.meetingDays = meetingDays;
-           			row.meetingTime = meetingTime;
-					console.log('Rows with this specfic pattern:', row);
+					row.meetingDays = meetingDays.split('').map((day: string) => dayMapping[day.toLowerCase() as keyof typeof dayMapping]);
+					row.meetingTime = meetingTime.split('-').map(convertTo24Hour);
+					// console.log('Rows with this specfic pattern:', row.meetingDays, row.meetingTime);
+					// console.log('meeting times:', row.meetingTime);
+					}
+				
+					else if (row.CRN && row['Meeting Pattern'] === 'Does Not Meet') {
+						row.meetingDays = 'Online';
+						row.meetingTime = 'Does Not Meet';
 					}
 				});
-				console.log('raw csv data:', csvData);
+				// console.log('raw csv data:', csvData);
 			};
 			reader.readAsText(file);
 		}
@@ -85,35 +114,80 @@
 
 	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
 	function confirmImportedCourses(event: any){
-	event.preventDefault();
+		event.preventDefault();
+
+		//due to the way the calendar works, we need to map the days to specific dates
+		const dayToDateMap = {
+  'Monday': '2024-07-01 T',
+  'Tuesday': '2024-07-02 T',
+  'Wednesday': '2024-07-03 T',
+  'Thursday': '2024-07-04 T',
+  'Friday': '2024-07-05 T'
+};
+
+function mapMeetingDays(days) {
+  let newMap = days.map(day => dayToDateMap[day]);
+  console.log('new map:', newMap);
+  return newMap;
+}
+mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
+
+
+
     const form = event.target;
     csvData.forEach((row, index) => {
-      if (row.CRN) {
+
+	
+
+      if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
+		let calendarFriendlyDays = mapMeetingDays(row.meetingDays);
+		if (calendarFriendlyDays.length == 1) {
         const course = {
           title: form[`name-${index}`].value,
           crn: form[`crn-${index}`].value,
-          meetingTime: form[`meeting-time-${index}`].value,
           instructor: form[`instructor-${index}`].value,
           buildingRoom: form[`building-room-${index}`].value,
 		//   these values are for testing
-		  start: '2024-07-01T12:00:00',
-		  end: '2024-07-01T13:00:00',
+			meetingDays: mapMeetingDays(row.meetingDays),
+		  start: calendarFriendlyDays + form[`start-time-${index}`].value,
+		  end: calendarFriendlyDays + form[`end-time-${index}`].value,
+		  
         };
         courses.push(course);
 		events.update((value: any) => {
 			return [...value, course];
 		});
+	}
+		// console.log('here is the pushed courses,', courses);
+
+
       }
+
+
 
     });
 
-    console.log('here is the pushed courses,', courses);
+    // console.log('here is the pushed courses,', courses);
 	isUploadModalActive = !isUploadModalActive;
 	}
 
   
 
-	
+	function handleMeetingChange(event: Event, row: any) {
+		const input = event.target as HTMLInputElement;
+        row.meetingTime = input.checked ? 'Does Not Meet' : '';
+		// console.log('meeting time:', row.meetingTime);
+	}
+
+
+    // afterUpdate(() => {
+    //     events.subscribe(value => {
+    //         value.forEach((event) => {
+	// 			console.log('event:', event);
+    //         });
+    //         console.log('total events store', value);
+    // });
+    // });
 </script>
 
 <main class="h-full">
@@ -142,7 +216,6 @@
 	</div>
 
 	<!-- calendar view -->
-	<button class="btn variant-filled" >Add event</button>
 	<CalendarView />
 
 	<!-- modals -->
@@ -202,8 +275,47 @@
 								<input class="editable-input" type="text" id="name-{index}" name="name-{index}" required value={row.Course} />
 								<label for="crn-{index}"><b>CRN:</b></label>
 								<input class="editable-input" type="text" id="crn-{index}" name="crn-{index}" required value={row.CRN} />
-								<label for="meeting-time-{index}"><b>Meeting Time:</b></label>
-								<input class="editable-input" type="text" id="meeting-time-{index}" name="meeting-time-{index}" value={row['Meeting Pattern']} />
+								<!-- <label for="meeting-time-{index}"><b>Meeting Time:</b></label>
+								<input class="editable-input" type="text" id="meeting-time-{index}" name="meeting-time-{index}" value={row['Meeting Pattern']} /> -->
+
+								<!-- meeting day logic -->
+								<fieldset>
+									<legend class="font-bold">Meeting Days:</legend>
+									{#each ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Online'] as day}
+									<label>
+									  <input type="checkbox" name="days[]" value={day}   checked={row.meetingDays.includes(day)}> 
+									  {day}
+									</label>
+								  {/each}
+									</fieldset>
+								  <!-- end meeting day logic -->
+
+								  <!-- meeting time logic -->
+								<label class="font-bold" for="meeting-time-{index}">Meeting Time:</label>
+								{#if row.meetingTime !== 'Does Not Meet'}
+								<label class="w-full">
+									<input type="checkbox" name="days[]" value='Does Not Meet' on:change={(event) => handleMeetingChange(event, row)}/>
+									Does Not Meet
+								</label>
+								<div class="flex flex-wrap">
+									<div class="flex flex-col mr-2">
+										<label for="start-time-{index}"><b>Start Time:</b></label>
+										<input class="editable-input" type="time" id="start-time-{index}" name="start-time-{index}"  value="{row.meetingTime[0]}"/>
+									</div>
+									<div class="flex flex-col">
+										<label for="end-time-{index}"><b>End Time:</b></label>
+										<input class="editable-input" type="time" id="end-time-{index}" name="end-time-{index}" value="{row.meetingTime[1]}" />
+									</div>
+								</div>
+								{:else}
+								<label class="w-full">
+									<input type="checkbox" name="does-not-meet" value='Does Not Meet' on:change={(event) => handleMeetingChange(event, row)} checked/>
+									Does Not Meet
+								</label>
+								{/if}
+								<!-- end meeting time logic -->
+
+
 								<label class="font-bold" for="instructor-{index}">Instructor(s):</label>
 								<textarea class="editable-input" rows="2" id="instructor-{index}" name="instructor-{index}">{row.Instructor}</textarea>
 								<label class="font-bold" for="building-room-{index}">Building and Room:</label>

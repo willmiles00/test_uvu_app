@@ -12,17 +12,25 @@
     let Thursday = '2024-07-04';
     let Friday = '2024-07-05';
            
+    onMount(() => {
+           // this is needed to define ec
+           ec.refetchEvents()
+    });
+
+    let previousEvents: any = [];
 
     afterUpdate(() => {
         events.subscribe(value => {
-            value.forEach((event) => {
-        ec.addEvent(event);
+            const newEvents = value.filter(event => !previousEvents.includes(event));
+            newEvents.forEach(event => {
+                ec.addEvent(event);
+                console.log(event);
             });
-            ec.refetchEvents()
-            ec.getEvents()
+            previousEvents = value;
+            ec.refetchEvents();
+            ec.getEvents();
             console.log(value);
-    });
-
+        });
     });
 
     // annoying required type definitions
@@ -61,22 +69,25 @@
     }
 
 //functional event adder
-export function addEvent() {
+
+
+export function addEventButton() {
     ec.addEvent(
         {
             title: 'New Event',
-            start: Monday + 'T12:00:00',
-            end: Monday + 'T13:00:00',
+            start: Monday + 'T12:00',
+            end: Monday + 'T13:00',
         }
     )
   
+    console.log(ec)
     ec.refetchEvents()
     ec.getEvents()
 }
 
 </script>
 
-<button class="btn variant-filled" on:click={addEvent}>Add event</button>
+<button class="btn variant-filled" on:click={addEventButton}>Add event</button>
 
 <Calendar bind:this={ec} {plugins} {options} />
 
