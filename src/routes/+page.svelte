@@ -87,9 +87,16 @@
           crn: form[`crn-${index}`].value,
           meetingTime: form[`meeting-time-${index}`].value,
           instructor: form[`instructor-${index}`].value,
-          buildingRoom: form[`building-room-${index}`].value
+          buildingRoom: form[`building-room-${index}`].value,
+		//   these values are for testing
+			title: 'New Event',
+		  start: '2024-07-01T12:00:00',
+		  end: '2024-07-01T13:00:00',
         };
         courses.push(course);
+		events.update((value: any) => {
+			return [...value, course];
+		});
       }
 
     });
@@ -100,10 +107,6 @@
 
   
 
-	// this is for testing
-	events.subscribe((value) => {
-		console.log(value);
-	});
 
 	console.log(csvData);
 

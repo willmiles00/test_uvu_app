@@ -4,7 +4,19 @@
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
+    import { onMount, afterUpdate } from 'svelte';
 
+
+    afterUpdate(() => {
+        events.subscribe(value => {
+            value.forEach((event) => {
+        ec.addEvent(event);
+        console.log(event);
+            });
+            ec.refetchEvents()
+            ec.getEvents()
+    });
+    });
 
     // annoying required type definitions
     type CalendarOptions = {
@@ -15,9 +27,11 @@
 
     let ec: any; 
     let plugins = [TimeGrid];
+    
     let options: CalendarOptions = {
   
         // sets the date to July 1. All calendar events will fall on this week unless we implement a 'view by semester' feature down the line
+ 
         date: '2024-07-01',
         view: 'timeGridWeek',
         events: $events,
