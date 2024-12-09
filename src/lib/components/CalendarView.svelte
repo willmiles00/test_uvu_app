@@ -71,23 +71,8 @@
 //functional event adder
 
 
-export function addEventButton() {
-    ec.addEvent(
-        {
-            title: 'New Event',
-            start: Monday + 'T12:00',
-            end: Monday + 'T13:00',
-        }
-    )
-  
-    console.log(ec)
-    ec.refetchEvents()
-    ec.getEvents()
-}
-
 </script>
 
-<button class="btn variant-filled" on:click={addEventButton}>Add event</button>
 
 <Calendar bind:this={ec} {plugins} {options} />
 
