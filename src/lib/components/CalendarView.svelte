@@ -6,16 +6,23 @@
     import { events } from "$lib/stores/events";
     import { onMount, afterUpdate } from 'svelte';
 
+    let Monday = '2024-07-01';
+    let Tuesday = '2024-07-02';
+    let Wednesday = '2024-07-03';
+    let Thursday = '2024-07-04';
+    let Friday = '2024-07-05';
+           
 
     afterUpdate(() => {
         events.subscribe(value => {
             value.forEach((event) => {
         ec.addEvent(event);
-        console.log(event);
             });
             ec.refetchEvents()
             ec.getEvents()
+            console.log(value);
     });
+
     });
 
     // annoying required type definitions
@@ -58,8 +65,8 @@ export function addEvent() {
     ec.addEvent(
         {
             title: 'New Event',
-            start: '2024-07-01T12:00:00',
-            end: '2024-07-01T13:00:00',
+            start: Monday + 'T12:00:00',
+            end: Monday + 'T13:00:00',
         }
     )
   

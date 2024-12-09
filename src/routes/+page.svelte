@@ -14,8 +14,7 @@
 	}
 
 
-	// clears events store for testing DELETE LATER
-	events.set([]);
+
 
 	// temp events store for testing DELETE LATER
 	let tempEvents = [];
@@ -58,7 +57,7 @@
 				// csvData is the data that we will be using
 				csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 
-			
+				
 
 				// a promise to simulate loading time
 				loadingPromise = new Promise((resolve) => {
@@ -66,30 +65,37 @@
                         resolve(1);
                     }, 2000);
                 });
+				
+				csvData.forEach((row) => {
+					if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
+					// console.log('Meeting Pattern:', row['Meeting Pattern']);
 
-				// console.log('raw csv data:', csvData);
+					const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
+            		row.meetingDays = meetingDays;
+           			row.meetingTime = meetingTime;
+					console.log('Rows with this specfic pattern:', row);
+					}
+				});
+				console.log('raw csv data:', csvData);
 			};
 			reader.readAsText(file);
 		}
 	}
 	//   end CSV file handling
 
+	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
 	function confirmImportedCourses(event: any){
 	event.preventDefault();
     const form = event.target;
-
-
-	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
     csvData.forEach((row, index) => {
       if (row.CRN) {
         const course = {
-          name: form[`name-${index}`].value,
+          title: form[`name-${index}`].value,
           crn: form[`crn-${index}`].value,
           meetingTime: form[`meeting-time-${index}`].value,
           instructor: form[`instructor-${index}`].value,
           buildingRoom: form[`building-room-${index}`].value,
 		//   these values are for testing
-			title: 'New Event',
 		  start: '2024-07-01T12:00:00',
 		  end: '2024-07-01T13:00:00',
         };
@@ -106,9 +112,6 @@
 	}
 
   
-
-
-	console.log(csvData);
 
 	
 </script>
@@ -188,9 +191,6 @@
 				{#await loadingPromise}
 				<ProgressRadial />
 				{:then}
-				
-				
-			
 	
 			
 				 <p class="w-full text-2xl text-uvu-green font-bold text-center mb-2">Confirm Imported Data</p>
