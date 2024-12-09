@@ -5,6 +5,7 @@
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
 
+
     // annoying required type definitions
     type CalendarOptions = {
         view: string;
@@ -51,6 +52,7 @@ export function addEvent() {
     ec.refetchEvents()
     ec.getEvents()
 }
+
 </script>
 
 <button class="btn variant-filled" on:click={addEvent}>Add event</button>

@@ -1,12 +1,11 @@
 <script lang="ts">
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
-	// import AddEvent from "$lib/components/modals/AddEvent.svelte";
-	import { addEventModalActive } from '$lib/stores/modals';
 	import { onMount } from 'svelte';
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	export const courses: any = [];
 
 	// modal setters
 	let isUploadModalActive = true;
@@ -14,10 +13,6 @@
 		isUploadModalActive = !isUploadModalActive;
 	}
 
-	$addEventModalActive = false;
-	let handleAddEventModal = () => {
-		$addEventModalActive = true;
-	};
 
 	// clears events store for testing DELETE LATER
 	events.set([]);
@@ -63,11 +58,7 @@
 				// csvData is the data that we will be using
 				csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 
-				csvData.forEach((row) => {
-					if (row.CRN) {
-						sendImportedCoursesToReview(row['Course Title']);
-					}
-				});
+			
 
 				// a promise to simulate loading time
 				loadingPromise = new Promise((resolve) => {
@@ -83,19 +74,10 @@
 	}
 	//   end CSV file handling
 
-	function sendImportedCoursesToReview(courseTitle: string) {
-		// eventually, this will be a loop that adds all of the courses in the csvData array to the events store
-		events.update((newEvent) => {
-			newEvent.push({ title: courseTitle, start: '2023-01-01', end: '2023-01-02' });
-			return newEvent;
-	
-		});
-	}
-
 	function confirmImportedCourses(event: any){
 	event.preventDefault();
     const form = event.target;
-    const courses: any = [];
+
 
 	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
     csvData.forEach((row, index) => {
@@ -109,6 +91,7 @@
         };
         courses.push(course);
       }
+
     });
 
     console.log('here is the pushed courses,', courses);
@@ -133,7 +116,7 @@
 		<button
 			type="button"
 			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
-			on:click={handleAddEventModal}>Filter</button
+			on:click={handleUploadModal}>Filter</button
 		>
 		<button
 			type="button"
@@ -143,21 +126,17 @@
 		<button
 			type="button"
 			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
-			on:click={handleAddEventModal}>Add Schedules</button
+			on:click={handleUploadModal}>Add Schedules</button
 		>
 		<button
 			type="button"
 			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
-			on:click={handleAddEventModal}>Edit Schedules</button
+			on:click={handleUploadModal}>Edit Schedules</button
 		>
 	</div>
 
-	<!-- commented out add event modual until I get it to work -->
-	<!-- {#if $addEventModalActive}
-		<AddEvent />
-	{/if} -->
-
 	<!-- calendar view -->
+	<button class="btn variant-filled" >Add event</button>
 	<CalendarView />
 
 	<!-- modals -->
