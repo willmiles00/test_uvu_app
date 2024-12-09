@@ -137,11 +137,11 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
     const form = event.target;
     csvData.forEach((row, index) => {
 
-	
 
       if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
 		let calendarFriendlyDays = mapMeetingDays(row.meetingDays);
-		if (calendarFriendlyDays.length == 1) {
+		calendarFriendlyDays.forEach((day: any) => {
+			console.log('day:', day);
         const course = {
           title: form[`name-${index}`].value,
           crn: form[`crn-${index}`].value,
@@ -149,15 +149,15 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
           buildingRoom: form[`building-room-${index}`].value,
 
 			meetingDays: mapMeetingDays(row.meetingDays),
-		  start: calendarFriendlyDays + form[`start-time-${index}`].value,
-		  end: calendarFriendlyDays + form[`end-time-${index}`].value,
+		  start: day + form[`start-time-${index}`].value,
+		  end: day + form[`end-time-${index}`].value,
 		  backgroundColor: `#${form[`crn-${index}`].value}e`
         };
         courses.push(course);
 		events.update((value: any) => {
 			return [...value, course];
 		});
-	}
+	})
 		// console.log('here is the pushed courses,', courses);
 
 
