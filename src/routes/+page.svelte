@@ -8,7 +8,7 @@
 	export const courses: any = [];
 
 	// modal setters
-	let isUploadModalActive = true;
+	let isUploadModalActive = false;
 	function handleUploadModal() {
 		isUploadModalActive = !isUploadModalActive;
 	}
@@ -112,8 +112,13 @@ function convertTo24Hour(time) {
 	}
 	//   end CSV file handling
 
+
+
+
+
 	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
 	function confirmImportedCourses(event: any){
+	
 		event.preventDefault();
 
 		//due to the way the calendar works, we need to map the days to specific dates
@@ -130,7 +135,6 @@ function mapMeetingDays(days) {
   console.log('new map:', newMap);
   return newMap;
 }
-mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
 
 
 
@@ -193,28 +197,30 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
 
 <main class="h-full">
 	<!-- main functionality buttons -->
-	<div class="flex">
+	 <div class="w-full flex justify-end bg-gray-100">
+	<div class="flex my-2 ">
 		<button
 			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
+			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
 			on:click={handleUploadModal}>Filter</button
 		>
 		<button
 			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
-			on:click={handleUploadModal}>Upload</button
+			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
+			on:click={handleUploadModal}>Import CSV</button
 		>
 		<button
 			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
+			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
 			on:click={handleUploadModal}>Add Schedules</button
 		>
 		<button
 			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary"
+			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
 			on:click={handleUploadModal}>Edit Schedules</button
 		>
 	</div>
+</div>
 
 	<!-- calendar view -->
 	<CalendarView />
@@ -234,6 +240,7 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
 			<!-- svelte-ignore empty-block -->
 			{#await loadingPromise}
 			{:then}
+			<!-- this is the button that shows up when a user confirms their details, it is away from everything else for stylistic purposes -->
 			<button type="submit" form="confirmedClasses" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg">Confirm Schedule</button>
 			{/await}
 			{/if}
@@ -263,7 +270,10 @@ mapMeetingDays(['Monday', 'Wednesday', 'Friday']);
 				<!-- this is temporarily where the uploaded data is going -->
 				{#if csvData.length > 0}
 				{#await loadingPromise}
-				<ProgressRadial />
+				<div class="w-full h-full bg-uvu-green rounded-lg flex flex-col justify-center items-center p-4">
+				<h2 class="text-white text-2xl font-bold my-5">Loading...</h2>
+				<ProgressRadial class='mb-5'/>
+			</div>
 				{:then}
 	
 			
