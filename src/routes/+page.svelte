@@ -1,4 +1,8 @@
 <script lang="ts">
+// will branch tasks. if you see this in prod I'm sorry
+// Styling Sidebar
+//Styling import .csv
+//Finalize import .csv functionality
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { onMount, afterUpdate } from 'svelte';
