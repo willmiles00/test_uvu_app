@@ -78,7 +78,7 @@
     f: 'Friday'
 };
 
-function convertTo24Hour(time) {
+function convertTo24Hour(time: any) {
     const [timePart, modifier] = time.split(/(am|pm)/i);
     let [hours, minutes] = timePart.split(':').map(Number);
 
@@ -226,8 +226,21 @@ function mapMeetingDays(days) {
 	</div>
 </div>
 
+<body class="flex flex-wrap w-full h-full flex-row">
+	 <!-- sidebar -->
+	<div id="sidebar" class="w-auto h-auto">
+	<div id="import" class="border m-2 p-2 w-[269px]">
+<p>current file:</p>
+<p>{fileName}</p>
+<button>import .csv file</button>
+	</div>	
+	</div>
+	<!-- end sidebar -->
 	<!-- calendar view -->
+	 <div class="grow">
 	<CalendarView />
+</div>
+</body>
 
 	<!-- modals -->
 
