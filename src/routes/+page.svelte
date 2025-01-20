@@ -203,9 +203,9 @@ function mapMeetingDays(days) {
 	<!-- main functionality buttons -->
 	 <div class="w-full flex justify-between bg-gray-100 h-[44px]">
 
-		<div class="flex flex-wrap">
-<p class="uppercase">Title:</p>
-<input type="text" name="" id="">
+		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
+<p class="uppercase text-[18px]">Title:</p>
+<input class="input !bg-white placeholder-[#757677] !rounded-lg"  type="text" name="" id="" placeholder="Default Schedule Title">
 </div>
 
 <button
