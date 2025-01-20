@@ -201,24 +201,18 @@ function mapMeetingDays(days) {
 
 <main class="h-full w-full">
 	<!-- main functionality buttons -->
-	 <div class="w-full flex justify-end bg-gray-100 h-[44px]">
-	<div class="flex my-2 ">
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-			on:click={handleUploadModal}>Filter</button
-		>
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-			on:click={handleUploadModal}>Add Schedules</button
-		>
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
-			on:click={handleUploadModal}>Edit Schedules</button
-		>
-	</div>
+	 <div class="w-full flex justify-between bg-gray-100 h-[44px]">
+
+		<div class="flex flex-wrap">
+<p class="uppercase">Title:</p>
+<input type="text" name="" id="">
+</div>
+
+<button
+type="button"
+class="btn bg-gradient-to-br variant-gradient-primary-secondary rounded-md text-sm mx-2 font-primary uppercase"
+on:click={handleUploadModal}>Add Timeblock</button
+>
 </div>
 
 <body class="flex flex-wrap w-full h-full flex-row">
@@ -235,7 +229,7 @@ function mapMeetingDays(days) {
 		>
 	</div>	
 
-	<div>
+	<div class="flex flex-wrap flex-col">
 		<p>Select schedule to view</p>
 		<p>reset filters</p>
 		<select name="" id="">Professors  <option value="">Professors</option></select>
@@ -243,7 +237,19 @@ function mapMeetingDays(days) {
 		<select name="" id="">Courses  <option value="">Courses</option></select>
 	</div>
 
-	
+	<div class="flex flex-wrap flex-col">
+		<button
+		type="button"
+		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
+		on:click={handleUploadModal}>Add Schedules</button
+	>
+	<button
+		type="button"
+		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
+		on:click={handleUploadModal}>Edit Schedules</button
+	>
+	</div>
+
 	</div>
 	<!-- end sidebar -->
 	<!-- calendar view -->
