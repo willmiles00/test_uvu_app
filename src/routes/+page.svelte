@@ -199,19 +199,14 @@ function mapMeetingDays(days) {
     // });
 </script>
 
-<main class="h-full">
+<main class="h-full w-full">
 	<!-- main functionality buttons -->
-	 <div class="w-full flex justify-end bg-gray-100">
+	 <div class="w-full flex justify-end bg-gray-100 h-[44px]">
 	<div class="flex my-2 ">
 		<button
 			type="button"
 			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
 			on:click={handleUploadModal}>Filter</button
-		>
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-			on:click={handleUploadModal}>Import CSV</button
 		>
 		<button
 			type="button"
@@ -228,12 +223,27 @@ function mapMeetingDays(days) {
 
 <body class="flex flex-wrap w-full h-full flex-row">
 	 <!-- sidebar -->
-	<div id="sidebar" class="w-auto h-auto">
-	<div id="import" class="border m-2 p-2 w-[269px]">
-<p>current file:</p>
+	<div id="sidebar" class="w-auto h-auto border border-[#DCDCDD] border-y-2">
+
+	<div id="import" class="border m-4 p-2 w-[269px] rounded-lg">
+<p class="text-[15px] text-uvu-green">Current file:</p>
 <p>{fileName}</p>
-<button>import .csv file</button>
+<button
+			type="button"
+			class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
+			on:click={handleUploadModal}>Import New .CSV</button
+		>
 	</div>	
+
+	<div>
+		<p>Select schedule to view</p>
+		<p>reset filters</p>
+		<select name="" id="">Professors  <option value="">Professors</option></select>
+		<select name="" id="">Rooms  <option value="">Rooms</option></select>
+		<select name="" id="">Courses  <option value="">Courses</option></select>
+	</div>
+
+	
 	</div>
 	<!-- end sidebar -->
 	<!-- calendar view -->
