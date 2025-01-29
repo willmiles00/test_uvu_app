@@ -1,4 +1,8 @@
 <script lang="ts">
+// will branch tasks. if you see this in prod I'm sorry
+// Styling Sidebar
+//Styling import .csv
+//Finalize import .csv functionality
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { onMount, afterUpdate } from 'svelte';
@@ -74,7 +78,7 @@
     f: 'Friday'
 };
 
-function convertTo24Hour(time) {
+function convertTo24Hour(time: any) {
     const [timePart, modifier] = time.split(/(am|pm)/i);
     let [hours, minutes] = timePart.split(':').map(Number);
 
@@ -195,35 +199,64 @@ function mapMeetingDays(days) {
     // });
 </script>
 
-<main class="h-full">
+<main class="h-full w-full">
 	<!-- main functionality buttons -->
-	 <div class="w-full flex justify-end bg-gray-100">
-	<div class="flex my-2 ">
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-			on:click={handleUploadModal}>Filter</button
-		>
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-			on:click={handleUploadModal}>Import CSV</button
-		>
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-			on:click={handleUploadModal}>Add Schedules</button
-		>
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
-			on:click={handleUploadModal}>Edit Schedules</button
-		>
-	</div>
+	 <div class="w-full flex justify-between bg-gray-100 h-[44px]">
+
+		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
+<p class="uppercase text-[18px]">Title:</p>
+<input class="input !bg-white placeholder-[#757677] !rounded-lg"  type="text" name="" id="" placeholder="Default Schedule Title">
 </div>
 
+<button
+type="button"
+class="btn bg-gradient-to-br variant-gradient-primary-secondary rounded-md text-sm mx-2 font-primary uppercase"
+on:click={handleUploadModal}>Add Timeblock</button
+>
+</div>
+
+<body class="flex flex-wrap w-full h-full flex-row">
+	 <!-- sidebar -->
+	<div id="sidebar" class="w-auto h-auto border border-[#DCDCDD] border-y-2">
+
+	<div id="import" class="border m-4 p-2 w-[269px] rounded-lg">
+<p class="text-[15px] text-uvu-green">Current file:</p>
+<p>{fileName}</p>
+<button
+			type="button"
+			class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
+			on:click={handleUploadModal}>Import New .CSV</button
+		>
+	</div>	
+
+	<div class="flex flex-wrap flex-col">
+		<p>Select schedule to view</p>
+		<p>reset filters</p>
+		<select name="" id="">Professors  <option value="">Professors</option></select>
+		<select name="" id="">Rooms  <option value="">Rooms</option></select>
+		<select name="" id="">Courses  <option value="">Courses</option></select>
+	</div>
+
+	<div class="flex flex-wrap flex-col">
+		<button
+		type="button"
+		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
+		on:click={handleUploadModal}>Add Schedules</button
+	>
+	<button
+		type="button"
+		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
+		on:click={handleUploadModal}>Edit Schedules</button
+	>
+	</div>
+
+	</div>
+	<!-- end sidebar -->
 	<!-- calendar view -->
+	 <div class="grow">
 	<CalendarView />
+</div>
+</body>
 
 	<!-- modals -->
 
