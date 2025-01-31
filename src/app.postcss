@@ -54,9 +54,6 @@ h1{
 	background-color: #275D38;
 }
 
-.ec-time-grid .ec-time, .ec-time-grid .ec-line {
-  height: 40px;  
-}
 
 nav.ec-toolbar{
 	display: none;
@@ -68,11 +65,15 @@ div.ec-all-day{
 
 div.ec-header{
 	min-height: 32px;
-	
+	max-height: 32px;
 }
 
 .font-primary{
 	font-family: 'Rajdhani';
 	font-weight: 400;
+}
+
+.ec-time-grid .ec-time, .ec-time-grid .ec-line {
+  height: 40px !important;  /* override this value */
 }
 
