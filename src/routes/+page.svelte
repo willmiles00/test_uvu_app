@@ -66,11 +66,7 @@
 				
 
 				// a promise to simulate loading time
-				loadingPromise = new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve(1);
-                    }, 2000);
-                });
+				
 
 				const dayMapping = {
     m: 'Monday',
@@ -227,7 +223,7 @@ on:click={handleUploadModal}>Add Timeblock</button
 <button
 			type="button"
 			class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
-			on:click={handleUploadModal}>Import New .CSV</button
+			on:click={confirmImportedCourses}>Import New .CSV</button
 		>
 	</div>	
 
@@ -273,43 +269,42 @@ on:click={handleUploadModal}>Add Timeblock</button
 			<!-- this is the submit button that I couldn't quite figure out where the right place to put it -->
 			{#if csvData.length > 0}
 			<!-- svelte-ignore empty-block -->
-			{#await loadingPromise}
-			{:then}
+	
 			<!-- this is the button that shows up when a user confirms their details, it is away from everything else for stylistic purposes -->
 			<button type="submit" form="confirmedClasses" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg">Confirm Schedule</button>
-			{/await}
+		
 			{/if}
 			<!-- end submit block, start rest of content -->
-			<div class="flex flex-wrap bg-white m-10 p-10 rounded-xl w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal">
-				<button class="absolute top-8 right-[4.5%]  font-bold h-[30px] w-[30px] bg-red-500 p-2 rounded-full flex flex-col justify-center items-center shadow-2xl" on:click={handleUploadModal}><img src="/xmark-solid.svg" alt="close div"></button>
+			<div class="flex flex-wrap bg-white m-10 rounded-[8px] w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal min-h-[226px]">
+				
 				{#if csvData.length < 1}
-				<p class="w-full text-2xl text-uvu-green font-bold text-center m-5">Upload a Schedule</p>
+				<p class="w-full text-white uppercase bg-[#00843D] text-[31px] flex items-center px-[24px] py-[12px] font-primary-semibold">Import .CSV</p>
 				<form class="w-full" on:submit|preventDefault={parseCSV}>
-					<button type="button" class=" w-full flex flex-wrap justify-center items-center">
-					<label for="file-upload" class="custom-file-upload flex flex-col justify-center items-center">
-						<img src="/arrow-up-solid.svg" alt="upload arrow" class="h-[80px] w-[80px] p-2 bg-uvu-green rounded-full cursor-pointer underline mb-6 hover:bg-[#00834d]">
-						{#if fileName === "No file chosen"}
-					<p>{fileName}</p>
-					{:else}
-					<p>Uploaded file: {fileName}</p>
-					{/if}
-					</label>
-				</button>
+
+				<div class="flex flex-wrap justify-center items-center">
+				<label for="file-upload" class="custom-file-upload flex flex-wrap justify-start items-center mt-2  w-[438px] rounded-[8px] ">
+					<p class="flex flex-wrap justify-center items-center btn bg-uvu-green text-white p-2 uppercase font-[16px] font-bold rounded-[8px]">
+						Choose File
+					</p>
+					{#if fileName === "No file chosen"}
+				<p class="text-[#DDDDDD] border-[#DDDDDD] border-2 rounded-[8px] p-[6px]  border-l-0">{fileName}</p>
+				{:else}
+				<p class="border-[#DDDDDD] border-2 rounded-[8px] h-full p-[6px] border-l-0">{fileName}</p>
+				{/if}
+				</label>
+			</div>
+
 					<input class="my-3 input text-black max-w-[620px] rounded-none bg-white border-2 !border-black" type="file" accept=".csv" name="fileUpload" id="file-upload" on:change={handleFileChange}/>
-					<div class=" flex justify-center m-2">
-					<button class="btn bg-gradient-to-br variant-gradient-primary-secondary" type="submit"
+					<div class=" flex m-2 justify-end">
+						<button class=" bg-[#DDDDDD] p-2 rounded-md flex flex-col justify-center items-center text-uvu-green mr-2 uppercase text-sm" on:click={handleUploadModal}>Cancel</button>
+					<button class=" bg-[#DDDDDD] p-2 rounded-md flex flex-col justify-center items-center text-uvu-green uppercase text-sm" type="submit"
 						>Upload</button>
 					</div>
 				</form>
 				{/if}
 				<!-- this is temporarily where the uploaded data is going -->
 				{#if csvData.length > 0}
-				{#await loadingPromise}
-				<div class="w-full h-full bg-uvu-green rounded-lg flex flex-col justify-center items-center p-4">
-				<h2 class="text-white text-2xl font-bold my-5">Loading...</h2>
-				<ProgressRadial class='mb-5'/>
-			</div>
-				{:then}
+			
 	
 			
 				 <p class="w-full text-2xl text-uvu-green font-bold text-center mb-2">Confirm Imported Data</p>
@@ -371,7 +366,7 @@ on:click={handleUploadModal}>Add Timeblock</button
 						{/if}
 					{/each}
 						</form>
-				{/await}
+				<!-- {/await} -->
 				{/if}
 			
 			
