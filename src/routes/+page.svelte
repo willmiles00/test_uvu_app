@@ -10,7 +10,7 @@
 	import { onMount, afterUpdate } from 'svelte';
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
-	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	import { filter, ProgressRadial } from '@skeletonlabs/skeleton';
 	export const courses: any = [];
 
 	// modal setters
@@ -63,9 +63,15 @@
 				// csvData is the data that we will be using
 				csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 
+				//finally, we need to filter out any rows that don't have a CRN, as they do not have a meeting pattern
+				let csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'));
 				
+				console.log('csv data:', csvFinal);
 
-				// a promise to simulate loading time
+				csvFinal.forEach((course) => {
+    			console.log('course: need to add PROFESSOR ROOM COURSE MEETING TIME', course.Meetings);
+				});
+		
 				
 
 				const dayMapping = {
@@ -107,7 +113,7 @@ function convertTo24Hour(time: any) {
 						row.meetingTime = 'Does Not Meet';
 					}
 				});
-				// console.log('raw csv data:', csvData);
+		
 			};
 			reader.readAsText(file);
 		}
@@ -119,64 +125,64 @@ function convertTo24Hour(time: any) {
 
 
 	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
-	function confirmImportedCourses(event: any){
+// 	function confirmImportedCourses(event: any){
 	
-		event.preventDefault();
+// 		event.preventDefault();
 
-		//due to the way the calendar works, we need to map the days to specific dates
-		const dayToDateMap = {
-  'Monday': '2024-07-01 T',
-  'Tuesday': '2024-07-02 T',
-  'Wednesday': '2024-07-03 T',
-  'Thursday': '2024-07-04 T',
-  'Friday': '2024-07-05 T'
-};
+// 		//due to the way the calendar works, we need to map the days to specific dates
+// 		const dayToDateMap = {
+//   'Monday': '2024-07-01 T',
+//   'Tuesday': '2024-07-02 T',
+//   'Wednesday': '2024-07-03 T',
+//   'Thursday': '2024-07-04 T',
+//   'Friday': '2024-07-05 T'
+// };
 
-function mapMeetingDays(days) {
-  let newMap = days.map(day => dayToDateMap[day]);
-  console.log('new map:', newMap);
-  return newMap;
-}
-
-
-
-    const form = event.target;
-    csvData.forEach((row, index) => {
-
-
-      if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
-		// since our calendar doesn't allow repeating events, we need to map the days to specific dates
-		let calendarFriendlyDays = mapMeetingDays(row.meetingDays);
-		calendarFriendlyDays.forEach((day: any) => {
-        const course = {
-        //   title: form[`name-${index}`].value + form[`crn-${index}`].value,
-		title:	{html: form[`name-${index}`].value + "<br> CRN: " + form[`crn-${index}`].value + "<br> Instructor: " + form[`instructor-${index}`].value + "<br> Building and Room: " + form[`building-room-${index}`].value},
-          crn: form[`crn-${index}`].value,
-          instructor: form[`instructor-${index}`].value,
-          buildingRoom: form[`building-room-${index}`].value,
-
-			meetingDays: mapMeetingDays(row.meetingDays),
-		  start: day + form[`start-time-${index}`].value,
-		  end: day + form[`end-time-${index}`].value,
-		  backgroundColor: `#${form[`crn-${index}`].value}e`
-        };
-        courses.push(course);
-		events.update((value: any) => {
-			return [...value, course];
-		});
-	})
-		// console.log('here is the pushed courses,', courses);
-
-
-      }
+// function mapMeetingDays(days: Array<string>) {
+//   let newMap = days.map(day => dayToDateMap[day]);
+//   console.log('new map:', newMap);
+//   return newMap;
+// }
 
 
 
-    });
+//     const form = event.target;
+//     csvData.forEach((row, index) => {
+		
 
-    // console.log('here is the pushed courses,', courses);
-	isUploadModalActive = !isUploadModalActive;
-	}
+//       if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
+// 		// since our calendar doesn't allow repeating events, we need to map the days to specific dates
+// 		let calendarFriendlyDays = mapMeetingDays(row.meetingDays);
+// 		calendarFriendlyDays.forEach((day: any) => {
+//         const course = {
+//         //   title: form[`name-${index}`].value + form[`crn-${index}`].value,
+// 		title:	{html: form[`name-${index}`].value + "<br> CRN: " + form[`crn-${index}`].value + "<br> Instructor: " + form[`instructor-${index}`].value + "<br> Building and Room: " + form[`building-room-${index}`].value},
+//           crn: form[`crn-${index}`].value,
+//           instructor: form[`instructor-${index}`].value,
+//           buildingRoom: form[`building-room-${index}`].value,
+
+// 			meetingDays: mapMeetingDays(row.meetingDays),
+// 		  start: day + form[`start-time-${index}`].value,
+// 		  end: day + form[`end-time-${index}`].value,
+// 		  backgroundColor: `#${form[`crn-${index}`].value}e`
+//         };
+//         courses.push(course);
+// 		events.update((value: any) => {
+// 			return [...value, course];
+// 		});
+// 	})
+// 		// console.log('here is the pushed courses,', courses);
+
+
+//       }
+
+
+
+//     });
+
+//     // console.log('here is the pushed courses,', courses);
+// 	isUploadModalActive = !isUploadModalActive;
+// 	}
 
   
 
@@ -223,7 +229,7 @@ on:click={handleUploadModal}>Add Timeblock</button
 <button
 			type="button"
 			class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
-			on:click={confirmImportedCourses}>Import New .CSV</button
+			on:click={handleUploadModal}>Import New .CSV</button
 		>
 	</div>	
 
@@ -304,11 +310,8 @@ on:click={handleUploadModal}>Add Timeblock</button
 				{/if}
 				<!-- this is temporarily where the uploaded data is going -->
 				{#if csvData.length > 0}
-			
-	
-			
-				 <p class="w-full text-2xl text-uvu-green font-bold text-center mb-2">Confirm Imported Data</p>
-				<form id="confirmedClasses" class="min-w-[400px] w-full" on:submit|preventDefault={confirmImportedCourses}>
+				<!-- <form id="confirmedClasses" class="min-w-[400px] w-full" on:submit|preventDefault={confirmImportedCourses}> -->
+					<form id="confirmedClasses" class="min-w-[400px] w-full" on:submit|preventDefault={handleUploadModal}>
 					{#each csvData as row, index}
 						{#if row.CRN}
 							<div id="course-{index}" class="flex flex-wrap flex-col border border-[#275D38] mb-2 p-2 rounded-lg">
