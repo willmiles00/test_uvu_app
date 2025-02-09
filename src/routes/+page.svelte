@@ -341,75 +341,12 @@ on:click={handleUploadModal}>Add Timeblock</button
 					</div>
 				</form>
 				{/if}
-				<!-- this is temporarily where the uploaded data is going -->
-				{#if csvData.length > 0}
-				<!-- <form id="confirmedClasses" class="min-w-[400px] w-full" on:submit|preventDefault={confirmImportedCourses}> -->
-					<form id="confirmedClasses" class="min-w-[400px] w-full" on:submit|preventDefault={handleUploadModal}>
-					{#each csvData as row, index}
-						{#if row.CRN}
-							<div id="course-{index}" class="flex flex-wrap flex-col border border-[#275D38] mb-2 p-2 rounded-lg">
-								<label for="name-{index}"><b>Course Catalog Name:</b></label>
-								<input class="editable-input" type="text" id="name-{index}" name="name-{index}" required value={row.Course} />
-								<label for="crn-{index}"><b>CRN:</b></label>
-								<input class="editable-input" type="text" id="crn-{index}" name="crn-{index}" required value={row.CRN} />
-								<!-- <label for="meeting-time-{index}"><b>Meeting Time:</b></label>
-								<input class="editable-input" type="text" id="meeting-time-{index}" name="meeting-time-{index}" value={row['Meeting Pattern']} /> -->
-
-								<!-- meeting day logic -->
-								<fieldset>
-									<legend class="font-bold">Meeting Days:</legend>
-									{#each ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Online'] as day}
-									<label>
-									  <input type="checkbox" name="days[]" value={day}   checked={row.meetingDays.includes(day)}> 
-									  {day}
-									</label>
-								  {/each}
-									</fieldset>
-								  <!-- end meeting day logic -->
-
-								  <!-- meeting time logic -->
-								<label class="font-bold" for="meeting-time-{index}">Meeting Time:</label>
-								{#if row.meetingTime !== 'Does Not Meet'}
-								<label class="w-full">
-									<input type="checkbox" name="days[]" value='Does Not Meet' on:change={(event) => handleMeetingChange(event, row)}/>
-									Does Not Meet
-								</label>
-								<div class="flex flex-wrap">
-									<div class="flex flex-col mr-2">
-										<label for="start-time-{index}"><b>Start Time:</b></label>
-										<input class="editable-input" type="time" id="start-time-{index}" name="start-time-{index}"  value="{row.meetingTime[0]}"/>
-									</div>
-									<div class="flex flex-col">
-										<label for="end-time-{index}"><b>End Time:</b></label>
-										<input class="editable-input" type="time" id="end-time-{index}" name="end-time-{index}" value="{row.meetingTime[1]}" />
-									</div>
-								</div>
-								{:else}
-								<label class="w-full">
-									<input type="checkbox" name="does-not-meet" value='Does Not Meet' on:change={(event) => handleMeetingChange(event, row)} checked/>
-									Does Not Meet
-								</label>
-								{/if}
-								<!-- end meeting time logic -->
-
-
-								<label class="font-bold" for="instructor-{index}">Instructor(s):</label>
-								<textarea class="editable-input" rows="2" id="instructor-{index}" name="instructor-{index}">{row.Instructor}</textarea>
-								<label class="font-bold" for="building-room-{index}">Building and Room:</label>
-								<input class="editable-input" type="text" id="building-room-{index}" name="building-room-{index}" value={row['Building and Room']} />
-							</div>
-
-						{/if}
-					{/each}
-						</form>
-				<!-- {/await} -->
-				{/if}
-			
-			
 			</div>
 		</div>
 		</div>
 	{/if}
+
+	
 </main>
 
 <style lang='postcss'>
