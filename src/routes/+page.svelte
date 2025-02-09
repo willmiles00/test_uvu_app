@@ -4,7 +4,6 @@
 //Styling import .csv
 //Finalize import .csv functionality
 
-// comment so I can push something
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { onMount, afterUpdate } from 'svelte';
@@ -83,14 +82,7 @@
 
 
 }
-resolveAfter1Second().then(() => {
-				csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'))
-				console.log('csvFinal:', csvFinal[0].meetingDays);
-				
-});
-			
-
-				const dayMapping = {
+const dayMapping = {
     m: 'Monday',
     t: 'Tuesday',
     w: 'Wednesday',
@@ -98,37 +90,22 @@ resolveAfter1Second().then(() => {
     f: 'Friday'
 };
 
-function convertTo24Hour(time: any) {
-    const [timePart, modifier] = time.split(/(am|pm)/i);
-    let [hours, minutes] = timePart.split(':').map(Number);
 
-    if (modifier.toLowerCase() === 'pm' && hours < 12) {
-      hours += 12;
-    }
-    if (modifier.toLowerCase() === 'am' && hours === 12) {
-      hours = 0;
-    }
-
-    return `${String(hours).padStart(2, '0')}:${String(minutes || 0).padStart(2, '0')}`;
-  }
 
 				
 				csvData.forEach((row) => {
 					if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
-					// console.log('Meeting Pattern:', row['Meeting Pattern']);
-
 					const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
 					row.meetingDays = meetingDays.split('').map((day: string) => dayMapping[day.toLowerCase() as keyof typeof dayMapping]);
-					row.meetingTime = meetingTime.split('-').map(convertTo24Hour);
-					// console.log('Rows with this specfic pattern:', row.meetingDays, row.meetingTime);
-					// console.log('meeting times:', row.meetingTime);
+					row.meetingTime = meetingTime.split('-')
 					}
-				
-					else if (row.CRN && row['Meeting Pattern'] === 'Does Not Meet') {
-						row.meetingDays = 'Online';
-						row.meetingTime = 'Does Not Meet';
-					}
+			
 				});
+
+				csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'))
+				console.log('csvFinal:', csvFinal[0].meetingTime);
+				handleUploadModal()
+
 		
 			};
 			
@@ -141,99 +118,7 @@ function convertTo24Hour(time: any) {
 
 
 
-
-
-	// this will take the user confirmed courses and add them to a courses array, to add them to the calendar
-// 	function confirmImportedCourses(event: any){
-	
-// 		event.preventDefault();
-
-// 		//due to the way the calendar works, we need to map the days to specific dates
-// 		const dayToDateMap = {
-//   'Monday': '2024-07-01 T',
-//   'Tuesday': '2024-07-02 T',
-//   'Wednesday': '2024-07-03 T',
-//   'Thursday': '2024-07-04 T',
-//   'Friday': '2024-07-05 T'
-// };
-
-// function mapMeetingDays(days: Array<string>) {
-//   let newMap = days.map(day => dayToDateMap[day]);
-//   console.log('new map:', newMap);
-//   return newMap;
-// }
-
-
-
-//     const form = event.target;
-//     csvData.forEach((row, index) => {
-		
-
-//       if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
-// 		// since our calendar doesn't allow repeating events, we need to map the days to specific dates
-// 		let calendarFriendlyDays = mapMeetingDays(row.meetingDays);
-// 		calendarFriendlyDays.forEach((day: any) => {
-//         const course = {
-//         //   title: form[`name-${index}`].value + form[`crn-${index}`].value,
-// 		title:	{html: form[`name-${index}`].value + "<br> CRN: " + form[`crn-${index}`].value + "<br> Instructor: " + form[`instructor-${index}`].value + "<br> Building and Room: " + form[`building-room-${index}`].value},
-//           crn: form[`crn-${index}`].value,
-//           instructor: form[`instructor-${index}`].value,
-//           buildingRoom: form[`building-room-${index}`].value,
-
-// 			meetingDays: mapMeetingDays(row.meetingDays),
-// 		  start: day + form[`start-time-${index}`].value,
-// 		  end: day + form[`end-time-${index}`].value,
-// 		  backgroundColor: `#${form[`crn-${index}`].value}e`
-//         };
-//         courses.push(course);
-// 		events.update((value: any) => {
-// 			return [...value, course];
-// 		});
-// 	})
-	
-
-
-//       }
-
-
-
-//     });
-
-//     // console.log('here is the pushed courses,', courses);
-// 	isUploadModalActive = !isUploadModalActive;
-// 	}
-
   
-
-	function handleMeetingChange(event: Event, row: any) {
-		const input = event.target as HTMLInputElement;
-        row.meetingTime = input.checked ? 'Does Not Meet' : '';
-		// console.log('meeting time:', row.meetingTime);
-	}
-
-
-    // afterUpdate(() => {
-    //     events.subscribe(value => {
-    //         value.forEach((event) => {
-	// 			console.log('event:', event);
-    //         });
-    //         console.log('total events store', value);
-    // });
-    // });
-
-	// $:
-	// if (csvFinal.length > 0) {
-	// 	const timeblocks = csvFinal.map((row) => ({
-    //       buildingAndRoom: row['Building and Room'],
-    //       CRN: row.CRN,
-    //       Course: row.Course,
-    //       Instructor: row.Instructor,
-    //       meetingDays:  row.meetingDays ?? [],
-    //       meetingTime: row.meetingTime	?? []
-    //     }));
-
-	// 			console.log('timeblocks:', timeblocks);
-	// }
 </script>
 
 <main class="h-full w-full">
