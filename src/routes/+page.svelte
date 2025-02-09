@@ -1,18 +1,19 @@
 <script lang="ts">
-// will branch tasks. if you see this in prod I'm sorry
-// Styling Sidebar
-//Styling import .csv
-//Finalize import .csv functionality
+	// will branch tasks. if you see this in prod I'm sorry
+	// Styling Sidebar
+	//Styling import .csv
+	//Finalize import .csv functionality
 
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { onMount, afterUpdate } from 'svelte';
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
-	import { filter, ProgressRadial } from '@skeletonlabs/skeleton';
 	export const courses: any = [];
 	import type { Timeblock } from '$lib/types/Timeblock.ts';
-	import test from 'node:test';
+
+
+
 	let csvFinal: any[] = [];
 	// modal setters
 	let isUploadModalActive = false;
@@ -24,252 +25,275 @@
 	let timeblocks: Timeblock[] = [];
 	// console.log('timeblocks:', timeblocks);
 
-
-
-	// temp events store for testing DELETE LATER
-	let tempEvents = [];
-
 	// CSV file handling
 	let csvData: any[] = [];
 	let file: any;
 	let loadingPromise: Promise<number>;
-		let fileName = "No file chosen";
+	let fileName = 'No file chosen';
 
 	// this function handles the file change event, so that parsing can be done
-  function handleFileChange(event: any) {
-    file = event.target.files[0];
-    if (file) {
-      fileName = file.name;
-    } else {
-      fileName = "No file chosen";
-    }
-  }
+	function handleFileChange(event: any) {
+		file = event.target.files[0];
+		if (file) {
+			fileName = file.name;
+		} else {
+			fileName = 'No file chosen';
+		}
+	}
 
 
-  //parseCSV needs to be async so that we can wait for the file to be uploaded before we can access parts of the data
-  function resolveAfter1Second() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('resolved');
-    }, 1000);
-  });
-}
 
 	// this takes the uploaded file and parses it into a usable format
 	async function parseCSV() {
 		if (file) {
 			const reader = new FileReader();
 			const uploadedData = await new Promise<string>((resolve, reject) => {
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsText(file);
-    });
-				// CourseLeaf has two lines of metadata at the beginning of the file, so we need to remove them
+				reader.onload = () => resolve(reader.result as string);
+				reader.onerror = () => reject(reader.error);
+				reader.readAsText(file);
+			});
+			// CourseLeaf has two lines of metadata at the beginning of the file, so we need to remove them
 
-				//In order to remove the first two lines, we need to split the string into lines, remove the first two lines, and then join the remaining lines back into a string.:
-				const lines = uploadedData.split('\n'); // Split the string into lines
+			//In order to remove the first two lines, we need to split the string into lines, remove the first two lines, and then join the remaining lines back into a string.:
+			const lines = uploadedData.split('\n'); // Split the string into lines
 
-				// Remove the first two lines
-				const removeHeaders = lines.slice(2);
+			// Remove the first two lines
+			const removeHeaders = lines.slice(2);
 
-				// Join the remaining lines back into a string
-				const uploadedDataHeadersRemoved = removeHeaders.join('\n');
+			// Join the remaining lines back into a string
+			const uploadedDataHeadersRemoved = removeHeaders.join('\n');
 
-				// csvData is the data that we will be using
-				csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
+			// csvData is the data that we will be using
+			csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 
-				//finally, we need to filter out any rows that don't have a CRN, as they do not have a meeting pattern
+			//we need to filter out any rows that don't have a CRN, as they do not have a meeting pattern
+			csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'));
 
+			//Since the data has meeting patterns that are abbreviated, we need to map the abbreviations to the full day names
+			const dayMapping = {
+			m: 'Monday',
+			t: 'Tuesday',
+			w: 'Wednesday',
+			r: 'Thursday',
+			f: 'Friday'
+		};
 
-}
-const dayMapping = {
-    m: 'Monday',
-    t: 'Tuesday',
-    w: 'Wednesday',
-    r: 'Thursday',
-    f: 'Friday'
-};
+		//splits up the meeting pattern into days and times
+		csvData.forEach((row) => {
+			if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
+				const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
+				row.meetingDays = meetingDays
+					.split('')
+					.map((day: string) => dayMapping[day.toLowerCase() as keyof typeof dayMapping]);
+				row.meetingTime = meetingTime.split('-');
+			}
+		});
 
+		  // Map csvFinal to Timeblock interface
+		  const timeblocks: Timeblock[] = csvFinal.map((course) => ({
+			buildingAndRoom: course['Building and Room'],
+    		CRN: course.CRN,
+   			Course: course.Course,
+			Instructor: course.Instructor,
+    		meetingDays: course.meetingDays,
+    		meetingTime: course.meetingTime
+            }));
 
+		// add timeblocks to the events store, which communicates with the calendar
+		timeblocks.forEach((timeblock) => {
+			events.update((events) => {
+				events.push(timeblock);
+				return events;
+			});
+		});
 
-				
-				csvData.forEach((row) => {
-					if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
-					const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
-					row.meetingDays = meetingDays.split('').map((day: string) => dayMapping[day.toLowerCase() as keyof typeof dayMapping]);
-					row.meetingTime = meetingTime.split('-')
-					}
-			
-				});
-
-				csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'))
-				console.log('csvFinal:', csvFinal[0].meetingTime);
-				handleUploadModal()
+		} // end if(file)
+		else {
+			console.log('No file chosen');
+		}
 
 		
-			};
-			
+
 		
 
-	
+		fileName = 'No file chosen';
+		handleUploadModal();
+	}	//   end CSV file handling
 
 
-	//   end CSV file handling
 
 
 
-  
+
+
+
+
+
 </script>
 
 <main class="h-full w-full">
 	<!-- main functionality buttons -->
-	 <div class="w-full flex justify-between bg-gray-100 h-[44px]">
-
+	<div class="w-full flex justify-between bg-gray-100 h-[44px]">
 		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
-<p class="uppercase text-[18px]">Title:</p>
-<input class="input !bg-white placeholder-[#757677] !rounded-lg"  type="text" name="" id="" placeholder="Default Schedule Title">
-</div>
+			<p class="uppercase text-[18px]">Title:</p>
+			<input
+				class="input !bg-white placeholder-[#757677] !rounded-lg"
+				type="text"
+				name=""
+				id=""
+				placeholder="Default Schedule Title"
+			/>
+		</div>
 
-<button
-type="button"
-class="btn bg-gradient-to-br variant-gradient-primary-secondary rounded-md text-sm mx-2 font-primary uppercase"
-on:click={handleUploadModal}>Add Timeblock</button
->
-</div>
-
-<body class="flex flex-wrap w-full h-full flex-row">
-	 <!-- sidebar -->
-	<div id="sidebar" class="w-auto h-auto border border-[#DCDCDD] border-y-2">
-
-	<div id="import" class="border m-4 p-2 w-[269px] rounded-lg">
-<p class="text-[15px] text-uvu-green">Current file:</p>
-<p>{fileName}</p>
-<button
-			type="button"
-			class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
-			on:click={handleUploadModal}>Import New .CSV</button
-		>
-	</div>	
-
-	<div class="flex flex-wrap flex-col">
-		<p>Select schedule to view</p>
-		<p>reset filters</p>
-		<select name="" id="">Professors  <option value="">Professors</option></select>
-		<select name="" id="">Rooms  <option value="">Rooms</option></select>
-		<select name="" id="">Courses  <option value="">Courses</option></select>
-	</div>
-
-	<div class="flex flex-wrap flex-col">
 		<button
-		type="button"
-		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
-		on:click={handleUploadModal}>Add Schedules</button
-	>
-	<button
-		type="button"
-		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
-		on:click={handleUploadModal}>Edit Schedules</button
-	>
+			type="button"
+			class="btn bg-gradient-to-br variant-gradient-primary-secondary rounded-md text-sm mx-2 font-primary uppercase"
+			on:click={handleUploadModal}>Add Timeblock</button
+		>
 	</div>
 
-	</div>
-	<!-- end sidebar -->
-	<!-- calendar view -->
-	 <div class="grow">
-	<CalendarView />
-</div>
-</body>
+	<body class="flex flex-wrap w-full h-full flex-row">
+		<!-- sidebar -->
+		<div id="sidebar" class="w-auto h-auto border border-[#DCDCDD] border-y-2">
+			<div id="import" class="border m-4 p-2 w-[269px] rounded-lg">
+				<p class="text-[15px] text-uvu-green">Current file:</p>
+				<p>{fileName}</p>
+				<button
+					type="button"
+					class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
+					on:click={handleUploadModal}>Import New .CSV</button
+				>
+			</div>
+
+			<div class="flex flex-wrap flex-col">
+				<p>Select schedule to view</p>
+				<p>reset filters</p>
+				<select name="" id="">Professors <option value="">Professors</option></select>
+				<select name="" id="">Rooms <option value="">Rooms</option></select>
+				<select name="" id="">Courses <option value="">Courses</option></select>
+			</div>
+
+			<div class="flex flex-wrap flex-col">
+				<button
+					type="button"
+					class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
+					on:click={handleUploadModal}>Add Schedules</button
+				>
+				<button
+					type="button"
+					class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
+					on:click={handleUploadModal}>Edit Schedules</button
+				>
+			</div>
+		</div>
+		<!-- end sidebar -->
+		<!-- calendar view -->
+		<div class="grow">
+			<CalendarView />
+		</div>
+	</body>
 
 	<!-- modals -->
+	
 
 	<!-- upload modal -->
 	{#if isUploadModalActive}
-
 		<div
-			class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full  flex justify-center"
+			class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full flex justify-center"
 		>
-	
-		<div class="relative">
-			<!-- this is the submit button that I couldn't quite figure out where the right place to put it -->
-			{#if csvData.length > 0}
-			<!-- svelte-ignore empty-block -->
-	
-			<!-- this is the button that shows up when a user confirms their details, it is away from everything else for stylistic purposes -->
-			<button type="submit" form="confirmedClasses" class="confirm-schedule btn variant-filled rounded-xl p-2 text-lg">Confirm Schedule</button>
-		
-			{/if}
-			<!-- end submit block, start rest of content -->
-			<div class="flex flex-wrap bg-white m-10 rounded-[8px] w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal min-h-[226px]">
+			<div class="relative">
+				<div
+					class="flex flex-wrap bg-white m-10 rounded-[8px] w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal min-h-[226px]"
+				>
+			
+						<p
+							class="w-full text-white uppercase bg-[#00843D] text-[31px] flex items-center px-[24px] py-[12px] font-primary-semibold"
+						>
+							Import .CSV
+						</p>
+						<form class="w-full" on:submit|preventDefault={parseCSV}>
+							<div class="flex flex-wrap justify-center items-center">
+								<label
+									for="file-upload"
+									class="custom-file-upload flex flex-wrap justify-start items-center mt-2 w-[438px] rounded-[8px]"
+								>
+									<p
+										class="flex flex-wrap justify-center items-center btn bg-uvu-green text-white p-2 uppercase font-[16px] font-bold rounded-[8px]"
+									>
+										Choose File
+									</p>
+									{#if fileName === 'No file chosen'}
+										<p
+											class="text-[#DDDDDD] border-[#DDDDDD] border-2 rounded-[8px] p-[6px] border-l-0"
+										>
+											{fileName}
+										</p>
+									{:else}
+										<p class="border-[#DDDDDD] border-2 rounded-[8px] h-full p-[6px] border-l-0">
+											{fileName}
+										</p>
+									{/if}
+								</label>
+							</div>
+
+							<input
+								class="my-3 input text-black max-w-[620px] rounded-none bg-white border-2 !border-black"
+								type="file"
+								accept=".csv"
+								name="fileUpload"
+								id="file-upload"
+								on:change={handleFileChange}
+							/>
+							<div class=" flex m-2 justify-end">
+								<button
+									class=" bg-[#DDDDDD] p-2 rounded-md flex flex-col justify-center items-center text-uvu-green mr-2 uppercase text-sm"
+									on:click={handleUploadModal}>Cancel</button
+								>
+								<button
+									class=" bg-[#DDDDDD] p-2 rounded-md flex flex-col justify-center items-center text-uvu-green uppercase text-sm"
+									type="submit">Upload</button
+								>
+							</div>
+						</form>
 				
-				{#if csvData.length < 1}
-				<p class="w-full text-white uppercase bg-[#00843D] text-[31px] flex items-center px-[24px] py-[12px] font-primary-semibold">Import .CSV</p>
-				<form class="w-full" on:submit|preventDefault={parseCSV}>
-
-				<div class="flex flex-wrap justify-center items-center">
-				<label for="file-upload" class="custom-file-upload flex flex-wrap justify-start items-center mt-2  w-[438px] rounded-[8px] ">
-					<p class="flex flex-wrap justify-center items-center btn bg-uvu-green text-white p-2 uppercase font-[16px] font-bold rounded-[8px]">
-						Choose File
-					</p>
-					{#if fileName === "No file chosen"}
-				<p class="text-[#DDDDDD] border-[#DDDDDD] border-2 rounded-[8px] p-[6px]  border-l-0">{fileName}</p>
-				{:else}
-				<p class="border-[#DDDDDD] border-2 rounded-[8px] h-full p-[6px] border-l-0">{fileName}</p>
-				{/if}
-				</label>
+				</div>
 			</div>
-
-					<input class="my-3 input text-black max-w-[620px] rounded-none bg-white border-2 !border-black" type="file" accept=".csv" name="fileUpload" id="file-upload" on:change={handleFileChange}/>
-					<div class=" flex m-2 justify-end">
-						<button class=" bg-[#DDDDDD] p-2 rounded-md flex flex-col justify-center items-center text-uvu-green mr-2 uppercase text-sm" on:click={handleUploadModal}>Cancel</button>
-					<button class=" bg-[#DDDDDD] p-2 rounded-md flex flex-col justify-center items-center text-uvu-green uppercase text-sm" type="submit"
-						>Upload</button>
-					</div>
-				</form>
-				{/if}
-			</div>
-		</div>
 		</div>
 	{/if}
-
-	
 </main>
 
-<style lang='postcss'>
+<style lang="postcss">
 	/* .custom-scrollbar {
 	  scrollbar-color: red orange !important;
 	  scrollbar-width: thick !important;
 	} */
 
 	.confirm-schedule {
-	position: absolute !important;
-	top: 623px !important;
-	left: 34% !important;
-	background-color: #00834d !important;
-	font-weight: bold !important;
-	text-transform: uppercase !important;
-	color: white !important;
-	z-index: 1000 !important;
+		position: absolute !important;
+		top: 623px !important;
+		left: 34% !important;
+		background-color: #00834d !important;
+		font-weight: bold !important;
+		text-transform: uppercase !important;
+		color: white !important;
+		z-index: 1000 !important;
 	}
 
-	input[type="file"] {
-  display: none;
-}
+	input[type='file'] {
+		display: none;
+	}
 
-.editable-input {
- @apply input border-none shadow-inner p-2 !border-black rounded-lg !bg-yellow-100;
-}
+	.editable-input {
+		@apply input border-none shadow-inner p-2 !border-black rounded-lg !bg-yellow-100;
+	}
 
-.upload-modal {
-	overflow: scroll !important;
-	overflow-y:scroll;
+	.upload-modal {
+		overflow: scroll !important;
+		overflow-y: scroll;
+	}
 
-}
-
-.ec-day {
-  min-width: fit-content !important;
-  min-height: fit-content !important;
-}
-
-
-
+	.ec-day {
+		min-width: fit-content !important;
+		min-height: fit-content !important;
+	}
 </style>
