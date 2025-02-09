@@ -12,13 +12,18 @@
 	import Papa from 'papaparse';
 	import { filter, ProgressRadial } from '@skeletonlabs/skeleton';
 	export const courses: any = [];
-
+	import type { Timeblock } from '$lib/types/Timeblock.ts';
+	import test from 'node:test';
+	let csvFinal: any[] = [];
 	// modal setters
 	let isUploadModalActive = false;
 	function handleUploadModal() {
 		isUploadModalActive = !isUploadModalActive;
 	}
 
+	// timeblock store, see types/Timeblock.ts for more info
+	let timeblocks: Timeblock[] = [];
+	// console.log('timeblocks:', timeblocks);
 
 
 
@@ -42,13 +47,24 @@
   }
 
 
+  //parseCSV needs to be async so that we can wait for the file to be uploaded before we can access parts of the data
+  function resolveAfter1Second() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 1000);
+  });
+}
+
 	// this takes the uploaded file and parses it into a usable format
-	function parseCSV() {
+	async function parseCSV() {
 		if (file) {
 			const reader = new FileReader();
-			reader.onload = () => {
-				// this is the data that was uploaded
-				let uploadedData = reader.result as string;
+			const uploadedData = await new Promise<string>((resolve, reject) => {
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(file);
+    });
 				// CourseLeaf has two lines of metadata at the beginning of the file, so we need to remove them
 
 				//In order to remove the first two lines, we need to split the string into lines, remove the first two lines, and then join the remaining lines back into a string.:
@@ -64,15 +80,15 @@
 				csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
 
 				//finally, we need to filter out any rows that don't have a CRN, as they do not have a meeting pattern
-				let csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'));
-				
-				console.log('csv data:', csvFinal);
 
-				csvFinal.forEach((course) => {
-    			console.log('course: need to add PROFESSOR ROOM COURSE MEETING TIME', course.Meetings);
-				});
-		
+
+}
+resolveAfter1Second().then(() => {
+				csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'))
+				console.log('csvFinal:', csvFinal[0].meetingDays);
 				
+});
+			
 
 				const dayMapping = {
     m: 'Monday',
@@ -115,9 +131,12 @@ function convertTo24Hour(time: any) {
 				});
 		
 			};
-			reader.readAsText(file);
-		}
-	}
+			
+		
+
+	
+
+
 	//   end CSV file handling
 
 
@@ -171,7 +190,7 @@ function convertTo24Hour(time: any) {
 // 			return [...value, course];
 // 		});
 // 	})
-// 		// console.log('here is the pushed courses,', courses);
+	
 
 
 //       }
@@ -201,6 +220,20 @@ function convertTo24Hour(time: any) {
     //         console.log('total events store', value);
     // });
     // });
+
+	// $:
+	// if (csvFinal.length > 0) {
+	// 	const timeblocks = csvFinal.map((row) => ({
+    //       buildingAndRoom: row['Building and Room'],
+    //       CRN: row.CRN,
+    //       Course: row.Course,
+    //       Instructor: row.Instructor,
+    //       meetingDays:  row.meetingDays ?? [],
+    //       meetingTime: row.meetingTime	?? []
+    //     }));
+
+	// 			console.log('timeblocks:', timeblocks);
+	// }
 </script>
 
 <main class="h-full w-full">
