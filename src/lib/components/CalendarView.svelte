@@ -20,6 +20,7 @@
     let previousEvents: any = [];
 
     afterUpdate(() => {
+        // when the events store updates, we want to add the new events to the calendar
         events.subscribe(value => {
             const newEvents = value.filter(event => !previousEvents.includes(event));
             newEvents.forEach(event => {

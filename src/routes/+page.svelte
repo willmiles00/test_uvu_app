@@ -107,6 +107,11 @@
 			});
 		});
 
+		// courses.push(course);
+		// events.update((value: any) => {
+		// 	return [...value, course];
+		// });
+
 		} // end if(file)
 		else {
 			console.log('No file chosen');
@@ -117,6 +122,9 @@
 		
 
 		fileName = 'No file chosen';
+
+		
+
 		handleUploadModal();
 	}	//   end CSV file handling
 
