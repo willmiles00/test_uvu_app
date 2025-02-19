@@ -262,11 +262,11 @@
 	<!-- upload modal -->
 	{#if isUploadModalActive}
 		<div
-			class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full flex justify-center"
+			class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full flex justify-center z-40"
 		>
 			<div class="relative">
 				<div
-					class="flex flex-wrap bg-white m-10 rounded-[8px] w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal min-h-[226px]"
+					class="flex flex-wrap bg-white m-10 rounded-[8px] w-fit md:min-w-[620px] max-w-[620px] h-fit max-h-[600px] overflow-auto shadow-xl custom-scrollbar upload-modal min-h-[226px] "
 				>
 			
 						<p
