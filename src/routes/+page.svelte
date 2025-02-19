@@ -11,6 +11,7 @@
 	import Papa from 'papaparse';
 	export const courses: any = [];
 	import type { Timeblock } from '$lib/types/Timeblock.ts';
+	let uploadedCourses: any[] = [];
 
 
 
@@ -69,13 +70,13 @@
 			//we need to filter out any rows that don't have a CRN, as they do not have a meeting pattern
 			csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'));
 
-			//Since the data has meeting patterns that are abbreviated, we need to map the abbreviations to the full day names
+			//Since the data has meeting patterns that are abbreviated, we need to map the abbreviations to the preset days we specified in the vkurko calendar
 			const dayMapping = {
-			m: 'Monday',
-			t: 'Tuesday',
-			w: 'Wednesday',
-			r: 'Thursday',
-			f: 'Friday'
+			m: '2024-07-01T',
+   			t: '2024-07-02T',
+    		w: '2024-07-03T',
+    		r: '2024-07-04T',
+    		f: '2024-07-05T'
 		};
 
 		//splits up the meeting pattern into days and times
@@ -89,28 +90,82 @@
 			}
 		});
 
-		  // Map csvFinal to Timeblock interface
-		  const timeblocks: Timeblock[] = csvFinal.map((course) => ({
+		  // due to the way the vkurko calendar works, every event has a title, start, and end property. We need to cram the data into this format
+		  const timeblocks = csvFinal.map((course) => (
+		  {
+			title: course.Course + ' ' + course['Building and Room'],
+			start: '2024-07-01T' + course.meetingTime[0],
+			end: '2024-07-01T' + course.meetingTime[1],
 			buildingAndRoom: course['Building and Room'],
     		CRN: course.CRN,
    			Course: course.Course,
 			Instructor: course.Instructor,
     		meetingDays: course.meetingDays,
-    		meetingTime: course.meetingTime
+    		meetingTime: course.meetingTime,
+
             }));
+			
+			//let's add the courses to the uploadedCourses array
+			csvFinal.forEach((course) => {
+				// if the course meets on more than one day, we need to create a separate event for each day
+				if (course.meetingDays.length > 1){
+				course.meetingDays.forEach((day:any)=>{
+
+					const newCourse = {
+						
+						title: course.Course + ' ' + course['Building and Room'],
+						start: day + course.meetingTime[0],
+						end: day + course.meetingTime[1],
+						buildingAndRoom: course['Building and Room'],
+						CRN: course.CRN,
+						Course: course.Course,
+						Instructor: course.Instructor,
+						meetingDays: course.meetingDays,
+						meetingTime: course.meetingTime,
+				
+					};
+					uploadedCourses.push(newCourse);
+					console.log('uploadedCourses:', uploadedCourses);
+
+				});
+				
+				}
+				else{
+					const newCourse = {
+						title: course.Course + ' ' + course['Building and Room'],
+						start: '2024-07-01T' + course.meetingTime[0],
+						end: '2024-07-01T' + course.meetingTime[1],
+						buildingAndRoom: course['Building and Room'],
+						CRN: course.CRN,
+						Course: course.Course,
+						Instructor: course.Instructor,
+						meetingDays: course.meetingDays,
+						meetingTime: course.meetingTime,
+					};
+					uploadedCourses.push(newCourse);
+					console.log('uploadedCourses:', uploadedCourses);
+
+				}
+			});
+
+
 
 		// add timeblocks to the events store, which communicates with the calendar
-		timeblocks.forEach((timeblock) => {
-			events.update((events) => {
-				events.push(timeblock);
-				return events;
+		// timeblocks.forEach((timeblock) => {
+		// 	courses.push(timeblock);
+		// 	events.update((value: any) => {
+		// 		return [...value, timeblock];
+		// 	});
+		// });
+
+		uploadedCourses.forEach((course) => {
+			events.update((value: any) => {
+				return [...value, course];
 			});
 		});
 
-		// courses.push(course);
-		// events.update((value: any) => {
-		// 	return [...value, course];
-		// });
+		
+
 
 		} // end if(file)
 		else {

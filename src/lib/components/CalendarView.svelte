@@ -6,6 +6,7 @@
     import { events } from "$lib/stores/events";
     import { onMount, afterUpdate } from 'svelte';
 
+    // since we are using a static date, we need to define the days of the week. This week of July is easy to work with
     let Monday = '2024-07-01';
     let Tuesday = '2024-07-02';
     let Wednesday = '2024-07-03';
@@ -30,7 +31,7 @@
             previousEvents = value;
             ec.refetchEvents();
             ec.getEvents();
-            console.log(value);
+            console.log('here is the current state of events:',value);
         });
     });
 
