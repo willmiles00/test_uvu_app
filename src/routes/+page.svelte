@@ -218,6 +218,8 @@
 	<body class="flex flex-wrap w-full h-full flex-row">
 		<!-- sidebar -->
 		<div id="sidebar" class="w-auto h-auto border border-[#DCDCDD] border-y-2">
+
+			<!-- import sidebar -->
 			<div id="import" class="border m-4 p-2 w-[269px] rounded-lg">
 				<p class="text-[15px] text-uvu-green">Current file:</p>
 				<p>{fileName}</p>
@@ -228,25 +230,28 @@
 				>
 			</div>
 
-			<div class="flex flex-wrap flex-col">
-				<p>Select schedule to view</p>
-				<p>reset filters</p>
-				<select name="" id="">Professors <option value="">Professors</option></select>
-				<select name="" id="">Rooms <option value="">Rooms</option></select>
-				<select name="" id="">Courses <option value="">Courses</option></select>
+			<!-- filter sidebar -->
+			<div id="filterSection" class="flex flex-wrap flex-col m-4">
+				<p class="uppercase font-primary-bold text-[18px]">Select schedule</p>
+				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">reset filters</button>
+				<select class="filterSelect" name="" id="">Professors <option value="">Professors</option></select>
+				<select class="filterSelect" name="" id="">Rooms <option value="">Rooms</option></select>
+				<select class="filterSelect" name="" id="">Courses <option value="">Courses</option></select>
 			</div>
 
-			<div class="flex flex-wrap flex-col">
+			<!-- add and edit schedules sidebar -->
+			<div class="flex flex-wrap flex-col justify-center items-center">
+				<button
+				type="button"
+				class="addAndEditBtn"
+				on:click={handleUploadModal}>Edit Schedules</button
+			>
 				<button
 					type="button"
-					class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary"
+					class="addAndEditBtn"
 					on:click={handleUploadModal}>Add Schedules</button
 				>
-				<button
-					type="button"
-					class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
-					on:click={handleUploadModal}>Edit Schedules</button
-				>
+			
 			</div>
 		</div>
 		<!-- end sidebar -->
@@ -359,4 +364,34 @@
 		min-width: fit-content !important;
 		min-height: fit-content !important;
 	}
+
+	select.filterSelect {
+		font-size: 18px;
+		text-transform: uppercase;
+		color: #275D38;
+		border-radius: 8px;
+		border: 1px solid #DCDCDD;
+		padding: 8px 2px;
+		margin: 5px 0;
+		background-color: white;
+		font-family: rajdhani;
+		font-weight: 600;
+	}
+
+	.addAndEditBtn{
+		background-color: #275D38;
+		color: white;
+		font-weight: 600;
+		text-transform: uppercase;
+		border: none;
+		border-radius: 25px;
+		padding: 8px 2px;
+		margin: 5px 0;
+		font-family: rajdhani;
+		font-size: 14px;
+		min-width: 269px;
+		max-width: 269px;
+	}
+
+	
 </style>
