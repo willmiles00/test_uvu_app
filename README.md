@@ -20,3 +20,8 @@
     2/8/25
     -Timeblock interface! Use this to model all timeblocks. Can be found at: $lib/types/Timeblock.ts
     -parseCSV became async
+
+    2/19/25
+    -new functions folder! To clean up the src page a little I'm going to try to move universal functions to this folder. convertTo24Hour is the first to be in there
+    -simplified CSV. Functionality now works more like Zac intended
+    -UI cleanup. Adjusted UI to match Zac's UI
