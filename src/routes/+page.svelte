@@ -11,7 +11,6 @@
 	import Papa from 'papaparse';
 	import { convertTo24Hour } from '$lib/functions/24HrConversion.ts';
 	export const courses: any = [];
-	import type { Timeblock } from '$lib/types/Timeblock.ts';
 	let uploadedCourses: any[] = [];
 
 
@@ -27,7 +26,6 @@
 	// CSV file handling
 	let csvData: any[] = [];
 	let file: any;
-	let loadingPromise: Promise<number>;
 	let fileName = 'No file chosen';
 
 	// this function handles the file change event, so that parsing can be done
@@ -77,10 +75,7 @@
     		f: '2024-07-05T'
 		};
 
-	
-
-
-		//splits up the meeting pattern into days and times
+		//splits up the meeting pattern into days and times, see the convertTo24Hour function for more details
 		csvData.forEach((row) => {
 			if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
 				const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
@@ -144,14 +139,6 @@
 			});
 
 
-
-		// add timeblocks to the events store, which communicates with the calendar
-		// timeblocks.forEach((timeblock) => {
-		// 	courses.push(timeblock);
-		// 	events.update((value: any) => {
-		// 		return [...value, timeblock];
-		// 	});
-		// });
 
 		uploadedCourses.forEach((course) => {
 			events.update((value: any) => {
