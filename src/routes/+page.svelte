@@ -9,6 +9,7 @@
 	import { onMount, afterUpdate } from 'svelte';
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
+	import { convertTimeTo24Hour } from '$lib/functions/24HrConversion.ts';
 	export const courses: any = [];
 	import type { Timeblock } from '$lib/types/Timeblock.ts';
 	let uploadedCourses: any[] = [];
@@ -22,9 +23,6 @@
 		isUploadModalActive = !isUploadModalActive;
 	}
 
-	// timeblock store, see types/Timeblock.ts for more info
-	let timeblocks: Timeblock[] = [];
-	// console.log('timeblocks:', timeblocks);
 
 	// CSV file handling
 	let csvData: any[] = [];
@@ -79,6 +77,21 @@
     		f: '2024-07-05T'
 		};
 
+		function convertTo24Hour(time: any) {
+    const [timePart, modifier] = time.split(/(am|pm)/i);
+    let [hours, minutes] = timePart.split(':').map(Number);
+
+    if (modifier.toLowerCase() === 'pm' && hours < 12) {
+      hours += 12;
+    }
+    if (modifier.toLowerCase() === 'am' && hours === 12) {
+      hours = 0;
+    }
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes || 0).padStart(2, '0')}`;
+  }
+
+
 		//splits up the meeting pattern into days and times
 		csvData.forEach((row) => {
 			if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
@@ -86,30 +99,24 @@
 				row.meetingDays = meetingDays
 					.split('')
 					.map((day: string) => dayMapping[day.toLowerCase() as keyof typeof dayMapping]);
-				row.meetingTime = meetingTime.split('-');
+					row.meetingTime = meetingTime.split('-').map(convertTo24Hour);
 			}
 		});
 
-		  // due to the way the vkurko calendar works, every event has a title, start, and end property. We need to cram the data into this format
-		  const timeblocks = csvFinal.map((course) => (
-		  {
-			title: course.Course + ' ' + course['Building and Room'],
-			start: '2024-07-01T' + course.meetingTime[0],
-			end: '2024-07-01T' + course.meetingTime[1],
-			buildingAndRoom: course['Building and Room'],
-    		CRN: course.CRN,
-   			Course: course.Course,
-			Instructor: course.Instructor,
-    		meetingDays: course.meetingDays,
-    		meetingTime: course.meetingTime,
+	
 
-            }));
+		  // due to the way the vkurko calendar works, every event has a title, start, and end property. We need to cram the data into this format
+		
 			
 			//let's add the courses to the uploadedCourses array
 			csvFinal.forEach((course) => {
 				// if the course meets on more than one day, we need to create a separate event for each day
 				if (course.meetingDays.length > 1){
 				course.meetingDays.forEach((day:any)=>{
+
+					// course.meetingTime = course.meetingTime.map((time: string) => convertTimeTo24Hour(time));
+
+					
 
 					const newCourse = {
 						
@@ -125,7 +132,7 @@
 				
 					};
 					uploadedCourses.push(newCourse);
-					console.log('uploadedCourses:', uploadedCourses);
+					// console.log('uploadedCourses:', uploadedCourses);
 
 				});
 				
@@ -143,7 +150,7 @@
 						meetingTime: course.meetingTime,
 					};
 					uploadedCourses.push(newCourse);
-					console.log('uploadedCourses:', uploadedCourses);
+					// console.log('uploadedCourses:', uploadedCourses);
 
 				}
 			});
@@ -200,7 +207,7 @@
 		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
 			<p class="uppercase text-[18px]">Title:</p>
 			<input
-				class="input !bg-white placeholder-[#757677] !rounded-lg"
+				class="input !bg-white placeholder-[#757677] !rounded-[3px] mx-2"
 				type="text"
 				name=""
 				id=""
