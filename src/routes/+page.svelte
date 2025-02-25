@@ -18,6 +18,9 @@
 	function handleUploadModal() {
 		isUploadModalActive = !isUploadModalActive;
 	}
+	function handleUploadCustomSuhedules() {
+    isUploadModalActive = !isUploadModalActive;
+  }
 
 
 
@@ -250,6 +253,13 @@ on:click={handleUploadModal}>Add Timeblock</button
 		class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
 		on:click={handleUploadModal}>Edit Schedules</button
 	>
+	<button
+	type="button"
+	class="btn bg-gradient-to-br variant-gradient-primary-secondary uppercase rounded-md text-sm mx-2 font-primary mr-3"
+	on:click={handleUploadCustomSuhedules}>Add Custom Schedules</button
+	
+>
+
 	</div>
 
 	</div>
@@ -379,6 +389,100 @@ on:click={handleUploadModal}>Add Timeblock</button
 		</div>
 		</div>
 	{/if}
+
+<!-- Add Custom Schedule -->
+<!-- Modal (Opens on Click) -->
+{#if isUploadModalActive}
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
+      <div class="bg-green-700 text-white p-4 text-center text-xl font-bold rounded-t-lg">
+        ADD CUSTOM SCHEDULE
+      </div>
+      <div class="p-6">
+        <form class="grid grid-cols-2 gap-4">
+          <!-- Class Name -->
+          <div>
+            <label class="block text-gray-700 font-medium">Class Name</label>
+            <input
+              type="text"
+              placeholder="Type Class Name"
+              class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            />
+          </div>
+
+          <!-- Professor Name -->
+          <div>
+            <label class="block text-gray-700 font-medium">Prof First Name</label>
+            <input
+              type="text"
+              placeholder="Type First Name"
+              class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium">Prof Last Name</label>
+            <input
+              type="text"
+              placeholder="Type Last Name"
+              class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            />
+          </div>
+
+          <!-- Select Days -->
+          <div class="col-span-2">
+            <label class="block text-gray-700 font-medium">Select Days:</label>
+            <div class="flex space-x-2 mt-1">
+              {#each ["MON", "TUES", "WED", "THUR", "FRI", "SAT"] as day}
+                <button
+                  type="button"
+                  class="px-4 py-2 rounded-md border bg-gray-200 text-gray-700"
+                >
+                  {day}
+                </button>
+              {/each}
+            </div>
+          </div>
+
+          <!-- Start Time -->
+          <div>
+            <label class="block text-gray-700 font-medium">Select Start Time</label>
+            <input
+              type="time"
+              class="border border-gray-300 rounded-md p-2 mt-1 w-full"
+            />
+          </div>
+
+          <!-- Class Length -->
+          <div>
+            <label class="block text-gray-700 font-medium">Class Length</label>
+            <select class="w-full border border-gray-300 rounded-md p-2 mt-1">
+              <option value="">Select Class Length</option>
+              <option value="30">30 mins</option>
+              <option value="60">1 hour</option>
+            </select>
+          </div>
+
+          <!-- Buttons -->
+          <div class="col-span-2 flex justify-end space-x-4 mt-4">
+            <button
+              type="button"
+              class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+              on:click={() => (isUploadModalActive = false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md">
+              Add Schedule
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{/if}
+
+	
 </main>
 
 <style lang='postcss'>
