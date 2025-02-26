@@ -18,6 +18,10 @@
 	let csvFinal: any[] = [];
 	// modal setters
 	let isUploadModalActive = false;
+	let isAddCustomModalActive = false;
+	function handleCustomModal() {
+		isAddCustomModalActive = !isAddCustomModalActive;
+	}
 	function handleUploadModal() {
 		isUploadModalActive = !isUploadModalActive;
 	}
@@ -230,7 +234,7 @@
 				<button
 				type="button"
 				class="addAndEditBtn"
-				on:click={handleUploadModal}>Edit Schedules</button
+				on:click={handleCustomModal}>Edit Schedules</button
 			>
 				<button
 					type="button"
@@ -317,7 +321,7 @@
 
 <!-- Add Custom Schedule -->
 <!-- Modal (Opens on Click) -->
-{#if isUploadModalActive}
+{#if isAddCustomModalActive}
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
       <div class="bg-green-700 text-white p-4 text-center text-xl font-bold rounded-t-lg">
@@ -409,6 +413,9 @@
 
 	
 </main>
+
+
+
 
 <style lang="postcss">
 	/* .custom-scrollbar {
