@@ -36,6 +36,13 @@
 
 @font-face {
 	font-family: 'Rajdhani';
+	src: url('/fonts/Rajdhani-SemiBold.ttf');
+	font-weight: 600;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Rajdhani';
 	src: url('/fonts/Rajdhani-Bold.ttf');
 	font-weight: 700;
 	font-display: swap;
@@ -73,7 +80,33 @@ div.ec-header{
 	font-weight: 400;
 }
 
-.ec-time-grid .ec-time, .ec-time-grid .ec-line {
-  height: 40px !important;  /* override this value */
+.font-primary-semibold{
+	font-family: 'Rajdhani';
+	font-weight: 600;
 }
 
+.font-primary-bold{
+	font-family: 'Rajdhani';
+	font-weight: 800;
+}
+
+.ec-time-grid .ec-time, .ec-time-grid .ec-line {
+  height: 40px !important; 
+  	text-align: right;
+	padding: 0px 8px 0px 0px;
+}
+
+
+.ec-time{
+	background-color: #F9F9F9;
+	width: 94px;
+
+}
+
+.ec-time-grid .ec-lines {
+  width: 0px !important;
+}
+
+div.ec-sidebar{
+	padding: 0;
+}
