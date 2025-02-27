@@ -1,17 +1,9 @@
 <script lang="ts">
-	// will branch tasks. if you see this in prod I'm sorry
-	// Styling Sidebar
-	//Styling import .csv
-	//Finalize import .csv functionality
 
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
-	import { onMount, afterUpdate } from 'svelte';
 	import { events } from '$lib/stores/events';
-	import Papa from 'papaparse';
-	import { convertTo24Hour } from '$lib/functions/24HrConversion.ts';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
-
 	export const courses: any = [];
 	let uploadedCourses: any[] = [];
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
@@ -40,11 +32,9 @@
 
 
 	// CSV file handling
-	let csvData: any[] = [];
 	let file: any;
 	let fileName = 'No file chosen';
 
-	// this function handles the file change event, so that parsing can be done
 	function handleFileChange(event: any) {
 		file = event.target.files[0];
 		if (file) {
@@ -55,8 +45,7 @@
 	}
 
 
-
-	// this takes the uploaded file and parses it into a usable format
+// this function will parse the CSV file, see the parseCSVUtil.ts file for more details
 	async function parseCSV() {
     if (file) {
       const processedCourses = await parseCSVFile(file);
@@ -76,11 +65,6 @@
       console.log('No file chosen');
     }
   }	//   end CSV file handling
-
-
-
-
-
 
 
 
