@@ -4,14 +4,15 @@
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
-	export const courses: any = [];
-	let uploadedCourses: any[] = [];
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 	import UploadModal from '$lib/components/modals/UploadModal.svelte';
 
+	// initial variables
+	export const courses: any = [];
+	let uploadedCourses: any[] = [];
 
 
-	let csvFinal: any[] = [];
+
 	// modal setters
 	let isUploadModalActive = false;
 	let isEditModalActive = false;
