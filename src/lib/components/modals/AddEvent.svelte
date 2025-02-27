@@ -1,52 +1,207 @@
 <script lang="ts">
-	import { addEventModalActive } from "$lib/stores/modals";
-
-    let handleAddEventModal = () => {
-        $addEventModalActive = !$addEventModalActive;
+  import { onMount } from 'svelte';
+  import { events } from '$lib/stores/events';
+  import { convertTo24Hour } from '$lib/functions/24HrConversion';
+  
+  // Expose the modal state to parent
+  export let isOpen = false;
+  export let onClose = () => { isOpen = false; };
+  
+  // Form data
+  let className = '';
+  let profFirstName = '';
+  let profLastName = '';
+  let startTime = '';
+  let classLength = '';
+  
+  // Days selection
+  let days = [
+    { name: "MON", value: "2024-07-01T", selected: false },
+    { name: "TUES", value: "2024-07-02T", selected: false },
+    { name: "WED", value: "2024-07-03T", selected: false },
+    { name: "THUR", value: "2024-07-04T", selected: false },
+    { name: "FRI", value: "2024-07-05T", selected: false }
+  ];
+  
+  // Toggle day selection
+  function toggleDay(index: number) {
+    days[index].selected = !days[index].selected;
+  }
+  
+  // Calculate end time based on start time and class length
+  function calculateEndTime(start: string, lengthMinutes: number): string {
+    if (!start) return '';
+    
+    // Convert startTime from HH:MM to Date object
+    const [hours, minutes] = start.split(':').map(Number);
+    const startDate = new Date();
+    startDate.setHours(hours, minutes, 0, 0);
+    
+    // Add class length
+    const endDate = new Date(startDate.getTime() + lengthMinutes * 60000);
+    
+    // Format end time as HH:MM
+    return `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
+  }
+  
+  // Handle form submission
+  function handleSubmit() {
+    // Validate form
+    if (!className || !startTime || !classLength) {
+      alert('Please fill in all required fields');
+      return;
     }
+    
+    const selectedDays = days.filter(day => day.selected);
+    if (selectedDays.length === 0) {
+      alert('Please select at least one day');
+      return;
+    }
+    
+    // Calculate end time
+    const endTime = calculateEndTime(startTime, parseInt(classLength));
+    
+    // Create new events for each selected day
+    selectedDays.forEach(day => {
+      const newEvent = {
+        title: `${className} (${profFirstName} ${profLastName})`,
+        start: `${day.value}${startTime}:00`,
+        end: `${day.value}${endTime}:00`,
+        buildingAndRoom: 'Custom Location',
+        CRN: 'CUSTOM',
+        Course: className,
+        Instructor: `${profFirstName} ${profLastName}`,
+        meetingDays: [day.value],
+        meetingTime: [startTime, endTime]
+      };
+      
+      // Add to events store
+      events.update(value => [...value, newEvent]);
+    });
+    
+    // Reset form and close modal
+    resetForm();
+    onClose();
+  }
+  
+  // Reset form
+  function resetForm() {
+    className = '';
+    profFirstName = '';
+    profLastName = '';
+    startTime = '';
+    classLength = '';
+    days.forEach(day => day.selected = false);
+  }
 </script>
 
-<!-- <div>
-    <h1>Add Event</h1>
-    <form>
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" required>
-        <label for="start">Start</label>
-        <input type="datetime-local" id="start" name="start" required>
-        <label for="end">End</label>
-        <input type="datetime-local" id="end" name="end" required>
-        <button on:click|preventDefault type="submit">Add Event</button>
-    </form>
-</div> -->
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full">
+    <div class="bg-[#275D38] text-white p-4 text-center text-xl font-bold rounded-t-lg font-primary-semibold">
+      ADD CUSTOM SCHEDULE
+    </div>
+    <div class="p-6">
+      <form class="grid grid-cols-2 gap-4" on:submit|preventDefault={handleSubmit}>
+        <!-- Class Name -->
+        <div>
+          <label class="block text-gray-700 font-medium font-primary">Class Name*</label>
+          <input
+            type="text"
+            bind:value={className}
+            placeholder="Type Class Name"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            required
+          />
+        </div>
 
-<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
- 
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-  
-    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <!-- Professor Name -->
+        <div>
+          <label class="block text-gray-700 font-medium font-primary">Prof First Name</label>
+          <input
+            type="text"
+            bind:value={profFirstName}
+            placeholder="Type First Name"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+          />
+        </div>
 
-        <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-          <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                </svg>
-              </div>
-              <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                <h3 class="text-base font-semibold text-gray-900" id="modal-title">Add a Course</h3>
-                <div class="mt-2">
-                  <p class="text-sm text-gray-500">Fill in the course information below:</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-            <button type="button" class="inline-flex w-full justify-center rounded-md bg-[#275D38] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#4ba23F] sm:ml-3 sm:w-auto">Add Course</button>
-            <button on:click={handleAddEventModal} type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+        <div>
+          <label class="block text-gray-700 font-medium font-primary">Prof Last Name</label>
+          <input
+            type="text"
+            bind:value={profLastName}
+            placeholder="Type Last Name"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+          />
+        </div>
+
+        <!-- Select Days -->
+        <div class="col-span-2">
+          <label class="block text-gray-700 font-medium font-primary">Select Days:*</label>
+          <div class="flex space-x-2 mt-1">
+            {#each days as day, i}
+              <button
+                type="button"
+                class="px-4 py-2 rounded-md border {day.selected ? 'bg-[#275D38] text-white' : 'bg-gray-200 text-gray-700'}"
+                on:click={() => toggleDay(i)}
+              >
+                {day.name}
+              </button>
+            {/each}
           </div>
         </div>
-      </div>
+
+        <!-- Start Time -->
+        <div>
+          <label class="block text-gray-700 font-medium font-primary">Select Start Time*</label>
+          <input
+            type="time"
+            bind:value={startTime}
+            class="border border-gray-300 rounded-md p-2 mt-1 w-full"
+            required
+          />
+        </div>
+
+        <!-- Class Length -->
+        <div>
+          <label class="block text-gray-700 font-medium font-primary">Class Length*</label>
+          <select 
+            bind:value={classLength} 
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            required
+          >
+            <option value="">Select Class Length</option>
+            <option value="30">30 mins</option>
+            <option value="50">50 mins</option>
+            <option value="60">1 hour</option>
+            <option value="75">1 hour 15 mins</option>
+            <option value="90">1 hour 30 mins</option>
+            <option value="120">2 hours</option>
+            <option value="180">3 hours</option>
+          </select>
+        </div>
+
+        <!-- Preview -->
+        {#if startTime && classLength}
+          <div class="col-span-2 bg-gray-100 p-3 rounded mt-2">
+            <p class="font-primary">Preview: Class will run from <span class="font-semibold">{startTime}</span> to <span class="font-semibold">{calculateEndTime(startTime, parseInt(classLength))}</span></p>
+          </div>
+        {/if}
+
+        <!-- Buttons -->
+        <div class="col-span-2 flex justify-end space-x-4 mt-4">
+          <button
+            type="button"
+            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-primary"
+            on:click={() => { resetForm(); onClose(); }}
+          >
+            Cancel
+          </button>
+          <button type="submit" class="bg-[#275D38] text-white px-4 py-2 rounded-md font-primary">
+            Add Schedule
+          </button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
