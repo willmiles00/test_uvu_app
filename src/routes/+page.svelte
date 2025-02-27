@@ -10,17 +10,20 @@
 	import { events } from '$lib/stores/events';
 	import Papa from 'papaparse';
 	import { convertTo24Hour } from '$lib/functions/24HrConversion.ts';
+	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
+
 	export const courses: any = [];
 	let uploadedCourses: any[] = [];
+	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 
 
 
 	let csvFinal: any[] = [];
 	// modal setters
 	let isUploadModalActive = false;
-	let isAddCustomModalActive = false;
-	function handleCustomModal() {
-		isAddCustomModalActive = !isAddCustomModalActive;
+	let isEditModalActive = false;
+	function handleEditModal() {
+		isEditModalActive = !isEditModalActive;
 	}
 	function handleUploadModal() {
 		isUploadModalActive = !isUploadModalActive;
@@ -28,6 +31,12 @@
 	function handleUploadCustomSuhedules() {
     isUploadModalActive = !isUploadModalActive;
   }
+
+  let isAddCustomModalActive = false;
+	
+	function handleCustomModal() {
+		isAddCustomModalActive = !isAddCustomModalActive;
+	}
 
 
 	// CSV file handling
@@ -49,128 +58,24 @@
 
 	// this takes the uploaded file and parses it into a usable format
 	async function parseCSV() {
-		if (file) {
-			const reader = new FileReader();
-			const uploadedData = await new Promise<string>((resolve, reject) => {
-				reader.onload = () => resolve(reader.result as string);
-				reader.onerror = () => reject(reader.error);
-				reader.readAsText(file);
-			});
-			// CourseLeaf has two lines of metadata at the beginning of the file, so we need to remove them
-
-			//In order to remove the first two lines, we need to split the string into lines, remove the first two lines, and then join the remaining lines back into a string.:
-			const lines = uploadedData.split('\n'); // Split the string into lines
-
-			// Remove the first two lines
-			const removeHeaders = lines.slice(2);
-
-			// Join the remaining lines back into a string
-			const uploadedDataHeadersRemoved = removeHeaders.join('\n');
-
-			// csvData is the data that we will be using
-			csvData = Papa.parse(uploadedDataHeadersRemoved, { header: true }).data;
-
-			//we need to filter out any rows that don't have a CRN, as they do not have a meeting pattern
-			csvFinal = csvData.filter((row) => row.hasOwnProperty('CRN'));
-
-			//Since the data has meeting patterns that are abbreviated, we need to map the abbreviations to the preset days we specified in the vkurko calendar
-			const dayMapping = {
-			m: '2024-07-01T',
-   			t: '2024-07-02T',
-    		w: '2024-07-03T',
-    		r: '2024-07-04T',
-    		f: '2024-07-05T'
-		};
-
-		//splits up the meeting pattern into days and times, see the convertTo24Hour function for more details
-		csvData.forEach((row) => {
-			if (row.CRN && row['Meeting Pattern'] !== 'Does Not Meet') {
-				const [meetingDays, meetingTime] = row['Meeting Pattern'].split(' ', 2);
-				row.meetingDays = meetingDays
-					.split('')
-					.map((day: string) => dayMapping[day.toLowerCase() as keyof typeof dayMapping]);
-					row.meetingTime = meetingTime.split('-').map(convertTo24Hour);
-			}
-		});
-
-	
-
-		  // due to the way the vkurko calendar works, every event has a title, start, and end property. We need to cram the data into this format
-		
-			
-			//let's add the courses to the uploadedCourses array
-			csvFinal.forEach((course) => {
-				// if the course meets on more than one day, we need to create a separate event for each day
-				if (course.meetingDays.length > 1){
-				course.meetingDays.forEach((day:any)=>{
-
-					// course.meetingTime = course.meetingTime.map((time: string) => convertTimeTo24Hour(time));
-
-					
-
-					const newCourse = {
-						
-						title: course.Course + ' ' + course['Building and Room'],
-						start: day + course.meetingTime[0],
-						end: day + course.meetingTime[1],
-						buildingAndRoom: course['Building and Room'],
-						CRN: course.CRN,
-						Course: course.Course,
-						Instructor: course.Instructor,
-						meetingDays: course.meetingDays,
-						meetingTime: course.meetingTime,
-				
-					};
-					uploadedCourses.push(newCourse);
-					// console.log('uploadedCourses:', uploadedCourses);
-
-				});
-				
-				}
-				else{
-					const newCourse = {
-						title: course.Course + ' ' + course['Building and Room'],
-						start: '2024-07-01T' + course.meetingTime[0],
-						end: '2024-07-01T' + course.meetingTime[1],
-						buildingAndRoom: course['Building and Room'],
-						CRN: course.CRN,
-						Course: course.Course,
-						Instructor: course.Instructor,
-						meetingDays: course.meetingDays,
-						meetingTime: course.meetingTime,
-					};
-					uploadedCourses.push(newCourse);
-					// console.log('uploadedCourses:', uploadedCourses);
-
-				}
-			});
-
-
-
-		uploadedCourses.forEach((course) => {
-			events.update((value: any) => {
-				return [...value, course];
-			});
-		});
-
-		
-
-
-		} // end if(file)
-		else {
-			console.log('No file chosen');
-		}
-
-		
-
-		
-
-		fileName = 'No file chosen';
-
-		
-
-		handleUploadModal();
-	}	//   end CSV file handling
+    if (file) {
+      const processedCourses = await parseCSVFile(file);
+      
+      // Update the uploadedCourses with the processed data
+      uploadedCourses = processedCourses;
+      
+      // Update the global store with the new courses
+      events.update((value: any) => {
+        return [...value, ...processedCourses];
+      });
+      
+      // Reset UI state
+      fileName = 'No file chosen';
+      handleUploadModal();
+    } else {
+      console.log('No file chosen');
+    }
+  }	//   end CSV file handling
 
 
 
@@ -234,12 +139,12 @@
 				<button
 				type="button"
 				class="addAndEditBtn"
-				on:click={handleCustomModal}>Edit Schedules</button
+				on:click={handleEditModal}>Edit Schedules</button
 			>
 				<button
 					type="button"
 					class="addAndEditBtn"
-					on:click={handleUploadModal}>Add Schedules</button
+					on:click={handleCustomModal}>Add Schedules</button
 				>
 			
 			</div>
@@ -321,7 +226,7 @@
 
 <!-- Add Custom Schedule -->
 <!-- Modal (Opens on Click) -->
-{#if isAddCustomModalActive}
+{#if isEditModalActive}
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
       <div class="bg-green-700 text-white p-4 text-center text-xl font-bold rounded-t-lg">
@@ -410,6 +315,13 @@
     </div>
   </div>
 {/if}
+
+{#if isAddCustomModalActive}
+		<AddCustomSchedule 
+			isOpen={isAddCustomModalActive} 
+			onClose={handleCustomModal} 
+		/>
+	{/if}
 
 	
 </main>
