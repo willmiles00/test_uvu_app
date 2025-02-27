@@ -4,7 +4,7 @@
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
-    import { onMount, afterUpdate } from 'svelte';
+    import { onMount, onDestroy, afterUpdate } from 'svelte';
 
     // since we are using a static date, we need to define the days of the week. This week of July is easy to work with
     let Monday = '2024-07-01';
@@ -65,12 +65,19 @@
        dayHeaderFormat: { weekday: 'long' },
        slotHeight: 40,
        slotEventOverlap: false,
+
+       eventClick: function(info) {
+    console.log('Event clicked:', info.event);
+    // Handle event click
+},
     };
 
 
     function updateOptions() {
         options.slotDuration = '01:00';
     }
+
+    
 
 //functional event adder
 

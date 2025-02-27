@@ -124,7 +124,9 @@
 		</div>
 		<!-- end sidebar -->
 		<!-- calendar view -->
+
 		<div class="grow">
+
 			<CalendarView />
 		</div>
 	</body>
