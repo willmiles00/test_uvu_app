@@ -54,16 +54,16 @@
         events: $events,
 
         // sets the time slots to 15 minutes, min time to 6:30am, max time to 10:30pm
-        slotDuration: '00:15:00',
-        slotMinTime: '06:30:00',
-        slotMaxTime: '22:30:00',
+        slotDuration: '00:30:00',
+        slotMinTime: '07:00:00',
+        slotMaxTime: '21:00:00',
         // hides weekends
         hiddenDays: [0, 6],
         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
        headerToolbar:{start: '', center: '', end: ''},
     //    gets rid of specific day of the week in header. We will be adding all events to the same 'week' to avoid events falling off the face of the earth
        dayHeaderFormat: { weekday: 'long' },
-       slotHeight: 40,
+       slotHeight: 30,
        slotEventOverlap: false,
 
        eventClick: function(info) {
@@ -84,6 +84,19 @@
 
 </script>
 
-
+<div class="relative">
 <Calendar bind:this={ec} {plugins} {options} />
 
+{#if $events.length === 0}
+    <div class="absolute top-0 left-0 w-full h-full bg-[#E8E8E8]">
+
+        <div class="flex flex-col items-center h-full justify-center">
+            <img src='/importcsv.svg' class="w-1/4" alt="import csv" />
+            <p class="text-2xl font-bold text-gray-500">IMPORT .CSV FILE</p>
+            <p>Upload .CSV File or add custom schedule to display calendar </p>
+           
+        </div>
+
+    </div>
+{/if}
+</div>
