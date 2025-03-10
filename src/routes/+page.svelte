@@ -75,11 +75,7 @@
 			/>
 		</div>
 
-		<button
-			type="button"
-			class="btn bg-gradient-to-br variant-gradient-primary-secondary rounded-md text-sm mx-2 font-primary uppercase"
-			on:click={handleUploadModal}>Add Timeblock</button
-		>
+		<button class="bg-uvu-green text-white px-3 py-1 rounded-lg font-bold h-[28px]">Add Timeblock</button>
 	</div>
 
 
