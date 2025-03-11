@@ -54,7 +54,7 @@
   }
   
   // Keep track of the currently selected file name for display in the sidebar
-  let fileName = 'No file chosen';
+  let fileName = 'No File Selected';
 
 
 
@@ -65,9 +65,10 @@
 
 <main class="h-full w-full">
 	<!-- main functionality buttons -->
+	
 	<div class="w-full flex justify-between bg-gray-100 h-[44px]">
 		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
-			<p class="uppercase text-[18px]">Title:</p>
+			<p class="uppercase text-[18px] font-rajdhani font-semibold text-uvu-green">Title:</p>
 			<input
 				class="input !bg-white placeholder-[#757677] !rounded-[3px] mx-2"
 				type="text"
@@ -77,29 +78,40 @@
 			/>
 		</div>
 
-		<button class="bg-uvu-green text-white px-3 py-1 rounded-lg font-bold h-[28px]">Add Timeblock</button>
+		<div class="h-full flex items-center mr-[12px]">
+		<button class="bg-[#DDDDDD] text-uvu-green uppercase h-[28px] w-[158px] font-rajdhani text-[14px] font-semibold rounded-[25px]"><i class="fa-solid fa-circle-plus pr-1" style="color: #275D38;"></i> Add Timeblock</button>
+	</div>
 	</div>
 
 
 	<body class="flex flex-wrap w-full h-full flex-row">
 		<!-- sidebar -->
-		<div id="sidebar" class="w-auto h-auto border border-[#DCDCDD] border-y-2">
+		<div id="sidebar" class="w-auto h-auto border ">
 
 			<!-- import sidebar -->
-			<div id="import" class="border m-4 p-2 w-[269px] rounded-lg">
-				<p class="text-[15px] text-uvu-green">Current file:</p>
-				<p>{fileName}</p>
+			<div id="import" class="border m-4 p-2 w-[269px] rounded-[2px]">
+				<div class="flex flex-wrap  items-center">
+					<span class="bg-[#E8E8E8] rounded-full w-[28px] h-[28px] flex items-center justify-center mr-2">
+					<i class="fa-solid fa-file-lines" style="color: #578164;"></i>
+				</span>
+				<div class="flex flex-wrap flex-col">
+				<p class=" text-uvu-green text-[12px] font-rajdhani font-semibold max-h-fit">Current file:</p>
+				<p class="font-lato text-[12px] max-h-fit mt-[-10px]">{fileName}</p>
+				</div>
+				</div>
 				<button
 					type="button"
-					class="btn bg-[#DDDDDD] uppercase rounded-2xl text-sm font-primary w-full"
-					on:click={handleUploadModal}>Import New .CSV</button
+					class="btn bg-uvu-green uppercase rounded-2xl text-sm font-rajdhani w-[253px] h-[28px] text-white font-semibold"
+					on:click={handleUploadModal}>Import .CSV File</button
 				>
 			</div>
 
 			<!-- filter sidebar -->
-			<div id="filterSection" class="flex flex-wrap flex-col m-4">
+			<div id="filterSection" class="flex flex-wrap flex-col m-4 mt-[52px] mb-[52px]">
 				<p class="uppercase font-primary-bold text-[18px]">Select schedule</p>
-				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">reset filters</button>
+				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
+					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
+				</button>
 				<select class="filterSelect" name="" id="">Professors <option value="">Professors</option></select>
 				<select class="filterSelect" name="" id="">Rooms <option value="">Rooms</option></select>
 				<select class="filterSelect" name="" id="">Courses <option value="">Courses</option></select>
@@ -110,12 +122,17 @@
 				<button
 				type="button"
 				class="addAndEditBtn"
-				on:click={handleEditModal}>Edit Schedules</button
+				on:click={handleEditModal}>
+				<i class="fa-solid fa-pen-to-square pr-2" style="color: white;"></i>
+				Edit Schedules
+				</button
 			>
 				<button
 					type="button"
 					class="addAndEditBtn"
-					on:click={handleCustomModal}>Add Schedules</button
+					on:click={handleCustomModal}>
+					<i class="fa-solid fa-circle-plus pr-2" style="color: white;"></i>
+					Add Custom Schedules</button
 				>
 			
 			</div>
@@ -305,7 +322,17 @@
 		font-size: 14px;
 		min-width: 269px;
 		max-width: 269px;
+		height: 28px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
-	
+	.font-rajdhani {
+		font-family: rajdhani;
+	}
+
+	.font-lato {
+		font-family: lato;
+	}
 </style>

@@ -94,16 +94,16 @@
 <div class="relative">
 <Calendar bind:this={ec} {plugins} {options} />
 
-<!-- {#if $events.length === 0}
+{#if $events.length === 0}
     <div class="absolute top-0 left-0 w-full h-full bg-[#E8E8E8]">
 
         <div class="flex flex-col items-center h-full justify-center">
             <img src='/importcsv.svg' class="w-1/4" alt="import csv" />
-            <p class="text-2xl font-bold text-gray-500">IMPORT .CSV FILE</p>
+            <p class="text-2xl font-bold text-[#00843D]">IMPORT .CSV FILE</p>
             <p>Upload .CSV File or add custom schedule to display calendar </p>
            
         </div>
 
     </div>
-{/if} -->
+{/if}
 </div>
