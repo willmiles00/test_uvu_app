@@ -6,6 +6,7 @@
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 	import UploadModal from '$lib/components/modals/UploadModal.svelte';
+	import AddTimeblock from '$lib/components/modals/AddTimeblock.svelte';
 	import { afterUpdate, onMount } from 'svelte';
 
 	// initial variables
@@ -18,6 +19,7 @@
 	let isUploadModalActive = false;
 	let isEditModalActive = false;
 	let isAddCustomModalActive = false;
+	let isAddTimeblockModalActive = false;
 
 	function handleEditModal() {
 		isEditModalActive = !isEditModalActive;
@@ -28,9 +30,11 @@
 	function handleUploadCustomSuhedules() {
     isUploadModalActive = !isUploadModalActive;
   }
-
 	function handleCustomModal() {
 		isAddCustomModalActive = !isAddCustomModalActive;
+	}
+	function handleAddTimeblock() {
+		isAddTimeblockModalActive = !isAddTimeblockModalActive;
 	}
 
 
@@ -79,7 +83,7 @@
 		</div>
 
 		<div class="h-full flex items-center mr-[12px]">
-		<button id="addTimeblock" class="bg-[#DDDDDD] text-uvu-green uppercase h-[28px] w-[158px] font-rajdhani text-[14px] font-semibold rounded-[25px]"><i class="fa-solid fa-circle-plus pr-1" style="color: #275D38;"></i> Add Timeblock</button>
+		<button on:click={handleAddTimeblock} id="addTimeblock" class="bg-[#DDDDDD] text-uvu-green uppercase h-[28px] w-[158px] font-rajdhani text-[14px] font-semibold rounded-[25px]"><i class="fa-solid fa-circle-plus pr-1" style="color: #275D38;"></i> Add Timeblock</button>
 	</div>
 	</div>
 
@@ -252,6 +256,13 @@
 		<AddCustomSchedule 
 			isOpen={isAddCustomModalActive} 
 			onClose={handleCustomModal} 
+		/>
+	{/if}
+
+	{#if isAddTimeblockModalActive}
+		<AddTimeblock 
+			isOpen={isAddTimeblockModalActive} 
+			onClose={handleAddTimeblock} 
 		/>
 	{/if}
 
