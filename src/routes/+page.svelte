@@ -68,7 +68,7 @@
 	
 	<div class="w-full flex justify-between bg-gray-100 h-[44px]">
 		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
-			<p class="uppercase text-[18px] font-rajdhani font-semibold text-uvu-green">Title:</p>
+			<p id="titleHeader" class="uppercase text-[18px] font-rajdhani font-semibold text-uvu-green">Title:</p>
 			<input
 				class="input !bg-white placeholder-[#757677] !rounded-[3px] mx-2"
 				type="text"
@@ -79,7 +79,7 @@
 		</div>
 
 		<div class="h-full flex items-center mr-[12px]">
-		<button class="bg-[#DDDDDD] text-uvu-green uppercase h-[28px] w-[158px] font-rajdhani text-[14px] font-semibold rounded-[25px]"><i class="fa-solid fa-circle-plus pr-1" style="color: #275D38;"></i> Add Timeblock</button>
+		<button id="addTimeblock" class="bg-[#DDDDDD] text-uvu-green uppercase h-[28px] w-[158px] font-rajdhani text-[14px] font-semibold rounded-[25px]"><i class="fa-solid fa-circle-plus pr-1" style="color: #275D38;"></i> Add Timeblock</button>
 	</div>
 	</div>
 

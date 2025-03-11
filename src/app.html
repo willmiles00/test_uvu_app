@@ -18,14 +18,26 @@
 	}
 
 	@media print {
+		@page{
+			margin: 0;
+		}
 		#sidebar {
 			display: none;
 		}
 		#header {
 			display: none;
 		}
-		@page {
-			size: landscape;
+		.ec-event{
+			border: 1px solid black;
+		}
+		#addTimeblock{
+			display: none;
+		}
+		#titleHeader{
+			display: none;
+		}
+		#calendar{
+			margin-top: 0;
 		}
 	}
 

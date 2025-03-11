@@ -2,6 +2,10 @@
 	import '../app.postcss';
 	import { initializeStores, Modal } from '@skeletonlabs/skeleton';
 
+	function handlePrint() {
+    print();
+  }
+
 initializeStores();
 </script>
 
@@ -11,7 +15,7 @@ initializeStores();
 </div>
 <div class="mx-3">
 	<button class="bg-uvu-green text-white uppercase h-[28px] w-[163px] font-primary-semibold text-[14px] rounded-[25px]"><i class="fa-solid fa-file-export pr-1" style="color: white;"></i> Export Schedule</button>
-	<button class="bg-uvu-green text-white uppercase h-[28px] w-[163px] font-primary-semibold text-[14px] rounded-[25px]"><i class="fa-solid fa-print pr-1" style="color: white;"></i> Print Schedule</button>
+	<button on:click={handlePrint} class="bg-uvu-green text-white uppercase h-[28px] w-[163px] font-primary-semibold text-[14px] rounded-[25px]"><i class="fa-solid fa-print pr-1" style="color: white;"></i> Print Schedule</button>
 </div>
 </header>
 <Modal />
