@@ -6,6 +6,7 @@
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 	import UploadModal from '$lib/components/modals/UploadModal.svelte';
+	import { afterUpdate, onMount } from 'svelte';
 
 	// initial variables
 	export const courses: any = [];
@@ -58,6 +59,7 @@
 
 
 
+ 
 
 </script>
 

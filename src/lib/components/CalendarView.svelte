@@ -16,6 +16,8 @@
     onMount(() => {
            // this is needed to define ec
            ec.refetchEvents()
+
+
     });
 
     let previousEvents: any = [];
@@ -33,7 +35,13 @@
             ec.getEvents();
             console.log('here is the current state of events:',value);
         });
+        
+    
     });
+    
+
+     
+
 
     // annoying required type definitions
     type CalendarOptions = {
@@ -65,6 +73,9 @@
        dayHeaderFormat: { weekday: 'long' },
        slotHeight: 30,
        slotEventOverlap: false,
+       
+  
+
 
        eventClick: function(info) {
     console.log('Event clicked:', info.event);
@@ -77,17 +88,13 @@
         options.slotDuration = '01:00';
     }
 
-    
-
-//functional event adder
-
-
+   
 </script>
 
 <div class="relative">
 <Calendar bind:this={ec} {plugins} {options} />
 
-{#if $events.length === 0}
+<!-- {#if $events.length === 0}
     <div class="absolute top-0 left-0 w-full h-full bg-[#E8E8E8]">
 
         <div class="flex flex-col items-center h-full justify-center">
@@ -98,5 +105,5 @@
         </div>
 
     </div>
-{/if}
+{/if} -->
 </div>
