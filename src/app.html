@@ -17,4 +17,16 @@
 		font-family: 'Rajdhani', sans-serif;
 	}
 
+	@media print {
+		#sidebar {
+			display: none;
+		}
+		#header {
+			display: none;
+		}
+		@page {
+			size: landscape;
+		}
+	}
+
 </style>
