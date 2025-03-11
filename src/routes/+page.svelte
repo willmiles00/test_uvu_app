@@ -108,7 +108,7 @@
 
 			<!-- filter sidebar -->
 			<div id="filterSection" class="flex flex-wrap flex-col m-4 mt-[52px] mb-[52px]">
-				<p class="uppercase font-primary-bold text-[18px]">Select schedule</p>
+				<p class="uppercase font-primary-bold text-[18px] mb-2">Select schedule</p>
 				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
 					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>

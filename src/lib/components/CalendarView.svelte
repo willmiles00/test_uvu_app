@@ -98,12 +98,24 @@
     <div class="absolute top-0 left-0 w-full h-full bg-[#E8E8E8]">
 
         <div class="flex flex-col items-center h-full justify-center">
-            <img src='/importcsv.svg' class="w-1/4" alt="import csv" />
-            <p class="text-2xl font-bold text-[#00843D]">IMPORT .CSV FILE</p>
-            <p>Upload .CSV File or add custom schedule to display calendar </p>
+            <div class="w-[164px] h-[164px] mb-2">
+            <img src='/importcsv.svg' class="w-full h-auto" alt="import csv" />
+        </div>
+            <p class="text-[24px] font-rajdhani font-semibold text-[#00843D] mb-2">IMPORT .CSV FILE</p>
+            <p class="font-lato w-[317px] text-center">Upload .CSV File or add custom schedule to display calendar </p>
            
         </div>
 
     </div>
 {/if}
 </div>
+
+<style lang="postcss">
+  .font-rajdhani {
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .font-lato {
+    font-family: 'Lato', sans-serif;
+  }
+</style>
