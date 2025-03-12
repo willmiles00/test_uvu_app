@@ -66,13 +66,47 @@
         slotMinTime: '07:00:00',
         slotMaxTime: '21:00:00',
         // hides weekends
-        hiddenDays: [0, 6],
+        hiddenDays: [0],
         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
        headerToolbar:{start: '', center: '', end: ''},
     //    gets rid of specific day of the week in header. We will be adding all events to the same 'week' to avoid events falling off the face of the earth
        dayHeaderFormat: { weekday: 'long' },
        slotHeight: 30,
        slotEventOverlap: false,
+       eventContent: function(info) {
+        return {
+            html: `
+      
+            <div class='event-container flex flex-row wrap w-full h-full py-[4px] text-black'>
+            
+                <span class='color-span h-full w-[4px] mr-[4px] rounded-2xl' style='background-color:${info.event.extendedProps.pairingColor};'></span>
+                <div class='info-container flex flex-col w-full h-full'>
+                <div class="event-title font-lato font-bold text-[12px] h-fit w-full">${info.event.title}</div>
+                <div class='event-room font-lato text-[10px] h-fit w-full'> ${info.event.extendedProps.buildingAndRoom || ''}</div>
+                <div class='time-container font-lato text-[10px] flex flex-row w-full h-fit'> ${info.event.extendedProps.formattedTime} </div>
+                </div>
+              
+            </div>
+            `
+
+
+
+
+
+
+            // html: `
+            // <div class='event-container flex w-full h-full'>
+            //     <span class='color-span h-full w-[3px] bg-red-50'></span>
+            //     <div class="event-title">${info.event.title}</div>
+            //     <div class="event-instructor">${info.event.extendedProps.Instructor || ''}</div>
+            //     <div class="event-room">Room:${info.event.extendedProps.buildingAndRoom || ''}</div>
+            //     <div class="event-crn">CRN: ${info.event.extendedProps.CRN || ''}</div>
+           
+            //     <div>&hellip;</div>
+            // </div>
+            // `
+        };
+    },
        
   
 
@@ -91,6 +125,7 @@
    
 </script>
 
+<!-- html -->
 <div class="relative">
 <Calendar bind:this={ec} {plugins} {options} />
 

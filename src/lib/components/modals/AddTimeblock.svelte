@@ -12,7 +12,7 @@
     let profFirstName = '';
     let profLastName = '';
     let startTime = '';
-    let classLength = '';
+    let endTime = ''; 
     
     // Days selection
     let days = [
@@ -45,67 +45,68 @@
     }
     
     // Handle form submission
-    function handleSubmit() {
-      // Validate form
-      if (!className || !startTime || !classLength) {
-        alert('Please fill in all required fields');
-        return;
-      }
-      
-      const selectedDays = days.filter(day => day.selected);
-      if (selectedDays.length === 0) {
-        alert('Please select at least one day');
-        return;
-      }
-      
-      // Calculate end time
-      const endTime = calculateEndTime(startTime, parseInt(classLength));
-      
-      // Create new events for each selected day
-      selectedDays.forEach(day => {
-        const newEvent = {
-          title: `${className} (${profFirstName} ${profLastName})`,
-          start: `${day.value}${startTime}:00`,
-          end: `${day.value}${endTime}:00`,
-          buildingAndRoom: 'Custom Location',
-          CRN: 'CUSTOM',
-          Course: className,
-          Instructor: `${profFirstName} ${profLastName}`,
-          meetingDays: [day.value],
-          meetingTime: [startTime, endTime]
-        };
-        
-        // Add to events store
-        events.update(value => [...value, newEvent]);
-      });
-      
-      // Reset form and close modal
-      resetForm();
-      onClose();
-    }
+   // ...existing code...
+function handleSubmit() {
+  // Validate form
+  if (!className || !startTime || !endTime) {
+    alert('Please fill in all required fields');
+    return;
+  }
+  
+  const selectedDays = days.filter(day => day.selected);
+  if (selectedDays.length === 0) {
+    alert('Please select at least one day');
+    return;
+  }
+  
+  // Create new events for each selected day
+  selectedDays.forEach(day => {
+    const newEvent = {
+      title: `${className} (${profFirstName} ${profLastName})`,
+      start: `${day.value}${startTime}:00`,
+      end: `${day.value}${endTime}:00`,
+      buildingAndRoom: 'Custom Location',
+      CRN: 'CUSTOM',
+      Course: className,
+      Instructor: `${profFirstName} ${profLastName}`,
+      meetingDays: [day.value],
+      meetingTime: [startTime, endTime]
+    };
     
-    // Reset form
-    function resetForm() {
-      className = '';
-      profFirstName = '';
-      profLastName = '';
-      startTime = '';
-      classLength = '';
-      days.forEach(day => day.selected = false);
-    }
+    // Add to events store
+    events.update(value => [...value, newEvent]);
+  });
+  
+  // Reset form and close modal
+  resetForm();
+  onClose();
+}
+
+function resetForm() {
+  className = '';
+  profFirstName = '';
+  profLastName = '';
+  startTime = '';
+  endTime = '';  // Update here too
+  days.forEach(day => day.selected = false);
+}
+// ...existing code...
+    
+ 
   </script>
   
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full">
-      <div class="bg-[#275D38] text-white p-4 text-center text-xl font-bold rounded-t-lg font-primary-semibold">
-        ADD CUSTOM SCHEDULE
+    <div class="bg-white rounded-lg shadow-lg max-w-3xl h-[598px] w-[900px]">
+      <div class="bg-[#00843D] text-white p-4 pl-6 text-xl font-bold rounded-t-lg font-primary-semibold uppercase">
+        Add Custom Timeblock
       </div>
       <div class="p-6">
         <form class="grid grid-cols-2 gap-4" on:submit|preventDefault={handleSubmit}>
-          <!-- Class Name -->
+         
           <div>
-            <label class="block text-gray-700 font-medium font-primary">Class Name*</label>
+            <label for="timeblockTitle" class="block text-gray-700 font-medium font-primary">Timeblock Title</label>
             <input
+            id="timeblockTitle"
               type="text"
               bind:value={className}
               placeholder="Type Class Name"
@@ -114,10 +115,11 @@
             />
           </div>
   
-          <!-- Professor Name -->
+      
           <div>
-            <label class="block text-gray-700 font-medium font-primary">Prof First Name</label>
+            <label for="roomNumber" class="block text-gray-700 font-medium font-primary">Room Number (Optional)</label>
             <input
+            id="roomNumber"
               type="text"
               bind:value={profFirstName}
               placeholder="Type First Name"
@@ -125,24 +127,16 @@
             />
           </div>
   
-          <div>
-            <label class="block text-gray-700 font-medium font-primary">Prof Last Name</label>
-            <input
-              type="text"
-              bind:value={profLastName}
-              placeholder="Type Last Name"
-              class="w-full border border-gray-300 rounded-md p-2 mt-1"
-            />
-          </div>
+          
   
           <!-- Select Days -->
           <div class="col-span-2">
-            <label class="block text-gray-700 font-medium font-primary">Select Days:*</label>
-            <div class="flex space-x-2 mt-1">
+            <label for="selectDays" class="block text-gray-700 font-medium font-primary">Select Days:*</label>
+            <div id="selectDays" class="flex space-x-2 mt-1">
               {#each days as day, i}
                 <button
                   type="button"
-                  class="px-4 py-2 rounded-md border {day.selected ? 'bg-[#275D38] text-white' : 'bg-gray-200 text-gray-700'}"
+                  class="px-4 py-2 rounded-md border {day.selected ? 'bg-[#275D38] text-white' : 'bg-[#DDDDDD] text-[#275D38]'} w-[126px] h-[63px] font-rajdhani font-semibold"
                   on:click={() => toggleDay(i)}
                 >
                   {day.name}
@@ -153,8 +147,9 @@
   
           <!-- Start Time -->
           <div>
-            <label class="block text-gray-700 font-medium font-primary">Select Start Time*</label>
+            <label for="startTime" class="block text-gray-700 font-medium font-primary">Select Start Time*</label>
             <input
+            id="startTime"
               type="time"
               bind:value={startTime}
               class="border border-gray-300 rounded-md p-2 mt-1 w-full"
@@ -162,31 +157,27 @@
             />
           </div>
   
-          <!-- Class Length -->
+          <!-- End Time -->
           <div>
-            <label class="block text-gray-700 font-medium font-primary">Class Length*</label>
-            <select 
-              bind:value={classLength} 
-              class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            <label for="endTime" class="block text-gray-700 font-medium font-primary">Select End Time*</label>
+            <input
+            id="endTime"
+              type="time"
+              bind:value={endTime}
+              class="border border-gray-300 rounded-md p-2 mt-1 w-full"
               required
-            >
-              <option value="">Select Class Length</option>
-              <option value="30">30 mins</option>
-              <option value="50">50 mins</option>
-              <option value="60">1 hour</option>
-              <option value="75">1 hour 15 mins</option>
-              <option value="90">1 hour 30 mins</option>
-              <option value="120">2 hours</option>
-              <option value="180">3 hours</option>
-            </select>
+            />
           </div>
-  
+
+          
+
+    
           <!-- Preview -->
-          {#if startTime && classLength}
-            <div class="col-span-2 bg-gray-100 p-3 rounded mt-2">
-              <p class="font-primary">Preview: Class will run from <span class="font-semibold">{startTime}</span> to <span class="font-semibold">{calculateEndTime(startTime, parseInt(classLength))}</span></p>
-            </div>
-          {/if}
+          {#if startTime && endTime}
+          <div class="col-span-2 bg-gray-100 p-3 rounded mt-2">
+            <p class="font-primary">Preview: Class will run from <span class="font-semibold">{startTime}</span> to <span class="font-semibold">{endTime}</span></p>
+          </div>
+        {/if}
   
           <!-- Buttons -->
           <div class="col-span-2 flex justify-end space-x-4 mt-4">
