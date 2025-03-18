@@ -7,8 +7,13 @@ export default {
 	darkMode: 'class',
 	content: ['./src/**/*.{html,js,svelte,ts}', join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')],
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				'opaque-white': 'rgba(255, 255, 255, 0.5)',
+
+		},
 	},
+},
 	plugins: [
 		skeleton({
 			themes: {
