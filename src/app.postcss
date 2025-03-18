@@ -41,6 +41,27 @@
 	font-display: swap;
 }
 
+@font-face{
+	font-family: 'Lato';
+	src: url('/fonts/Lato-Regular.ttf');
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face{
+	font-family: 'Lato';
+	src: url('/fonts/Lato-Light.ttf');
+	font-weight: 300;
+	font-display: swap;
+}
+
+@font-face{
+	font-family: 'Lato';
+	src: url('/fonts/Lato-Bold.ttf');
+	font-weight: 700;
+	font-display: swap;
+}
+
 @font-face {
 	font-family: 'Rajdhani';
 	src: url('/fonts/Rajdhani-Bold.ttf');
@@ -91,9 +112,10 @@ div.ec-header{
 }
 
 .ec-time-grid .ec-time, .ec-time-grid .ec-line {
-  height: 40px !important; 
+  height: 30px !important; 
   	text-align: right;
 	padding: 0px 8px 0px 0px;
+	
 }
 
 
@@ -110,3 +132,12 @@ div.ec-header{
 div.ec-sidebar{
 	padding: 0;
 }
+
+.ec-time-grid .ec-time{
+	top: 0px !important;
+}
+
+ .ec-time[datetime$="T07:00:00"]::before {
+    content: "7:00 AM";
+  }
+

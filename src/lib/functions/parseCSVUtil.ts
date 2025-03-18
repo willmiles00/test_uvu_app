@@ -60,29 +60,42 @@ export async function parseCSVFile(file: File) {
     if (course.meetingDays && course.meetingDays.length > 1) {
       course.meetingDays.forEach((day: any) => {
         const newCourse = {
-          title: course.Course + ' ' + course['Building and Room'],
+          title: course.Course,
           start: day + course.meetingTime[0],
           end: day + course.meetingTime[1],
-          buildingAndRoom: course['Building and Room'],
-          CRN: course.CRN,
-          Course: course.Course,
-          Instructor: course.Instructor,
-          meetingDays: course.meetingDays,
-          meetingTime: course.meetingTime,
+          extendedProps: {
+            formattedTime: course.meetingTime[0] + ' - ' + course.meetingTime[1],
+            buildingAndRoom: course['Building and Room'],
+            CRN: course.CRN,
+            Course: course.Course,
+            Instructor: course.Instructor,
+            meetingDays: course.meetingDays,
+            meetingTime: course.meetingTime,
+            color: '#B7DAB2',
+            pairingColor: '#35712C'
+            },
+            color: '#B7DAB2'
         };
         processedCourses.push(newCourse);
       });
     } else if (course.meetingDays) {
       const newCourse = {
-        title: course.Course + ' ' + course['Building and Room'],
+        title: course.Course,
         start: '2024-07-01T' + course.meetingTime[0],
         end: '2024-07-01T' + course.meetingTime[1],
+        extendedProps: {
+        formattedTime: course.meetingTime[0] + ' - ' + course.meetingTime[1],
         buildingAndRoom: course['Building and Room'],
         CRN: course.CRN,
         Course: course.Course,
         Instructor: course.Instructor,
         meetingDays: course.meetingDays,
         meetingTime: course.meetingTime,
+        color: '#B7DAB2',
+        pairingColor: '#35712C'
+        },
+       color: '#B7DAB2'
+       
       };
       processedCourses.push(newCourse);
     }
