@@ -90,7 +90,7 @@
 
 	<body class="flex flex-wrap w-full h-full flex-row">
 		<!-- sidebar -->
-		<div id="sidebar" class="w-auto h-auto border ">
+		<div id="sidebar" class="w-auto h-auto border max-w-[303px]">
 
 			<!-- import sidebar -->
 			<div id="import" class="border m-4 p-2 w-[269px] rounded-[2px]">
@@ -116,9 +116,25 @@
 				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
 					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>
-				<select class="filterSelect" name="" id="">Professors <option value="">Professors</option></select>
-				<select class="filterSelect" name="" id="">Rooms <option value="">Rooms</option></select>
-				<select class="filterSelect" name="" id="">Courses <option value="">Courses</option></select>
+				<select class="filterSelect max-w-[269px]" name="" id="">Professors 
+					<option value="">Professors</option>
+					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
+					<option value={instructor}>{instructor}</option>
+				  {/each}
+				</select>
+				<select class="filterSelect max-w-[269px]" name="" id="">Rooms 
+					<option value="">Rooms</option>
+					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+					<option value={buildingAndRoom}>{buildingAndRoom}</option>
+				  {/each}
+				</select>
+				<select class="filterSelect max-w-[269px]" name="" id="">Courses 
+					<option value="">Courses</option>
+					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+					<option value={courseName}>{courseName}</option>
+				  {/each}
+
+				</select>
 			</div>
 
 			<!-- add and edit schedules sidebar -->
