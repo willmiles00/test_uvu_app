@@ -15,6 +15,7 @@ onMount(() => {
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
+	import { filteredevents } from '$lib/stores/filteredevents';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 	import UploadModal from '$lib/components/modals/UploadModal.svelte';
@@ -73,6 +74,20 @@ onMount(() => {
   // Keep track of the currently selected file name for display in the sidebar
   let fileName = 'No File Selected';
 
+ function addToFiltersStore(event) {
+	
+	const selectedValue = event.target.value;
+
+	const currentEvents = $events;
+
+	const filtered = currentEvents.filter(course => 
+    course.extendedProps.Instructor === selectedValue
+  );
+	
+	filteredevents.set(filtered);
+	console.log('Filtered events:', filtered);
+	
+  }
 
 
 
@@ -129,7 +144,7 @@ onMount(() => {
 				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
 					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>
-				<select class="filterSelect max-w-[269px]" name="" id="">Professors 
+				<select on:change={addToFiltersStore} class="filterSelect max-w-[269px]" name="" id="">
 					<option value="">Professors</option>
 					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
 					<option value={instructor}>{instructor}</option>

@@ -4,6 +4,7 @@
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
+    import { filteredevents } from "$lib/stores/filteredevents";
     import { onMount, onDestroy, afterUpdate } from 'svelte';
 
     // since we are using a static date, we need to define the days of the week. This week of July is easy to work with
@@ -24,7 +25,7 @@
 
     afterUpdate(() => {
         // when the events store updates, we want to add the new events to the calendar
-        events.subscribe(value => {
+        filteredevents.subscribe(value => {
             const newEvents = value.filter(event => !previousEvents.includes(event));
             newEvents.forEach(event => {
                 ec.addEvent(event);
@@ -61,7 +62,7 @@
  
         date: '2024-07-01',
         view: 'timeGridWeek',
-        events: $events,
+        events: $filteredevents,
 
         // sets the time slots to 15 minutes, min time to 6:30am, max time to 10:30pm
         slotDuration: '00:30:00',
