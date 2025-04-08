@@ -4,6 +4,7 @@
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
+    import { filteredevents } from "$lib/stores/filteredevents";
     import { onMount, onDestroy, afterUpdate } from 'svelte';
 
     // since we are using a static date, we need to define the days of the week. This week of July is easy to work with
@@ -24,7 +25,7 @@
 
     afterUpdate(() => {
         // when the events store updates, we want to add the new events to the calendar
-        events.subscribe(value => {
+        filteredevents.subscribe(value => {
             const newEvents = value.filter(event => !previousEvents.includes(event));
             newEvents.forEach(event => {
                 ec.addEvent(event);
@@ -40,8 +41,8 @@
     });
     
 
-     
 
+   
 
     // annoying required type definitions
     type CalendarOptions = {
@@ -52,6 +53,8 @@
 
     let ec: any; 
     let plugins = [TimeGrid];
+
+    let openDropdownCRN: string | null = null;
     
     let options: CalendarOptions = {
   
@@ -59,7 +62,7 @@
  
         date: '2024-07-01',
         view: 'timeGridWeek',
-        events: $events,
+        events: $filteredevents,
 
         // sets the time slots to 15 minutes, min time to 6:30am, max time to 10:30pm
         slotDuration: '00:30:00',
@@ -77,13 +80,14 @@
         return {
             html: `
       
-            <div class='event-container flex flex-row wrap w-full h-full py-[4px] text-black'>
+            <div data-crn='${info.event.extendedProps.CRN}' class='event-container flex flex-row wrap w-full h-full py-[4px] text-black relative'>
             
                 <span class='color-span h-full w-[4px] mr-[4px] rounded-2xl' style='background-color:${info.event.extendedProps.pairingColor};'></span>
                 <div class='info-container flex flex-col w-full h-full'>
                 <div class="event-title font-lato font-bold text-[12px] h-fit w-full">${info.event.title}</div>
                 <div class='event-room font-lato text-[10px] h-fit w-full'> ${info.event.extendedProps.buildingAndRoom || ''}</div>
-                <div class='time-container font-lato text-[10px] flex flex-row w-full h-fit'> ${info.event.extendedProps.formattedTime} </div>
+                <div class='time-container font-lato text-[10px] flex flex-row w-full h-fit'> ${info.event.extendedProps.formattedTime || ''}</div>
+                <div class='details-button absolute top-0 right-0 bg-opaque-white w-[24px] h-[24px] rounded-full flex flex-wrap justify-center items-center'><button class='h-fit '><i class="fa-solid fa-ellipsis-vertical"></i></button></div>
                 </div>
               
             </div>
@@ -94,27 +98,26 @@
 
 
 
-            // html: `
-            // <div class='event-container flex w-full h-full'>
-            //     <span class='color-span h-full w-[3px] bg-red-50'></span>
-            //     <div class="event-title">${info.event.title}</div>
-            //     <div class="event-instructor">${info.event.extendedProps.Instructor || ''}</div>
-            //     <div class="event-room">Room:${info.event.extendedProps.buildingAndRoom || ''}</div>
-            //     <div class="event-crn">CRN: ${info.event.extendedProps.CRN || ''}</div>
-           
-            //     <div>&hellip;</div>
-            // </div>
-            // `
         };
     },
        
   
 
 
-       eventClick: function(info) {
-    console.log('Event clicked:', info.event);
-    // Handle event click
-},
+    eventClick: function(info) {
+            // Check if the click was on the details button
+            const target = info.jsEvent.target;
+            if (target.classList.contains('fa-ellipsis-vertical') || 
+                target.closest('.details-button')) {
+                const eventCRN = info.event.extendedProps.CRN;
+                // Toggle dropdown visibility
+                openDropdownCRN = openDropdownCRN === eventCRN ? null : eventCRN;
+                info.jsEvent.preventDefault(); // Prevent default calendar behavior
+            } else {
+                console.log('Event clicked:', info.event);
+                // Handle regular event click
+            }
+        },
     };
 
 
@@ -153,4 +156,6 @@
   .font-lato {
     font-family: 'Lato', sans-serif;
   }
+
+
 </style>

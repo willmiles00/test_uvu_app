@@ -1,12 +1,26 @@
 <script lang="ts">
+onMount(() => {
+	// Check if geolocation is supported
+	if ('geolocation' in navigator) {
+		console.log('Geolocation is supported');
+		console.log('Getting location...');
+		console.log(window.navigator.geolocation.getCurrentPosition)
+	} else {
+		console.log('Geolocation is not supported');
+	}
+});
+
+
 
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
+	import { filteredevents } from '$lib/stores/filteredevents';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 	import UploadModal from '$lib/components/modals/UploadModal.svelte';
 	import AddTimeblock from '$lib/components/modals/AddTimeblock.svelte';
+	import EditSchedule from '$lib/components/modals/EditSchedule.svelte';
 	import { afterUpdate, onMount } from 'svelte';
 
 	// initial variables
@@ -60,6 +74,20 @@
   // Keep track of the currently selected file name for display in the sidebar
   let fileName = 'No File Selected';
 
+ function addToFiltersStore(event) {
+	
+	const selectedValue = event.target.value;
+
+	const currentEvents = $events;
+
+	const filtered = currentEvents.filter(course => 
+    course.extendedProps.Instructor === selectedValue
+  );
+	
+	filteredevents.set(filtered);
+	console.log('Filtered events:', filtered);
+	
+  }
 
 
 
@@ -90,7 +118,7 @@
 
 	<body class="flex flex-wrap w-full h-full flex-row">
 		<!-- sidebar -->
-		<div id="sidebar" class="w-auto h-auto border ">
+		<div id="sidebar" class="w-auto h-auto border max-w-[303px]">
 
 			<!-- import sidebar -->
 			<div id="import" class="border m-4 p-2 w-[269px] rounded-[2px]">
@@ -116,9 +144,25 @@
 				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
 					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>
-				<select class="filterSelect" name="" id="">Professors <option value="">Professors</option></select>
-				<select class="filterSelect" name="" id="">Rooms <option value="">Rooms</option></select>
-				<select class="filterSelect" name="" id="">Courses <option value="">Courses</option></select>
+				<select on:change={addToFiltersStore} class="filterSelect max-w-[269px]" name="" id="">
+					<option value="">Professors</option>
+					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
+					<option value={instructor}>{instructor}</option>
+				  {/each}
+				</select>
+				<select class="filterSelect max-w-[269px]" name="" id="">Rooms 
+					<option value="">Rooms</option>
+					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+					<option value={buildingAndRoom}>{buildingAndRoom}</option>
+				  {/each}
+				</select>
+				<select class="filterSelect max-w-[269px]" name="" id="">Courses 
+					<option value="">Courses</option>
+					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+					<option value={courseName}>{courseName}</option>
+				  {/each}
+
+				</select>
 			</div>
 
 			<!-- add and edit schedules sidebar -->
@@ -163,93 +207,10 @@
 <!-- Add Custom Schedule -->
 <!-- Modal (Opens on Click) -->
 {#if isEditModalActive}
-  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
-      <div class="bg-green-700 text-white p-4 text-center text-xl font-bold rounded-t-lg">
-        ADD CUSTOM SCHEDULE
-      </div>
-      <div class="p-6">
-        <form class="grid grid-cols-2 gap-4">
-          <!-- Class Name -->
-          <div>
-            <label class="block text-gray-700 font-medium">Class Name</label>
-            <input
-              type="text"
-              placeholder="Type Class Name"
-              class="w-full border border-gray-300 rounded-md p-2 mt-1"
-            />
-          </div>
-
-          <!-- Professor Name -->
-          <div>
-            <label class="block text-gray-700 font-medium">Prof First Name</label>
-            <input
-              type="text"
-              placeholder="Type First Name"
-              class="w-full border border-gray-300 rounded-md p-2 mt-1"
-            />
-          </div>
-
-          <div>
-            <label class="block text-gray-700 font-medium">Prof Last Name</label>
-            <input
-              type="text"
-              placeholder="Type Last Name"
-              class="w-full border border-gray-300 rounded-md p-2 mt-1"
-            />
-          </div>
-
-          <!-- Select Days -->
-          <div class="col-span-2">
-            <label class="block text-gray-700 font-medium">Select Days:</label>
-            <div class="flex space-x-2 mt-1">
-              {#each ["MON", "TUES", "WED", "THUR", "FRI", "SAT"] as day}
-                <button
-                  type="button"
-                  class="px-4 py-2 rounded-md border bg-gray-200 text-gray-700"
-                >
-                  {day}
-                </button>
-              {/each}
-            </div>
-          </div>
-
-          <!-- Start Time -->
-          <div>
-            <label class="block text-gray-700 font-medium">Select Start Time</label>
-            <input
-              type="time"
-              class="border border-gray-300 rounded-md p-2 mt-1 w-full"
-            />
-          </div>
-
-          <!-- Class Length -->
-          <div>
-            <label class="block text-gray-700 font-medium">Class Length</label>
-            <select class="w-full border border-gray-300 rounded-md p-2 mt-1">
-              <option value="">Select Class Length</option>
-              <option value="30">30 mins</option>
-              <option value="60">1 hour</option>
-            </select>
-          </div>
-
-          <!-- Buttons -->
-          <div class="col-span-2 flex justify-end space-x-4 mt-4">
-            <button
-              type="button"
-              class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
-              on:click={() => (isUploadModalActive = false)}
-            >
-              Cancel
-            </button>
-            <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md">
-              Add Schedule
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+	<EditSchedule 
+		isOpen={isEditModalActive} 
+		onClose={handleEditModal} 
+	/>
 {/if}
 
 {#if isAddCustomModalActive}
