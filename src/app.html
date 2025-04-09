@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="/utah-valley-university-logo.svg" />
+		<script src="https://kit.fontawesome.com/cc9a22cfe3.js" crossorigin="anonymous"></script>
 		<meta name="viewport" content="width=device-width" />
 		%sveltekit.head%
 	</head>
@@ -10,3 +11,38 @@
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
+
+<style lang="postcss">
+	.font-rajdhani {
+		font-family: 'Rajdhani', sans-serif;
+	}
+
+	.font-lato {
+		font-family: 'Lato', sans-serif;
+	}
+
+	@media print {
+		@page{
+			margin: 0;
+		}
+		#sidebar {
+			display: none;
+		}
+		#header {
+			display: none;
+		}
+		.ec-event{
+			border: 1px solid black;
+		}
+		#addTimeblock{
+			display: none;
+		}
+		#titleHeader{
+			display: none;
+		}
+		#calendar{
+			margin-top: 0;
+		}
+	}
+
+</style>
