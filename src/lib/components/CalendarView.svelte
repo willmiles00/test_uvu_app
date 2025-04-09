@@ -5,6 +5,7 @@
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
     import { filteredevents } from "$lib/stores/filteredevents";
+    import { eventstobedeleted } from "$lib/stores/eventstobedeleted";
     import { onMount, onDestroy, afterUpdate } from 'svelte';
 
     // since we are using a static date, we need to define the days of the week. This week of July is easy to work with
@@ -13,6 +14,8 @@
     let Wednesday = '2024-07-03';
     let Thursday = '2024-07-04';
     let Friday = '2024-07-05';
+
+
            
     onMount(() => {
            // this is needed to define ec
@@ -24,19 +27,28 @@
     let previousEvents: any = [];
 
     afterUpdate(() => {
-        // when the events store updates, we want to add the new events to the calendar
+        if ($eventstobedeleted.length > 0) {
+            $eventstobedeleted.forEach((event: any) => {
+                ec.removeEventById(event.id);
+            });
+            eventstobedeleted.set([]);
+        }
+        // when the filteredevents store updates, we want to add the new events to the calendar
         filteredevents.subscribe(value => {
+          
             const newEvents = value.filter(event => !previousEvents.includes(event));
             newEvents.forEach(event => {
                 ec.addEvent(event);
                 console.log(event);
             });
             previousEvents = value;
-            ec.refetchEvents();
+            
             ec.getEvents();
+            ec.refetchEvents();
             console.log('here is the current state of events:',value);
-        });
         
+        });
+    
     
     });
     

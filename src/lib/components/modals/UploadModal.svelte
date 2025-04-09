@@ -38,7 +38,7 @@
   
   {#if isOpen}
 	<div
-	  class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full flex justify-center z-40"
+	  class="bg-black bg-opacity-50 w-full h-fit fixed top-0 left-0 min-h-full flex justify-center items-center z-40"
 	>
 	  <div class="relative">
 		<div

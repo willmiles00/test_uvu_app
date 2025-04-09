@@ -1,14 +1,4 @@
-<script lang="ts">
-onMount(() => {
-	// Check if geolocation is supported
-	if ('geolocation' in navigator) {
-		console.log('Geolocation is supported');
-		console.log('Getting location...');
-		console.log(window.navigator.geolocation.getCurrentPosition)
-	} else {
-		console.log('Geolocation is not supported');
-	}
-});
+<script lang="ts" >
 
 
 
@@ -16,7 +6,9 @@ onMount(() => {
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
 	import { filteredevents } from '$lib/stores/filteredevents';
+	import { eventstobedeleted } from '$lib/stores/eventstobedeleted';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
+	import { exportPageToPDF } from '$lib/functions/ExportToPDF.ts';
 	import AddCustomSchedule from '$lib/components/modals/AddEvent.svelte';
 	import UploadModal from '$lib/components/modals/UploadModal.svelte';
 	import AddTimeblock from '$lib/components/modals/AddTimeblock.svelte';
@@ -26,6 +18,12 @@ onMount(() => {
 	// initial variables
 	export const courses: any = [];
 	let uploadedCourses: any[] = [];
+
+	async function handleExport() {
+    await exportPageToPDF();
+  }
+
+
 
 
 
@@ -74,23 +72,67 @@ onMount(() => {
   // Keep track of the currently selected file name for display in the sidebar
   let fileName = 'No File Selected';
 
- function addToFiltersStore(event) {
-	
-	const selectedValue = event.target.value;
+let selectedInstructors: string[] = [];
+let selectedRooms: string[] = [];
+let selectedCourses: string[] = [];
 
-	const currentEvents = $events;
-
-	const filtered = currentEvents.filter(course => 
-    course.extendedProps.Instructor === selectedValue
-  );
-	
-	filteredevents.set(filtered);
-	console.log('Filtered events:', filtered);
-	
+function addToFiltersStore(event: Event) {
+  const checkbox = event.target as HTMLInputElement;
+  const filterType = checkbox.getAttribute('data-filter-type');
+  const value = checkbox.value;
+  
+  // Update the appropriate filter array
+  if (filterType === 'instructor') {
+    if (checkbox.checked) {
+      selectedInstructors = [...selectedInstructors, value];
+    } else {
+      selectedInstructors = selectedInstructors.filter(instructor => instructor !== value);
+    }
+  } else if (filterType === 'room') {
+    if (checkbox.checked) {
+      selectedRooms = [...selectedRooms, value];
+    } else {
+      selectedRooms = selectedRooms.filter(room => room !== value);
+    }
+  } else if (filterType === 'course') {
+    if (checkbox.checked) {
+      selectedCourses = [...selectedCourses, value];
+    } else {
+      selectedCourses = selectedCourses.filter(course => course !== value);
+    }
   }
+  
+  // Apply all active filters
+  const currentEvents = $events;
+  const filtered = currentEvents.filter(course => {
+    const matchesInstructor = selectedInstructors.length === 0 || selectedInstructors.includes(course.extendedProps.Instructor);
+    const matchesRoom = selectedRooms.length === 0 || selectedRooms.includes(course.extendedProps.buildingAndRoom);
+    const matchesCourse = selectedCourses.length === 0 || selectedCourses.includes(course.extendedProps.Course);
+    
+    return matchesInstructor && matchesRoom && matchesCourse;
+  });
+  
+  filteredevents.set(filtered);
+  console.log('Filtered events:', filtered);
+}
 
-
-
+function resetFilters() {
+  selectedInstructors = [];
+  selectedRooms = [];
+  selectedCourses = [];
+  
+  // Reset all checkboxes
+  const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
+  checkboxes.forEach((checkbox: HTMLInputElement) => {
+    checkbox.checked = false;
+  });
+  
+  // Clear filters
+  eventstobedeleted.set($filteredevents);
+  console.log('set for deletion', $eventstobedeleted);
+  filteredevents.set([]);
+  console.log('Filters reset', $filteredevents);
+}
  
 
 </script>
@@ -141,28 +183,57 @@ onMount(() => {
 			<!-- filter sidebar -->
 			<div id="filterSection" class="flex flex-wrap flex-col m-4 mt-[52px] mb-[52px]">
 				<p class="uppercase font-primary-bold text-[18px] mb-2">Select schedule</p>
-				<button class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
+				<button on:click={resetFilters} class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
 					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>
-				<select on:change={addToFiltersStore} class="filterSelect max-w-[269px]" name="" id="">
-					<option value="">Professors</option>
+				
+				<div class="filter-group">
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Professors</p>
 					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
-					<option value={instructor}>{instructor}</option>
-				  {/each}
-				</select>
-				<select class="filterSelect max-w-[269px]" name="" id="">Rooms 
-					<option value="">Rooms</option>
-					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
-					<option value={buildingAndRoom}>{buildingAndRoom}</option>
-				  {/each}
-				</select>
-				<select class="filterSelect max-w-[269px]" name="" id="">Courses 
-					<option value="">Courses</option>
-					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
-					<option value={courseName}>{courseName}</option>
-				  {/each}
+						<label class="flex items-center space-x-2 mb-1">
+							<input
+								type="checkbox"
+								class="filterCheckbox"
+								value={instructor}
+								data-filter-type="instructor"
+								on:change={addToFiltersStore}
+							/>
+							<span class="text-sm">{instructor}</span>
+						</label>
+					{/each}
+				</div>
 
-				</select>
+				<div class="filter-group mt-4">
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Rooms</p>
+					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+						<label class="flex items-center space-x-2 mb-1">
+							<input
+								type="checkbox"
+								class="filterCheckbox"
+								value={buildingAndRoom}
+								data-filter-type="room"
+								on:change={addToFiltersStore}
+							/>
+							<span class="text-sm">{buildingAndRoom}</span>
+						</label>
+					{/each}
+				</div>
+
+				<div class="filter-group mt-4">
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Courses</p>
+					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+						<label class="flex items-center space-x-2 mb-1">
+							<input
+								type="checkbox"
+								class="filterCheckbox"
+								value={courseName}
+								data-filter-type="course"
+								on:change={addToFiltersStore}
+							/>
+							<span class="text-sm">{courseName}</span>
+						</label>
+					{/each}
+				</div>
 			</div>
 
 			<!-- add and edit schedules sidebar -->
@@ -268,17 +339,32 @@ onMount(() => {
 		min-height: fit-content !important;
 	}
 
-	select.filterSelect {
-		font-size: 18px;
-		text-transform: uppercase;
-		color: #275D38;
-		border-radius: 8px;
-		border: 1px solid #DCDCDD;
-		padding: 8px 2px;
-		margin: 5px 0;
-		background-color: white;
-		font-family: rajdhani;
-		font-weight: 600;
+	.filter-group {
+		max-height: 200px;
+		overflow-y: auto;
+		padding-right: 8px;
+	}
+
+	.filter-group::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.filter-group::-webkit-scrollbar-track {
+		background: #f1f1f1;
+		border-radius: 3px;
+	}
+
+	.filter-group::-webkit-scrollbar-thumb {
+		background: #888;
+		border-radius: 3px;
+	}
+
+	.filter-group::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+
+	.filterCheckbox {
+		accent-color: #275D38;
 	}
 
 	.addAndEditBtn{
