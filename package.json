@@ -43,6 +43,9 @@
   },
   "type": "module",
   "dependencies": {
-    "papaparse": "^5.4.1"
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
+    "papaparse": "^5.4.1",
+    "pdfjs-dist": "^5.1.91"
   }
 }

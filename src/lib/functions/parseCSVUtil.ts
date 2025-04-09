@@ -60,6 +60,7 @@ export async function parseCSVFile(file: File) {
     if (course.meetingDays && course.meetingDays.length > 1) {
       course.meetingDays.forEach((day: any) => {
         const newCourse = {
+          id: course.CRN,
           title: course.Course,
           start: day + course.meetingTime[0],
           end: day + course.meetingTime[1],
@@ -80,6 +81,7 @@ export async function parseCSVFile(file: File) {
       });
     } else if (course.meetingDays) {
       const newCourse = {
+        id: course.CRN,
         title: course.Course,
         start: '2024-07-01T' + course.meetingTime[0],
         end: '2024-07-01T' + course.meetingTime[1],
