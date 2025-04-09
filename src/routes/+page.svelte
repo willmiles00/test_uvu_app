@@ -310,7 +310,7 @@ function resetFilters() {
 	  scrollbar-width: thick !important;
 	} */
 
-	.confirm-schedule {
+	/* .confirm-schedule {
 		position: absolute !important;
 		top: 623px !important;
 		left: 34% !important;
@@ -319,25 +319,25 @@ function resetFilters() {
 		text-transform: uppercase !important;
 		color: white !important;
 		z-index: 1000 !important;
-	}
+	} */
 
-	input[type='file'] {
+	/* input[type='file'] {
 		display: none;
-	}
+	} */
 
-	.editable-input {
+	/* .editable-input {
 		@apply input border-none shadow-inner p-2 !border-black rounded-lg !bg-yellow-100;
-	}
+	} */
 
-	.upload-modal {
+	/* .upload-modal {
 		overflow: scroll !important;
 		overflow-y: scroll;
-	}
+	} */
 
-	.ec-day {
+	/* .ec-day {
 		min-width: fit-content !important;
 		min-height: fit-content !important;
-	}
+	} */
 
 	.filter-group {
 		max-height: 200px;
