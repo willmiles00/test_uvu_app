@@ -73,7 +73,15 @@
         Course: className,
         Instructor: `${profFirstName} ${profLastName}`,
         meetingDays: [day.value],
-        meetingTime: [startTime, endTime]
+        meetingTime: [startTime, endTime],
+        extendedProps: {
+          className,
+          profFirstName,
+          profLastName,
+          startTime,
+          classLength,
+          selectedDays: selectedDays.map(d => d.name)
+        }
       };
       
       // Add to events store
