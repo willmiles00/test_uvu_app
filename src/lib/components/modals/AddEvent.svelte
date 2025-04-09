@@ -20,7 +20,8 @@
     { name: "TUES", value: "2024-07-02T", selected: false },
     { name: "WED", value: "2024-07-03T", selected: false },
     { name: "THUR", value: "2024-07-04T", selected: false },
-    { name: "FRI", value: "2024-07-05T", selected: false }
+    { name: "FRI", value: "2024-07-05T", selected: false },
+    { name: "SAT", value: "2024-07-05T", selected: false }
   ];
   
   // Toggle day selection
@@ -105,14 +106,14 @@
 
 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
   <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full">
-    <div class="bg-[#275D38] text-white p-4 text-center text-xl font-bold rounded-t-lg font-primary-semibold">
+    <div class="bg-[#275D38] text-white p-4 text-left text-xl font-bold rounded-t-lg font-primary-semibold">
       ADD CUSTOM SCHEDULE
     </div>
     <div class="p-6">
       <form class="grid grid-cols-2 gap-4" on:submit|preventDefault={handleSubmit}>
         <!-- Class Name -->
         <div>
-          <label class="block text-gray-700 font-medium font-primary">Class Name*</label>
+          <label class="block text-[#275D38] font-medium font-primary">Class Name*</label>
           <input
             type="text"
             bind:value={className}
@@ -124,7 +125,7 @@
 
         <!-- Professor Name -->
         <div>
-          <label class="block text-gray-700 font-medium font-primary">Prof First Name</label>
+          <label class="block text-[#275D38] font-medium font-primary">Prof First Name</label>
           <input
             type="text"
             bind:value={profFirstName}
@@ -134,7 +135,7 @@
         </div>
 
         <div>
-          <label class="block text-gray-700 font-medium font-primary">Prof Last Name</label>
+          <label class="block text-[#275D38] font-medium font-primary">Prof Last Name</label>
           <input
             type="text"
             bind:value={profLastName}
@@ -145,12 +146,12 @@
 
         <!-- Select Days -->
         <div class="col-span-2">
-          <label class="block text-gray-700 font-medium font-primary">Select Days:*</label>
-          <div class="flex space-x-2 mt-1">
+          <label class="block text-[#275D38] font-medium font-primary">Select Days:*</label>
+          <div class="space-x-2 mt-1 flex justify-evenly w-full">
             {#each days as day, i}
               <button
                 type="button"
-                class="px-4 py-2 rounded-md border {day.selected ? 'bg-[#275D38] text-white' : 'bg-gray-200 text-gray-700'}"
+                class="flex-1 px-6 py-4 rounded-md border {day.selected ? 'bg-[#275D38] text-white' : 'bg-gray-200 text-[#275D38]'}"
                 on:click={() => toggleDay(i)}
               >
                 {day.name}
@@ -161,7 +162,7 @@
 
         <!-- Start Time -->
         <div>
-          <label class="block text-gray-700 font-medium font-primary">Select Start Time*</label>
+          <label class="block text-[#275D38] font-medium font-primary">Select Start Time*</label>
           <input
             type="time"
             bind:value={startTime}
@@ -172,7 +173,7 @@
 
         <!-- Class Length -->
         <div>
-          <label class="block text-gray-700 font-medium font-primary">Class Length*</label>
+          <label class="block text-[#275D38] font-medium font-primary">Class Length*</label>
           <select 
             bind:value={classLength} 
             class="w-full border border-gray-300 rounded-md p-2 mt-1"
@@ -200,7 +201,7 @@
         <div class="col-span-2 flex justify-end space-x-4 mt-4">
           <button
             type="button"
-            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-primary"
+            class="bg-gray-300 text-[#275D38] px-4 py-2 rounded-md font-primary"
             on:click={() => { resetForm(); onClose(); }}
           >
             Cancel
