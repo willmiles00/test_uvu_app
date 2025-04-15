@@ -3,10 +3,33 @@
   import { events } from '$lib/stores/events';
   import { convertTo24Hour } from '$lib/functions/24HrConversion';
 	import { filteredevents } from '$lib/stores/filteredevents';
+
+  // functions that still need to be added:
+  // Course Number
+  // Room Number
+  // Color Selection
   
   // Expose the modal state to parent
   export let isOpen = false;
   export let onClose = () => { isOpen = false; };
+
+  // Colors stuff, may make into component
+  let selectedColor = '';
+  const colors = [
+    '#B7DAB2',
+    '#71BF44', 
+    '#86C8BC', 
+    '#99D5E9', 
+    '#FBD865', 
+    '#8B87A1', 
+    '#E18E4D', 
+    '#EA866E',
+    '#DCDCDD'
+  ];
+
+  function selectColorHandler(color: string) {
+    selectedColor = color;
+  }
   
   // Form data
   let className = '';
@@ -14,6 +37,8 @@
   let profLastName = '';
   let startTime = '';
   let classLength = '';
+  let courseNumber = '';
+  let roomNumber = '';
   
   // Days selection
   let days = [
@@ -66,7 +91,7 @@
     // Create new events for each selected day
     selectedDays.forEach(day => {
       const newEvent = {
-        title: `${className} (${profFirstName} ${profLastName})`,
+        title: `${className}`,
         start: `${day.value}${startTime}:00`,
         end: `${day.value}${endTime}:00`,
         buildingAndRoom: 'Custom Location',
@@ -75,12 +100,17 @@
         Instructor: `${profFirstName} ${profLastName}`,
         meetingDays: [day.value],
         meetingTime: [startTime, endTime],
+        color: selectedColor,
         extendedProps: {
-          className,
+          Course: className,
+          Instructor: `${profFirstName} ${profLastName}`,
           profFirstName,
           profLastName,
           startTime,
           classLength,
+          courseNumber,
+          buildingAndRoom: roomNumber,
+          color: selectedColor,
           selectedDays: selectedDays.map(d => d.name)
         }
       };
@@ -91,6 +121,7 @@
     });
     
     // Reset form and close modal
+    selectedColor = '';
     resetForm();
     onClose();
   }
@@ -146,6 +177,28 @@
           />
         </div>
 
+        <!-- course number -->
+        <div>
+          <label class="block text-[#275D38] font-medium font-primary">Course Number</label>
+          <input
+            type="text"
+            bind:value={courseNumber}
+            placeholder="Type Course Number"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+          />
+        </div>
+
+        <!-- Room Number -->
+        <div>
+          <label class="block text-[#275D38] font-medium font-primary">Room Number</label>
+          <input
+            type="text"
+            bind:value={roomNumber}
+            placeholder="Type Room Number"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+          />
+        </div>
+
         <!-- Select Days -->
         <div class="col-span-2">
           <label class="block text-[#275D38] font-medium font-primary">Select Days:*</label>
@@ -190,6 +243,25 @@
             <option value="120">2 hours</option>
             <option value="180">3 hours</option>
           </select>
+        </div>
+
+        <!-- colors -->
+        <div class="color-selector">
+          <label class="block text-[#275D38] font-medium font-primary">Color</label>
+         
+          <div class="color-options w-[836px]">
+            {#each colors as color}
+              <button
+                class="color-option w-[24px] h-[24px] rounded-full mx-[4px]"
+                style="background-color: {color};"
+                type="button"
+                on:click={() => selectColorHandler(color)}
+              > {#if color == selectedColor}
+              <span class="checkmark">✓</span>
+            {/if}
+            </button>
+            {/each}
+          </div>
         </div>
 
         <!-- Preview -->
