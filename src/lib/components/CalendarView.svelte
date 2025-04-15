@@ -3,7 +3,7 @@
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
-    import { filteredevents } from "$lib/stores/filteredevents";
+    import { filteredevents, selectedInstructors, selectedRooms, selectedCourses } from "$lib/stores/filteredevents";
     import { eventstobedeleted } from "$lib/stores/eventstobedeleted";
     import { onMount, onDestroy, afterUpdate } from 'svelte';
 
@@ -32,8 +32,19 @@
             });
             eventstobedeleted.set([]);
         }
-        // Calendar refresh logic
-        ec.setOption('events', $filteredevents);
+        
+        // Check if at least one filter is selected
+        const hasActiveFilters = $selectedInstructors.length > 0 || 
+                               $selectedRooms.length > 0 || 
+                               $selectedCourses.length > 0;
+        
+        // Only show events if at least one filter is active
+        if (hasActiveFilters) {
+            ec.setOption('events', $filteredevents);
+        } else {
+            // No filters selected, show empty calendar
+            ec.setOption('events', []);
+        }
         ec.refetchEvents();
     });
     
