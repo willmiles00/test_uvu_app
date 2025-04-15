@@ -3,11 +3,9 @@
   import { events } from '$lib/stores/events';
   import { convertTo24Hour } from '$lib/functions/24HrConversion';
 	import { filteredevents } from '$lib/stores/filteredevents';
+  import ColorSelector from '$lib/components/ColorSelector.svelte';
 
-  // functions that still need to be added:
-  // Course Number
-  // Room Number
-  // Color Selection
+
   
   // Expose the modal state to parent
   export let isOpen = false;
@@ -15,21 +13,7 @@
 
   // Colors stuff, may make into component
   let selectedColor = '';
-  const colors = [
-    '#B7DAB2',
-    '#71BF44', 
-    '#86C8BC', 
-    '#99D5E9', 
-    '#FBD865', 
-    '#8B87A1', 
-    '#E18E4D', 
-    '#EA866E',
-    '#DCDCDD'
-  ];
 
-  function selectColorHandler(color: string) {
-    selectedColor = color;
-  }
   
   // Form data
   let className = '';
@@ -246,23 +230,7 @@
         </div>
 
         <!-- colors -->
-        <div class="color-selector">
-          <label class="block text-[#275D38] font-medium font-primary">Color</label>
-         
-          <div class="color-options w-[836px]">
-            {#each colors as color}
-              <button
-                class="color-option w-[24px] h-[24px] rounded-full mx-[4px]"
-                style="background-color: {color};"
-                type="button"
-                on:click={() => selectColorHandler(color)}
-              > {#if color == selectedColor}
-              <span class="checkmark">✓</span>
-            {/if}
-            </button>
-            {/each}
-          </div>
-        </div>
+        <ColorSelector bind:selectedColor={selectedColor} />
 
         <!-- Preview -->
         {#if startTime && classLength}

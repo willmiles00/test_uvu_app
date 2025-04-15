@@ -3,6 +3,11 @@
     import { events } from '$lib/stores/events';
     import { convertTo24Hour } from '$lib/functions/24HrConversion';
     import { filteredevents } from '$lib/stores/filteredevents';
+    import ColorSelector from '$lib/components/ColorSelector.svelte';
+  
+
+    let selectedColor = '';
+    let pairingColor = '';
     
     // Expose the modal state to parent
     export let isOpen = false;
@@ -72,6 +77,7 @@ function handleSubmit() {
       Instructor: `${roomNumber} ${profLastName}`,
       meetingDays: [day.value],
       meetingTime: [startTime, endTime],
+      color: selectedColor,
       extendedProps: {
         Course: timeblockName,
         timeblockName: timeblockName,
@@ -80,15 +86,19 @@ function handleSubmit() {
         buildingAndRoom: roomNumber,
         startTime: startTime,
         endTime: endTime,
+        pairingColor: pairingColor,
         days: selectedDays.map(d => d.name)
       }
     };
+    
     
     // Add to events store
     filteredevents.update(value => [...value, newEvent]);
     events.update(value => [...value, newEvent]);
   });
   
+  selectedColor = ''; // Reset color after submission
+  pairingColor = ''; // Reset color after submission
   // Reset form and close modal
   resetForm();
   onClose();
@@ -190,6 +200,12 @@ function resetForm() {
             <p class="font-primary">Preview: Class will run from <span class="font-semibold">{startTime}</span> to <span class="font-semibold">{endTime}</span></p>
           </div>
         {/if}
+
+          
+          <!-- Color Selector -->
+          <div class="col-span-2">
+            <ColorSelector bind:selectedColor={selectedColor} bind:pairingColor={pairingColor} />
+          </div>
   
           <!-- Buttons -->
           <div class="col-span-2 flex justify-end space-x-4 mt-4">
