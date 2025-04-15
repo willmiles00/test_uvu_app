@@ -2,14 +2,15 @@
     import { onMount } from 'svelte';
     import { events } from '$lib/stores/events';
     import { convertTo24Hour } from '$lib/functions/24HrConversion';
+    import { filteredevents } from '$lib/stores/filteredevents';
     
     // Expose the modal state to parent
     export let isOpen = false;
     export let onClose = () => { isOpen = false; };
     
     // Form data
-    let className = '';
-    let profFirstName = '';
+    let timeblockName = '';
+    let roomNumber = '';
     let profLastName = '';
     let startTime = '';
     let endTime = ''; 
@@ -48,7 +49,7 @@
    // ...existing code...
 function handleSubmit() {
   // Validate form
-  if (!className || !startTime || !endTime) {
+  if (!timeblockName || !startTime || !endTime) {
     alert('Please fill in all required fields');
     return;
   }
@@ -62,19 +63,21 @@ function handleSubmit() {
   // Create new events for each selected day
   selectedDays.forEach(day => {
     const newEvent = {
-      title: `${className} (${profFirstName} ${profLastName})`,
+      title: `${timeblockName}`,
       start: `${day.value}${startTime}:00`,
       end: `${day.value}${endTime}:00`,
       buildingAndRoom: 'Custom Location',
       CRN: 'CUSTOM',
-      Course: className,
-      Instructor: `${profFirstName} ${profLastName}`,
+      Course: timeblockName,
+      Instructor: `${roomNumber} ${profLastName}`,
       meetingDays: [day.value],
       meetingTime: [startTime, endTime],
       extendedProps: {
-        className: className,
-        profFirstName: profFirstName,
-        profLastName: profLastName,
+        Course: timeblockName,
+        timeblockName: timeblockName,
+        roomNumber: roomNumber,
+        Instructor: `Custom Timeblock`,
+        buildingAndRoom: roomNumber,
         startTime: startTime,
         endTime: endTime,
         days: selectedDays.map(d => d.name)
@@ -82,6 +85,7 @@ function handleSubmit() {
     };
     
     // Add to events store
+    filteredevents.update(value => [...value, newEvent]);
     events.update(value => [...value, newEvent]);
   });
   
@@ -91,8 +95,8 @@ function handleSubmit() {
 }
 
 function resetForm() {
-  className = '';
-  profFirstName = '';
+  timeblockName = '';
+  roomNumber = '';
   profLastName = '';
   startTime = '';
   endTime = '';  // Update here too
@@ -116,7 +120,7 @@ function resetForm() {
             <input
             id="timeblockTitle"
               type="text"
-              bind:value={className}
+              bind:value={timeblockName}
               placeholder="Type Class Name"
               class="w-full border border-gray-300 rounded-md p-2 mt-1"
               required
@@ -129,7 +133,7 @@ function resetForm() {
             <input
             id="roomNumber"
               type="text"
-              bind:value={profFirstName}
+              bind:value={roomNumber}
               placeholder="Type First Name"
               class="w-full border border-gray-300 rounded-md p-2 mt-1"
             />

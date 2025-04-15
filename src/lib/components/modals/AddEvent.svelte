@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { events } from '$lib/stores/events';
   import { convertTo24Hour } from '$lib/functions/24HrConversion';
+	import { filteredevents } from '$lib/stores/filteredevents';
   
   // Expose the modal state to parent
   export let isOpen = false;
@@ -86,6 +87,7 @@
       
       // Add to events store
       events.update(value => [...value, newEvent]);
+      filteredevents.update(value => [...value, newEvent]);
     });
     
     // Reset form and close modal
