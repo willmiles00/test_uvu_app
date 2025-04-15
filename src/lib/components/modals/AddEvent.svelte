@@ -13,6 +13,7 @@
 
   // Colors stuff, may make into component
   let selectedColor = '';
+  let pairingColor = '';
 
   
   // Form data
@@ -95,6 +96,7 @@
           courseNumber,
           buildingAndRoom: roomNumber,
           color: selectedColor,
+          pairingColor: pairingColor,
           selectedDays: selectedDays.map(d => d.name)
         }
       };
@@ -106,6 +108,7 @@
     
     // Reset form and close modal
     selectedColor = '';
+    pairingColor = '';
     resetForm();
     onClose();
   }
@@ -230,7 +233,7 @@
         </div>
 
         <!-- colors -->
-        <ColorSelector bind:selectedColor={selectedColor} />
+        <ColorSelector bind:selectedColor={selectedColor} bind:pairingColor={pairingColor} />
 
         <!-- Preview -->
         {#if startTime && classLength}
