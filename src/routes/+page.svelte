@@ -15,6 +15,11 @@
 	import EditSchedule from '$lib/components/modals/EditSchedule.svelte';
 	import { afterUpdate, onMount } from 'svelte';
 
+	let showProfessors = false;
+	let showRooms = false;
+	let showCourses = false;
+
+
 	// initial variables
 	export const courses: any = [];
 	let uploadedCourses: any[] = [];
@@ -188,53 +193,68 @@ function resetFilters() {
 				</button>
 				
 				<div class="filter-group">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Professors</p>
-					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
-						<label class="flex items-center space-x-2 mb-1">
-							<input
-								type="checkbox"
-								class="filterCheckbox"
-								value={instructor}
-								data-filter-type="instructor"
-								on:change={addToFiltersStore}
-							/>
-							<span class="text-sm">{instructor}</span>
-						</label>
-					{/each}
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showProfessors = !showProfessors}>
+						Professors
+					</p>
+					{#if showProfessors}
+						{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
+							<label class="flex items-center space-x-2 mb-1">
+								<input
+									type="checkbox"
+									class="filterCheckbox"
+									value={instructor}
+									data-filter-type="instructor"
+									on:change={addToFiltersStore}
+								/>
+								<span class="text-sm">{instructor}</span>
+							</label>
+						{/each}
+					{/if}
 				</div>
 
 				<div class="filter-group mt-4">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Rooms</p>
-					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
-						<label class="flex items-center space-x-2 mb-1">
-							<input
-								type="checkbox"
-								class="filterCheckbox"
-								value={buildingAndRoom}
-								data-filter-type="room"
-								on:change={addToFiltersStore}
-							/>
-							<span class="text-sm">{buildingAndRoom}</span>
-						</label>
-					{/each}
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showRooms = !showRooms}>
+						Rooms
+					</p>
+					{#if showRooms}
+						{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+							<label class="flex items-center space-x-2 mb-1">
+								<input
+									type="checkbox"
+									class="filterCheckbox"
+									value={buildingAndRoom}
+									data-filter-type="room"
+									on:change={addToFiltersStore}
+								/>
+								<span class="text-sm">{buildingAndRoom}</span>
+							</label>
+						{/each}
+					{/if}
 				</div>
 
 				<div class="filter-group mt-4">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Courses</p>
-					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
-						<label class="flex items-center space-x-2 mb-1">
-							<input
-								type="checkbox"
-								class="filterCheckbox"
-								value={courseName}
-								data-filter-type="course"
-								on:change={addToFiltersStore}
-							/>
-							<span class="text-sm">{courseName}</span>
-						</label>
-					{/each}
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showCourses = !showCourses}>
+						Courses
+					</p>
+					{#if showCourses}
+						{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+							<label class="flex items-center space-x-2 mb-1">
+								<input
+									type="checkbox"
+									class="filterCheckbox"
+									value={courseName}
+									data-filter-type="course"
+									on:change={addToFiltersStore}
+								/>
+								<span class="text-sm">{courseName}</span>
+							</label>
+						{/each}
+					{/if}
 				</div>
 			</div>
+
+
+	
 
 			<!-- add and edit schedules sidebar -->
 			<div class="flex flex-wrap flex-col justify-center items-center">
