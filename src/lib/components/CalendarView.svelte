@@ -1,4 +1,3 @@
-
 <script lang="ts">
     import Calendar from '@event-calendar/core';
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
@@ -33,23 +32,9 @@
             });
             eventstobedeleted.set([]);
         }
-        // when the filteredevents store updates, we want to add the new events to the calendar
-        filteredevents.subscribe(value => {
-          
-            const newEvents = value.filter(event => !previousEvents.includes(event));
-            newEvents.forEach(event => {
-                ec.addEvent(event);
-                console.log(event);
-            });
-            previousEvents = value;
-            
-            ec.getEvents();
-            ec.refetchEvents();
-            console.log('here is the current state of events:',value);
-        
-        });
-    
-    
+        // Calendar refresh logic
+        ec.setOption('events', $filteredevents);
+        ec.refetchEvents();
     });
     
 

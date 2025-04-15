@@ -5,7 +5,7 @@
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
-	import { filteredevents } from '$lib/stores/filteredevents';
+	import { filteredevents, selectedInstructors, selectedRooms, selectedCourses } from '$lib/stores/filteredevents';
 	import { eventstobedeleted } from '$lib/stores/eventstobedeleted';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
 	import { exportPageToPDF } from '$lib/functions/ExportToPDF.ts';
@@ -77,54 +77,37 @@
   // Keep track of the currently selected file name for display in the sidebar
   let fileName = 'No File Selected';
 
-let selectedInstructors: string[] = [];
-let selectedRooms: string[] = [];
-let selectedCourses: string[] = [];
-
 function addToFiltersStore(event: Event) {
   const checkbox = event.target as HTMLInputElement;
   const filterType = checkbox.getAttribute('data-filter-type');
   const value = checkbox.value;
   
-  // Update the appropriate filter array
+  // Update the appropriate filter store
   if (filterType === 'instructor') {
     if (checkbox.checked) {
-      selectedInstructors = [...selectedInstructors, value];
+      $selectedInstructors = [...$selectedInstructors, value];
     } else {
-      selectedInstructors = selectedInstructors.filter(instructor => instructor !== value);
+      $selectedInstructors = $selectedInstructors.filter(instructor => instructor !== value);
     }
   } else if (filterType === 'room') {
     if (checkbox.checked) {
-      selectedRooms = [...selectedRooms, value];
+      $selectedRooms = [...$selectedRooms, value];
     } else {
-      selectedRooms = selectedRooms.filter(room => room !== value);
+      $selectedRooms = $selectedRooms.filter(room => room !== value);
     }
   } else if (filterType === 'course') {
     if (checkbox.checked) {
-      selectedCourses = [...selectedCourses, value];
+      $selectedCourses = [...$selectedCourses, value];
     } else {
-      selectedCourses = selectedCourses.filter(course => course !== value);
+      $selectedCourses = $selectedCourses.filter(course => course !== value);
     }
   }
-  
-  // Apply all active filters
-  const currentEvents = $events;
-  const filtered = currentEvents.filter(course => {
-    const matchesInstructor = selectedInstructors.length === 0 || selectedInstructors.includes(course.extendedProps.Instructor);
-    const matchesRoom = selectedRooms.length === 0 || selectedRooms.includes(course.extendedProps.buildingAndRoom);
-    const matchesCourse = selectedCourses.length === 0 || selectedCourses.includes(course.extendedProps.Course);
-    
-    return matchesInstructor && matchesRoom && matchesCourse;
-  });
-  
-  filteredevents.set(filtered);
-  console.log('Filtered events:', filtered);
 }
 
 function resetFilters() {
-  selectedInstructors = [];
-  selectedRooms = [];
-  selectedCourses = [];
+  $selectedInstructors = [];
+  $selectedRooms = [];
+  $selectedCourses = [];
   
   // Reset all checkboxes
   const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
@@ -132,11 +115,8 @@ function resetFilters() {
     checkbox.checked = false;
   });
   
-  // Clear filters
+  // Clear events to be deleted (if needed)
   eventstobedeleted.set($filteredevents);
-  console.log('set for deletion', $eventstobedeleted);
-  filteredevents.set([]);
-  console.log('Filters reset', $filteredevents);
 }
  
 
