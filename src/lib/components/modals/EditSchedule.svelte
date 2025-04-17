@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { events, type CalendarEvent } from '$lib/stores/events';
+  import { filteredevents, selectedInstructors, selectedRooms, selectedCourses } from '$lib/stores/filteredevents';
 
   export let isOpen = false;
   export let onClose: () => void;
@@ -16,6 +17,44 @@
   
   // Track which row is being hovered
   let hoveredRowId: string | null = null;
+
+  // Parse time from ISO datetime
+  function getTimeFromDateString(dateStr: string): string {
+    try {
+      // Handle different formats of dateStr
+      if (!dateStr) return '';
+      
+      // If it's already in HH:MM format, return as is
+      if (/^\d{2}:\d{2}$/.test(dateStr)) return dateStr;
+      
+      // If it contains a T delimiter, extract the time part
+      if (dateStr.includes('T')) {
+        const timePart = dateStr.split('T')[1];
+        return timePart.substring(0, 5); // Get HH:MM from time part
+      }
+      
+      return '';
+    } catch (e) {
+      console.error('Error parsing time from date string:', e);
+      return '';
+    }
+  }
+
+  // Format event time for display and editing
+  function formatEventTime(event: CalendarEvent): CalendarEvent {
+    const editableCopy = { ...event };
+    
+    // Extract only the time part for display in inputs
+    if (editableCopy.start && typeof editableCopy.start === 'string') {
+      editableCopy.start = getTimeFromDateString(editableCopy.start);
+    }
+    
+    if (editableCopy.end && typeof editableCopy.end === 'string') {
+      editableCopy.end = getTimeFromDateString(editableCopy.end);
+    }
+    
+    return editableCopy;
+  }
   
   // Function to get unique events based on CRN
   function getUniqueEvents(eventsList: CalendarEvent[]): CalendarEvent[] {
@@ -37,18 +76,128 @@
   // Function to handle event selection
   function handleEventSelect(event: CalendarEvent) {
     selectedEvent = event;
-    editedEvent = JSON.parse(JSON.stringify(event)); // Deep copy to avoid reference issues
+    editedEvent = formatEventTime(JSON.parse(JSON.stringify(event))); // Deep copy and format for editing
+    
+    // Reset the days selection every time we edit an event
+    // This forces users to select days explicitly each time
+    if (editedEvent && editedEvent.extendedProps) {
+      editedEvent.extendedProps.days = [];
+    }
+    
     viewMode = 'edit';
   }
 
-  // Function to save changes
+  // Stores original date parts for reconstructing the datetime later
+  let originalStartDatePart = '';
+  let originalEndDatePart = '';
+
+        // Function to save changes
   function handleSave() {
-    if (editedEvent) {
-      events.update(currentEvents => {
-        return currentEvents.map(event => 
-          event.id === editedEvent!.id ? editedEvent! : event
-        );
-      });
+    if (editedEvent && selectedEvent) {
+      // Validate that at least one day is selected
+      if (!editedEvent.extendedProps.days || editedEvent.extendedProps.days.length === 0) {
+        alert('Please select at least one day for this event');
+        return;
+      }
+      
+      // Store original event to handle multi-day events
+      const originalEvent = JSON.parse(JSON.stringify(selectedEvent));
+      
+      // Preserve the original date part
+      if (!originalStartDatePart && selectedEvent.start.includes('T')) {
+        originalStartDatePart = selectedEvent.start.split('T')[0];
+      }
+      
+      if (!originalEndDatePart && selectedEvent.end.includes('T')) {
+        originalEndDatePart = selectedEvent.end.split('T')[0];
+      }
+      
+      // For multi-day events, we need to handle differently
+      if (editedEvent.extendedProps.days && editedEvent.extendedProps.days.length > 0) {
+        // Day mapping
+        const dayMapping = {
+          "MON": "2024-07-01",
+          "TUES": "2024-07-02",
+          "WED": "2024-07-03",
+          "THUR": "2024-07-04",
+          "FRI": "2024-07-05",
+          "SAT": "2024-07-06"
+        };
+        
+        // We'll create or update one event per selected day
+        const updatedEvents: CalendarEvent[] = [];
+        
+        // Extract time parts from edited event
+        const startTime = editedEvent.start || getTimeFromDateString(originalEvent.start);
+        const endTime = editedEvent.end || getTimeFromDateString(originalEvent.end);
+        
+        // First, delete all existing events with this ID
+        events.update(currentEvents => {
+          return currentEvents.filter(event => event.id !== originalEvent.id);
+        });
+        
+        // Then create one event for each selected day
+        editedEvent.extendedProps.days.forEach((day, index) => {
+          if (dayMapping[day as keyof typeof dayMapping]) {
+            const datePart = dayMapping[day as keyof typeof dayMapping];
+            
+            // Create a new event for this day
+            const newEvent: CalendarEvent = {
+              ...JSON.parse(JSON.stringify(editedEvent)),
+              id: index === 0 ? originalEvent.id : `${originalEvent.id}-${day}`,
+              start: `${datePart}T${startTime}:00`,
+              end: `${datePart}T${endTime}:00`
+            };
+            
+            // Update format for time display
+            newEvent.extendedProps.meetingTime = [startTime, endTime];
+            newEvent.extendedProps.formattedTime = `${startTime} - ${endTime}`;
+            newEvent.extendedProps.meetingDays = editedEvent.extendedProps.days.map(
+              d => dayMapping[d as keyof typeof dayMapping] + 'T'
+            );
+            
+            updatedEvents.push(newEvent);
+          }
+        });
+        
+        // Add all new events to the store
+        events.update(currentEvents => {
+          return [...currentEvents, ...updatedEvents];
+        });
+      } else {
+        // For single day events, use the original approach
+        const updatedEvent = { ...editedEvent };
+        
+        // Only update if we have both parts
+        if (originalStartDatePart && editedEvent.start) {
+          updatedEvent.start = `${originalStartDatePart}T${editedEvent.start}:00`;
+        }
+        
+        if (originalEndDatePart && editedEvent.end) {
+          updatedEvent.end = `${originalEndDatePart}T${editedEvent.end}:00`;
+        }
+        
+        // Update format for time display
+        if (updatedEvent.extendedProps.meetingTime) {
+          updatedEvent.extendedProps.meetingTime = [
+            getTimeFromDateString(updatedEvent.start),
+            getTimeFromDateString(updatedEvent.end)
+          ];
+          updatedEvent.extendedProps.formattedTime = `${updatedEvent.extendedProps.meetingTime[0]} - ${updatedEvent.extendedProps.meetingTime[1]}`;
+        }
+        
+        // Update the events store
+        events.update(currentEvents => {
+          return currentEvents.map(event => 
+            event.id === selectedEvent!.id ? updatedEvent : event
+          );
+        });
+      }
+      
+      // Reset values
+      originalStartDatePart = '';
+      originalEndDatePart = '';
+      
       resetAndClose();
     }
   }
@@ -59,6 +208,9 @@
       events.update(currentEvents => {
         return currentEvents.filter(event => event.id !== selectedEvent!.id);
       });
+      
+      // No need to update filteredevents as it's derived from events
+      
       resetAndClose();
     }
   }
@@ -196,20 +348,32 @@
 
             <!-- Days Selection -->
             <div class="col-span-2">
-              <label class="block text-gray-700 font-medium font-primary">Days</label>
+              <label class="block text-gray-700 font-medium font-primary">Days (Required)</label>
+              <p class="text-sm text-gray-500 mb-2">Please select at least one day for this event</p>
               <div class="flex space-x-2 mt-1">
                 {#each ["MON", "TUES", "WED", "THUR", "FRI", "SAT"] as day}
                   <button
                     type="button"
                     class="px-4 py-2 rounded-md border {editedEvent.extendedProps.days?.includes(day) ? 'bg-[#275D38] text-white' : 'bg-gray-200 text-gray-700'}"
                     on:click={() => {
-                      if (!editedEvent.extendedProps.days) editedEvent.extendedProps.days = [];
-                      const index = editedEvent.extendedProps.days.indexOf(day);
-                      if (index === -1) {
-                        editedEvent.extendedProps.days.push(day);
-                      } else {
-                        editedEvent.extendedProps.days.splice(index, 1);
+                      // Initialize days array if it doesn't exist
+                      if (!editedEvent.extendedProps.days) {
+                        editedEvent.extendedProps.days = [];
                       }
+                      
+                      // Make a copy of the days array for proper reactivity
+                      const updatedDays = [...editedEvent.extendedProps.days];
+                      
+                      // Toggle the day
+                      const index = updatedDays.indexOf(day);
+                      if (index === -1) {
+                        updatedDays.push(day);
+                      } else {
+                        updatedDays.splice(index, 1);
+                      }
+                      
+                      // Update the days array
+                      editedEvent.extendedProps.days = updatedDays;
                     }}
                   >
                     {day}
