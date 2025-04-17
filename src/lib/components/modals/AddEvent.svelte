@@ -2,10 +2,19 @@
   import { onMount } from 'svelte';
   import { events } from '$lib/stores/events';
   import { convertTo24Hour } from '$lib/functions/24HrConversion';
+	import { filteredevents } from '$lib/stores/filteredevents';
+  import ColorSelector from '$lib/components/ColorSelector.svelte';
+
+
   
   // Expose the modal state to parent
   export let isOpen = false;
   export let onClose = () => { isOpen = false; };
+
+  // Colors stuff, may make into component
+  let selectedColor = '';
+  let pairingColor = '';
+
   
   // Form data
   let className = '';
@@ -13,6 +22,8 @@
   let profLastName = '';
   let startTime = '';
   let classLength = '';
+  let courseNumber = '';
+  let roomNumber = '';
   
   // Days selection
   let days = [
@@ -65,7 +76,7 @@
     // Create new events for each selected day
     selectedDays.forEach(day => {
       const newEvent = {
-        title: `${className} (${profFirstName} ${profLastName})`,
+        title: `${className}`,
         start: `${day.value}${startTime}:00`,
         end: `${day.value}${endTime}:00`,
         buildingAndRoom: 'Custom Location',
@@ -74,21 +85,30 @@
         Instructor: `${profFirstName} ${profLastName}`,
         meetingDays: [day.value],
         meetingTime: [startTime, endTime],
+        color: selectedColor,
         extendedProps: {
-          className,
+          Course: className,
+          Instructor: `${profFirstName} ${profLastName}`,
           profFirstName,
           profLastName,
           startTime,
           classLength,
+          courseNumber,
+          buildingAndRoom: roomNumber,
+          color: selectedColor,
+          pairingColor: pairingColor,
           selectedDays: selectedDays.map(d => d.name)
         }
       };
       
       // Add to events store
       events.update(value => [...value, newEvent]);
+      filteredevents.update(value => [...value, newEvent]);
     });
     
     // Reset form and close modal
+    selectedColor = '';
+    pairingColor = '';
     resetForm();
     onClose();
   }
@@ -144,6 +164,28 @@
           />
         </div>
 
+        <!-- course number -->
+        <div>
+          <label class="block text-[#275D38] font-medium font-primary">Course Number</label>
+          <input
+            type="text"
+            bind:value={courseNumber}
+            placeholder="Type Course Number"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+          />
+        </div>
+
+        <!-- Room Number -->
+        <div>
+          <label class="block text-[#275D38] font-medium font-primary">Room Number</label>
+          <input
+            type="text"
+            bind:value={roomNumber}
+            placeholder="Type Room Number"
+            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+          />
+        </div>
+
         <!-- Select Days -->
         <div class="col-span-2">
           <label class="block text-[#275D38] font-medium font-primary">Select Days:*</label>
@@ -189,6 +231,9 @@
             <option value="180">3 hours</option>
           </select>
         </div>
+
+        <!-- colors -->
+        <ColorSelector bind:selectedColor={selectedColor} bind:pairingColor={pairingColor} />
 
         <!-- Preview -->
         {#if startTime && classLength}

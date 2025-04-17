@@ -1,6 +1,19 @@
 import Papa from 'papaparse';
 import { convertTo24Hour } from '$lib/functions/24HrConversion.ts';
 
+// Color pairs for course events
+const colors = [
+  { mainColor: '#B7DAB2', complementColor: '#35712C' },
+  { mainColor: '#99CC67', complementColor: '#349946' },
+  { mainColor: '#86C8BC', complementColor: '#36504B' },
+  { mainColor: '#99D5E9', complementColor: '#00688C' },
+  { mainColor: '#FBD865', complementColor: '#B09747' },
+  { mainColor: '#8B87A1', complementColor: '#3E3B54' },
+  { mainColor: '#EEBE99', complementColor: '#D45D00' },
+  { mainColor: '#EA866E', complementColor: '#9E3922' },
+  { mainColor: '#DCDCDD', complementColor: '#757677' }
+];
+
 /**
  * Parses a CSV file and transforms it into course events
  * @param file The CSV file to parse
@@ -54,8 +67,18 @@ export async function parseCSVFile(file: File) {
 
   // Process courses into event format
   const processedCourses: any[] = [];
+  // Store colors by CRN to maintain consistency across multiple sections of same course
+  const courseColorMap = new Map();
 
   csvFinal.forEach((course: any) => {
+    // Assign a random color if this course doesn't have one yet
+    if (!courseColorMap.has(course.CRN)) {
+      const randomIndex = Math.floor(Math.random() * colors.length);
+      courseColorMap.set(course.CRN, colors[randomIndex]);
+    }
+    
+    const courseColor = courseColorMap.get(course.CRN);
+    
     // if the course meets on more than one day, we need to create a separate event for each day
     if (course.meetingDays && course.meetingDays.length > 1) {
       course.meetingDays.forEach((day: any) => {
@@ -72,10 +95,10 @@ export async function parseCSVFile(file: File) {
             Instructor: course.Instructor,
             meetingDays: course.meetingDays,
             meetingTime: course.meetingTime,
-            color: '#B7DAB2',
-            pairingColor: '#35712C'
-            },
-            color: '#B7DAB2'
+            color: courseColor.mainColor,
+            pairingColor: courseColor.complementColor
+          },
+          color: courseColor.mainColor
         };
         processedCourses.push(newCourse);
       });
@@ -86,18 +109,17 @@ export async function parseCSVFile(file: File) {
         start: '2024-07-01T' + course.meetingTime[0],
         end: '2024-07-01T' + course.meetingTime[1],
         extendedProps: {
-        formattedTime: course.meetingTime[0] + ' - ' + course.meetingTime[1],
-        buildingAndRoom: course['Building and Room'],
-        CRN: course.CRN,
-        Course: course.Course,
-        Instructor: course.Instructor,
-        meetingDays: course.meetingDays,
-        meetingTime: course.meetingTime,
-        color: '#B7DAB2',
-        pairingColor: '#35712C'
+          formattedTime: course.meetingTime[0] + ' - ' + course.meetingTime[1],
+          buildingAndRoom: course['Building and Room'],
+          CRN: course.CRN,
+          Course: course.Course,
+          Instructor: course.Instructor,
+          meetingDays: course.meetingDays,
+          meetingTime: course.meetingTime,
+          color: courseColor.mainColor,
+          pairingColor: courseColor.complementColor
         },
-       color: '#B7DAB2'
-       
+        color: courseColor.mainColor
       };
       processedCourses.push(newCourse);
     }

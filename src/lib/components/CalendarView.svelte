@@ -1,10 +1,9 @@
-
 <script lang="ts">
     import Calendar from '@event-calendar/core';
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
     import { events } from "$lib/stores/events";
-    import { filteredevents } from "$lib/stores/filteredevents";
+    import { filteredevents, selectedInstructors, selectedRooms, selectedCourses } from "$lib/stores/filteredevents";
     import { eventstobedeleted } from "$lib/stores/eventstobedeleted";
     import { onMount, onDestroy, afterUpdate } from 'svelte';
 
@@ -33,23 +32,20 @@
             });
             eventstobedeleted.set([]);
         }
-        // when the filteredevents store updates, we want to add the new events to the calendar
-        filteredevents.subscribe(value => {
-          
-            const newEvents = value.filter(event => !previousEvents.includes(event));
-            newEvents.forEach(event => {
-                ec.addEvent(event);
-                console.log(event);
-            });
-            previousEvents = value;
-            
-            ec.getEvents();
-            ec.refetchEvents();
-            console.log('here is the current state of events:',value);
         
-        });
-    
-    
+        // Check if at least one filter is selected
+        const hasActiveFilters = $selectedInstructors.length > 0 || 
+                               $selectedRooms.length > 0 || 
+                               $selectedCourses.length > 0;
+        
+        // Only show events if at least one filter is active
+        if (hasActiveFilters) {
+            ec.setOption('events', $filteredevents);
+        } else {
+            // No filters selected, show empty calendar
+            ec.setOption('events', []);
+        }
+        ec.refetchEvents();
     });
     
 

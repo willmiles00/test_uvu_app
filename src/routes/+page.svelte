@@ -5,7 +5,7 @@
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
-	import { filteredevents } from '$lib/stores/filteredevents';
+	import { filteredevents, selectedInstructors, selectedRooms, selectedCourses } from '$lib/stores/filteredevents';
 	import { eventstobedeleted } from '$lib/stores/eventstobedeleted';
 	import { parseCSVFile } from '$lib/functions/parseCSVUtil.ts';
 	import { exportPageToPDF } from '$lib/functions/ExportToPDF.ts';
@@ -14,6 +14,11 @@
 	import AddTimeblock from '$lib/components/modals/AddTimeblock.svelte';
 	import EditSchedule from '$lib/components/modals/EditSchedule.svelte';
 	import { afterUpdate, onMount } from 'svelte';
+
+	let showProfessors = false;
+	let showRooms = false;
+	let showCourses = false;
+
 
 	// initial variables
 	export const courses: any = [];
@@ -72,54 +77,37 @@
   // Keep track of the currently selected file name for display in the sidebar
   let fileName = 'No File Selected';
 
-let selectedInstructors: string[] = [];
-let selectedRooms: string[] = [];
-let selectedCourses: string[] = [];
-
 function addToFiltersStore(event: Event) {
   const checkbox = event.target as HTMLInputElement;
   const filterType = checkbox.getAttribute('data-filter-type');
   const value = checkbox.value;
   
-  // Update the appropriate filter array
+  // Update the appropriate filter store
   if (filterType === 'instructor') {
     if (checkbox.checked) {
-      selectedInstructors = [...selectedInstructors, value];
+      $selectedInstructors = [...$selectedInstructors, value];
     } else {
-      selectedInstructors = selectedInstructors.filter(instructor => instructor !== value);
+      $selectedInstructors = $selectedInstructors.filter(instructor => instructor !== value);
     }
   } else if (filterType === 'room') {
     if (checkbox.checked) {
-      selectedRooms = [...selectedRooms, value];
+      $selectedRooms = [...$selectedRooms, value];
     } else {
-      selectedRooms = selectedRooms.filter(room => room !== value);
+      $selectedRooms = $selectedRooms.filter(room => room !== value);
     }
   } else if (filterType === 'course') {
     if (checkbox.checked) {
-      selectedCourses = [...selectedCourses, value];
+      $selectedCourses = [...$selectedCourses, value];
     } else {
-      selectedCourses = selectedCourses.filter(course => course !== value);
+      $selectedCourses = $selectedCourses.filter(course => course !== value);
     }
   }
-  
-  // Apply all active filters
-  const currentEvents = $events;
-  const filtered = currentEvents.filter(course => {
-    const matchesInstructor = selectedInstructors.length === 0 || selectedInstructors.includes(course.extendedProps.Instructor);
-    const matchesRoom = selectedRooms.length === 0 || selectedRooms.includes(course.extendedProps.buildingAndRoom);
-    const matchesCourse = selectedCourses.length === 0 || selectedCourses.includes(course.extendedProps.Course);
-    
-    return matchesInstructor && matchesRoom && matchesCourse;
-  });
-  
-  filteredevents.set(filtered);
-  console.log('Filtered events:', filtered);
 }
 
 function resetFilters() {
-  selectedInstructors = [];
-  selectedRooms = [];
-  selectedCourses = [];
+  $selectedInstructors = [];
+  $selectedRooms = [];
+  $selectedCourses = [];
   
   // Reset all checkboxes
   const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
@@ -127,11 +115,8 @@ function resetFilters() {
     checkbox.checked = false;
   });
   
-  // Clear filters
+  // Clear events to be deleted (if needed)
   eventstobedeleted.set($filteredevents);
-  console.log('set for deletion', $eventstobedeleted);
-  filteredevents.set([]);
-  console.log('Filters reset', $filteredevents);
 }
  
 
@@ -188,53 +173,68 @@ function resetFilters() {
 				</button>
 				
 				<div class="filter-group">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Professors</p>
-					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
-						<label class="flex items-center space-x-2 mb-1">
-							<input
-								type="checkbox"
-								class="filterCheckbox"
-								value={instructor}
-								data-filter-type="instructor"
-								on:change={addToFiltersStore}
-							/>
-							<span class="text-sm">{instructor}</span>
-						</label>
-					{/each}
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showProfessors = !showProfessors}>
+						Professors
+					</p>
+					{#if showProfessors}
+						{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
+							<label class="flex items-center space-x-2 mb-1">
+								<input
+									type="checkbox"
+									class="filterCheckbox"
+									value={instructor}
+									data-filter-type="instructor"
+									on:change={addToFiltersStore}
+								/>
+								<span class="text-sm">{instructor}</span>
+							</label>
+						{/each}
+					{/if}
 				</div>
 
 				<div class="filter-group mt-4">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Rooms</p>
-					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
-						<label class="flex items-center space-x-2 mb-1">
-							<input
-								type="checkbox"
-								class="filterCheckbox"
-								value={buildingAndRoom}
-								data-filter-type="room"
-								on:change={addToFiltersStore}
-							/>
-							<span class="text-sm">{buildingAndRoom}</span>
-						</label>
-					{/each}
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showRooms = !showRooms}>
+						Rooms
+					</p>
+					{#if showRooms}
+						{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+							<label class="flex items-center space-x-2 mb-1">
+								<input
+									type="checkbox"
+									class="filterCheckbox"
+									value={buildingAndRoom}
+									data-filter-type="room"
+									on:change={addToFiltersStore}
+								/>
+								<span class="text-sm">{buildingAndRoom}</span>
+							</label>
+						{/each}
+					{/if}
 				</div>
 
 				<div class="filter-group mt-4">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2">Courses</p>
-					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
-						<label class="flex items-center space-x-2 mb-1">
-							<input
-								type="checkbox"
-								class="filterCheckbox"
-								value={courseName}
-								data-filter-type="course"
-								on:change={addToFiltersStore}
-							/>
-							<span class="text-sm">{courseName}</span>
-						</label>
-					{/each}
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showCourses = !showCourses}>
+						Courses
+					</p>
+					{#if showCourses}
+						{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+							<label class="flex items-center space-x-2 mb-1">
+								<input
+									type="checkbox"
+									class="filterCheckbox"
+									value={courseName}
+									data-filter-type="course"
+									on:change={addToFiltersStore}
+								/>
+								<span class="text-sm">{courseName}</span>
+							</label>
+						{/each}
+					{/if}
 				</div>
 			</div>
+
+
+	
 
 			<!-- add and edit schedules sidebar -->
 			<div class="flex flex-wrap flex-col justify-center items-center">
