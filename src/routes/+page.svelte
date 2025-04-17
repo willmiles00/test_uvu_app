@@ -109,14 +109,29 @@ function resetFilters() {
   $selectedRooms = [];
   $selectedCourses = [];
   
-  // Reset all checkboxes
-  const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
-  checkboxes.forEach((checkbox: HTMLInputElement) => {
-    checkbox.checked = false;
-  });
+ // Reset all checkboxes
+ const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
+    checkboxes.forEach((checkbox: HTMLInputElement) => {
+      checkbox.checked = false;
+    });
+    
+    // Clear events to be deleted (if needed)
+    eventstobedeleted.set($filteredevents);
+  }
   
-  // Clear events to be deleted (if needed)
-  eventstobedeleted.set($filteredevents);
+  // New function to handle edit saved event
+  function handleEditSaved() {
+    resetFilters();
+  }
+
+  function handleEditEvent(event) {
+  // Set the event to be edited
+  const eventToEdit = event.detail.event;
+  
+  // Open the edit modal
+  isEditModalActive = true;
+  
+
 }
  
 
@@ -261,7 +276,7 @@ function resetFilters() {
 
 		<div class="grow">
 
-			<CalendarView />
+			<CalendarView on:edit={handleEditEvent} />
 		</div>
 	</body>
 
@@ -278,10 +293,11 @@ function resetFilters() {
 <!-- Add Custom Schedule -->
 <!-- Modal (Opens on Click) -->
 {#if isEditModalActive}
-	<EditSchedule 
-		isOpen={isEditModalActive} 
-		onClose={handleEditModal} 
-	/>
+  <EditSchedule 
+    isOpen={isEditModalActive} 
+    onClose={handleEditModal}
+    on:editSaved={handleEditSaved}
+  />
 {/if}
 
 {#if isAddCustomModalActive}

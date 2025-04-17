@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
     import Calendar from '@event-calendar/core';
     //I was able to remove an error about declaration by running 'npm install --save-dev @types/event-calendar__time-grid'
     import TimeGrid from '@event-calendar/time-grid';
@@ -85,47 +87,95 @@
        slotHeight: 30,
        slotEventOverlap: false,
        eventContent: function(info) {
-        return {
-            html: `
+  return {
+    html: `
+      <div data-crn='${info.event.extendedProps.CRN}' class='event-container flex flex-row wrap w-full h-full py-[4px] text-black relative z-10'>
+        <span class='color-span h-full w-[4px] mr-[4px] rounded-2xl' style='background-color:${info.event.extendedProps.pairingColor};'>
+        </span>
+        <div class='info-container flex flex-col w-full h-full'>
+          <div class="event-title font-lato font-bold text-[12px] h-fit w-full">${info.event.title}
+          </div>
+          <div class='event-room font-lato text-[10px] h-fit w-full'> ${info.event.extendedProps.buildingAndRoom || ''}
+          </div>
+          <div class='time-container font-lato text-[10px] flex flex-row w-full h-fit'> ${info.event.extendedProps.formattedTime || ''}
+          </div>
+          <div class='details-button absolute top-0 right-0 bg-opaque-white w-[24px] h-[24px] rounded-full flex flex-wrap justify-center items-center'>
+            <button class='h-fit'><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          </div>
+          </div>
+          
+          <div data-event-id='${info.event.id}' class='event-popup hidden absolute right-0 top-[24px] bg-white border border-gray-200 rounded-md shadow-md z-[9999]'>
+            <ul class='py-1'>
+              <li class='edit-event px-4 py-2 hover:bg-gray-100 cursor-pointer font-lato text-[12px] flex items-center'>
+                <i class="fa-solid fa-pen-to-square mr-2"></i> Edit
+              </li>
+              <li class='delete-event px-4 py-2 hover:bg-gray-100 cursor-pointer font-lato text-[12px] text-red-600 flex items-center'>
+                <i class="fa-solid fa-trash mr-2"></i> Delete
+              </li>
+            </ul>
+          </div>
+        </div>
       
-            <div data-crn='${info.event.extendedProps.CRN}' class='event-container flex flex-row wrap w-full h-full py-[4px] text-black relative'>
-            
-                <span class='color-span h-full w-[4px] mr-[4px] rounded-2xl' style='background-color:${info.event.extendedProps.pairingColor};'></span>
-                <div class='info-container flex flex-col w-full h-full'>
-                <div class="event-title font-lato font-bold text-[12px] h-fit w-full">${info.event.title}</div>
-                <div class='event-room font-lato text-[10px] h-fit w-full'> ${info.event.extendedProps.buildingAndRoom || ''}</div>
-                <div class='time-container font-lato text-[10px] flex flex-row w-full h-fit'> ${info.event.extendedProps.formattedTime || ''}</div>
-                <div class='details-button absolute top-0 right-0 bg-opaque-white w-[24px] h-[24px] rounded-full flex flex-wrap justify-center items-center'><button class='h-fit '><i class="fa-solid fa-ellipsis-vertical"></i></button></div>
-                </div>
-              
-            </div>
-            `
-
-
-
-
-
-
-        };
-    },
+    `
+  };
+},
        
   
 
 
-    eventClick: function(info) {
-            // Check if the click was on the details button
-            const target = info.jsEvent.target;
-            if (target.classList.contains('fa-ellipsis-vertical') || 
-                target.closest('.details-button')) {
-                const eventCRN = info.event.extendedProps.CRN;
-                // Toggle dropdown visibility
-                openDropdownCRN = openDropdownCRN === eventCRN ? null : eventCRN;
-                info.jsEvent.preventDefault(); // Prevent default calendar behavior
-            } else {
-                console.log('Event clicked:', info.event);
-                // Handle regular event click
-            }
-        },
+eventClick: function(info) {
+  // Check if the click was on the details button
+  const target = info.jsEvent.target;
+  if (target.classList.contains('fa-ellipsis-vertical') || 
+      target.closest('.details-button')) {
+    // Get the popup element
+    const eventContainer = target.closest('.event-container');
+    const popup = eventContainer.querySelector('.event-popup');
+    
+    // Toggle popup visibility
+    document.querySelectorAll('.event-popup').forEach(popup => {
+      if (popup !== eventContainer.querySelector('.event-popup')) {
+        popup.classList.add('hidden');
+      }
+    });
+    
+    popup.classList.toggle('hidden');
+    info.jsEvent.preventDefault(); // Prevent default calendar behavior
+  } else if (target.closest('.edit-event')) {
+    // Edit event action
+    const eventId = target.closest('.event-popup').getAttribute('data-event-id');
+    const event = info.event;
+    
+    // Find the event in the events store
+    const foundEvent = $events.find((e) => e.id === eventId);
+    if (foundEvent) {
+      // Open edit modal with this event
+      dispatch('edit', { event: foundEvent });
+    }
+    
+    // Hide the popup
+    target.closest('.event-popup').classList.add('hidden');
+    info.jsEvent.preventDefault();
+  } else if (target.closest('.delete-event')) {
+    // Delete event action
+    const eventId = target.closest('.event-popup').getAttribute('data-event-id');
+    
+    // Add the event to the delete queue
+    const eventToDelete = $events.find((e) => e.id === eventId);
+    if (eventToDelete) {
+      eventstobedeleted.update(value => [...value, eventToDelete]);
+    }
+    
+    // Hide the popup
+    target.closest('.event-popup').classList.add('hidden');
+    info.jsEvent.preventDefault();
+  } else {
+    // Hide any open popups when clicking elsewhere
+    document.querySelectorAll('.event-popup').forEach(popup => {
+      popup.classList.add('hidden');
+    });
+  }
+},
     };
 
 
@@ -165,5 +215,20 @@
     font-family: 'Lato', sans-serif;
   }
 
+  .event-popup {
+    min-width: 120px;
+    /* Add these properties */
+    position: absolute;
+    z-index: 9999;
+    /* This fixes potential parent stacking context issues */
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+  }
 
+  .hidden {
+    display: none;
+  }
+
+  .bg-opaque-white {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
 </style>

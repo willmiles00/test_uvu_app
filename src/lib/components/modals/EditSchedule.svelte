@@ -5,6 +5,8 @@
 
   export let isOpen = false;
   export let onClose: () => void;
+  export let eventToEdit = null;
+  
   
   const dispatch = createEventDispatcher();
 
@@ -91,7 +93,7 @@
   let originalStartDatePart = '';
   let originalEndDatePart = '';
 
-        // Function to save changes
+  // Function to save changes
   function handleSave() {
     if (editedEvent && selectedEvent) {
       // Validate that at least one day is selected
@@ -198,6 +200,9 @@
       originalStartDatePart = '';
       originalEndDatePart = '';
       
+      // Dispatch a custom event to notify the parent component that an edit was saved
+      dispatch('editSaved');
+      
       resetAndClose();
     }
   }
@@ -209,7 +214,8 @@
         return currentEvents.filter(event => event.id !== selectedEvent!.id);
       });
       
-      // No need to update filteredevents as it's derived from events
+      // Dispatch event to notify that an event was deleted
+      dispatch('editSaved');
       
       resetAndClose();
     }
@@ -234,6 +240,12 @@
     selectedEvent = null;
     editedEvent = null;
   }
+
+  $: if (eventToEdit && isOpen) {
+  selectedEvent = eventToEdit;
+  editedEvent = formatEventTime(JSON.parse(JSON.stringify(eventToEdit)));
+  viewMode = 'edit';
+}
 </script>
 
 {#if isOpen}
