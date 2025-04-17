@@ -2,15 +2,15 @@
 export let selectedColor = '';
 export let pairingColor = '';
  const colors = [
-    { mainColor: '#B7DAB2', complementColor: '#000000' },
-    { mainColor: '#71BF44', complementColor: '#000000' },
-    { mainColor: '#86C8BC', complementColor: '#000000' },
-    { mainColor: '#99D5E9', complementColor: '#000000' },
-    { mainColor: '#FBD865', complementColor: '#000000' },
-    { mainColor: '#8B87A1', complementColor: '#000000' },
-    { mainColor: '#E18E4D', complementColor: '#000000' },
-    { mainColor: '#EA866E', complementColor: '#000000' },
-    { mainColor: '#DCDCDD', complementColor: '#000000' }
+    { mainColor: '#B7DAB2', complementColor: '#35712C' },
+    { mainColor: '#99CC67', complementColor: '#349946' },
+    { mainColor: '#86C8BC', complementColor: '#36504B' },
+    { mainColor: '#99D5E9', complementColor: '#00688C' },
+    { mainColor: '#FBD865', complementColor: '#B09747' },
+    { mainColor: '#8B87A1', complementColor: '#3E3B54' },
+    { mainColor: '#EEBE99', complementColor: '#D45D00' },
+    { mainColor: '#EA866E', complementColor: '#9E3922' },
+    { mainColor: '#DCDCDD', complementColor: '#757677' }
   ];
 
    function selectColorHandler(color: string, complementColor: string) {
