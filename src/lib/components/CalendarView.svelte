@@ -157,19 +157,22 @@ eventClick: function(info) {
     target.closest('.event-popup').classList.add('hidden');
     info.jsEvent.preventDefault();
   } else if (target.closest('.delete-event')) {
-    // Delete event action
-    const eventId = target.closest('.event-popup').getAttribute('data-event-id');
+  // Delete event action
+  const eventId = target.closest('.event-popup').getAttribute('data-event-id');
+  
+  // Add the event to the delete queue
+  const eventToDelete = $events.find((e) => e.id === eventId);
+  if (eventToDelete) {
+    eventstobedeleted.update(value => [...value, eventToDelete]);
     
-    // Add the event to the delete queue
-    const eventToDelete = $events.find((e) => e.id === eventId);
-    if (eventToDelete) {
-      eventstobedeleted.update(value => [...value, eventToDelete]);
-    }
-    
-    // Hide the popup
-    target.closest('.event-popup').classList.add('hidden');
-    info.jsEvent.preventDefault();
-  } else {
+    // Also remove from the main events store
+    events.update(value => value.filter(e => e.id !== eventId));
+  }
+  
+  // Hide the popup
+  target.closest('.event-popup').classList.add('hidden');
+  info.jsEvent.preventDefault();
+} else {
     // Hide any open popups when clicking elsewhere
     document.querySelectorAll('.event-popup').forEach(popup => {
       popup.classList.add('hidden');

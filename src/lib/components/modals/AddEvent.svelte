@@ -125,47 +125,51 @@
 </script>
 
 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-  <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full">
-    <div class="bg-[#275D38] text-white p-4 text-left text-xl font-bold rounded-t-lg font-primary-semibold">
+  <div class="bg-white rounded-lg shadow-lg w-[900px]">
+    <div class="bg-[#00843D] text-white p-4 text-left text-xl font-bold rounded-t-lg font-primary-semibold">
       ADD CUSTOM SCHEDULE
     </div>
     <div class="p-6">
       <form class="grid grid-cols-2 gap-4" on:submit|preventDefault={handleSubmit}>
         <!-- Class Name -->
-        <div>
+         <div class="flex flex-wrap w-[852px]">
+        <div class="w-[352px] h-fit  mr-[22px]">
           <label class="block text-[#275D38] font-medium font-primary">Class Name*</label>
           <input
             type="text"
             bind:value={className}
             placeholder="Type Class Name"
-            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            class="w-[352px] border border-gray-300 rounded-md p-2 mt-1"
             required
           />
         </div>
 
         <!-- Professor Name -->
+         <div class="w-[440px] flex ml-[22px]">
         <div>
-          <label class="block text-[#275D38] font-medium font-primary">Prof First Name</label>
+          <label class="block text-[#275D38] font-medium font-primary w-fit">Prof First Name</label>
           <input
             type="text"
             bind:value={profFirstName}
             placeholder="Type First Name"
-            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            class="w-[214px] border border-gray-300 rounded-md p-2 mt-1"
           />
         </div>
+     
 
-        <div>
-          <label class="block text-[#275D38] font-medium font-primary">Prof Last Name</label>
+        <div class="ml-[12px]">
+          <label class="block text-[#275D38] font-medium font-primary w-fit">Prof Last Name</label>
           <input
             type="text"
             bind:value={profLastName}
             placeholder="Type Last Name"
-            class="w-full border border-gray-300 rounded-md p-2 mt-1"
+            class="w-[214px] border border-gray-300 rounded-md p-2 mt-1"
           />
         </div>
+      </div>
 
         <!-- course number -->
-        <div>
+        <div class="mt-[22px] w-[352px] mr-[44px]">
           <label class="block text-[#275D38] font-medium font-primary">Course Number</label>
           <input
             type="text"
@@ -176,7 +180,7 @@
         </div>
 
         <!-- Room Number -->
-        <div>
+        <div class="mt-[22px] w-[440px]">
           <label class="block text-[#275D38] font-medium font-primary">Room Number</label>
           <input
             type="text"
@@ -185,6 +189,7 @@
             class="w-full border border-gray-300 rounded-md p-2 mt-1"
           />
         </div>
+      </div>
 
         <!-- Select Days -->
         <div class="col-span-2">
