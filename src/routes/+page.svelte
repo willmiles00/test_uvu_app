@@ -1,7 +1,6 @@
 <script lang="ts" >
 
 
-
 	// imports
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import { events } from '$lib/stores/events';
@@ -160,7 +159,10 @@ function resetFilters() {
   isEditModalActive = true;
   
 
+
 }
+
+let userScheduleTitle = '';
  
 
 </script>
@@ -169,15 +171,19 @@ function resetFilters() {
 	<!-- main functionality buttons -->
 	
 	<div class="w-full flex justify-between bg-gray-100 h-[44px]">
-		<div class="flex flex-wrap flex-col mx-3 items-center justify-center">
+		<div class="flex flex-wrap flex-col mx-3 items-center justify-center" >
 			<p id="titleHeader" class="uppercase text-[18px] font-rajdhani font-semibold text-uvu-green">Title:</p>
 			<input
 				class="input !bg-white placeholder-[#757677] !rounded-[3px] mx-2"
 				type="text"
 				name=""
-				id=""
+				bind:value={userScheduleTitle}
 				placeholder="Default Schedule Title"
 			/>
+		</div>
+
+		<div id="scheduleTitle" class="hidden">
+			<p>{userScheduleTitle}</p>
 		</div>
 
 		<div class="h-full flex items-center mr-[12px]">
