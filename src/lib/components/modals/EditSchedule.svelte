@@ -250,10 +250,10 @@
 
 {#if isOpen}
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[80vh] overflow-auto">
-      <div class="bg-[#00843D] text-white p-4 pl-6 text-xl font-bold rounded-t-lg font-primary-semibold flex justify-between items-center">
-        <span class="uppercase">
-          {viewMode === 'table' ? 'EDIT SCHEDULE' : 'EDIT CLASS'}
+    <div class="bg-white rounded-lg shadow-lg w-[1000px] max-h-[80vh] overflow-auto">
+      <div class="bg-[#00843D] text-white p-4 pl-6 text-xl  rounded-t-lg font-primary-semibold flex justify-between items-center h-[55px]">
+        <span class="font-light text-[24px]">
+          {viewMode === 'table' ? 'Edit Schedules' : 'EDIT CLASS'}
         </span>
         {#if viewMode === 'edit'}
           <button 
@@ -269,19 +269,19 @@
         {#if viewMode === 'table'}
           <!-- Table View -->
           {#if $events.length === 0}
-            <div class="text-center py-8">
+            <div class="text-center py-8 w-[936px]">
               <p class="text-gray-500 font-primary">No classes available. Please import a CSV or add custom classes first.</p>
             </div>
           {:else}
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto w-[936px]">
               <table class="w-full border-collapse">
                 <thead>
                   <tr class="bg-gray-100 border-b">
-                    <th class="text-left p-3 font-primary-semibold text-[#275D38]">Class Name</th>
-                    <th class="text-left p-3 font-primary-semibold text-[#275D38]">Instructor</th>
-                    <th class="text-left p-3 font-primary-semibold text-[#275D38]">Room</th>
-                    <th class="text-left p-3 font-primary-semibold text-[#275D38]">CRN</th>
-                    <th class="text-center p-3 font-primary-semibold text-[#275D38]">Action</th>
+                    <th class="text-left p-3 font-primary-semibold text-[#275D38] w-[172px]">Class Name</th>
+                    <th class="text-left p-3 font-primary-semibold text-[#275D38] w-[189px]">Instructor</th>
+                    <th class="text-left p-3 font-primary-semibold text-[#275D38] w-[189px]">Room</th>
+                    <th class="text-left p-3 font-primary-semibold text-[#275D38] w-[189px]">CRN</th>
+                    <th class="text-center p-3 font-primary-semibold text-[#275D38]"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -291,10 +291,10 @@
                       on:mouseenter={() => handleRowHover(event.id)}
                       on:mouseleave={() => handleRowHover(null)}
                     >
-                      <td class="p-3 font-lato">{event.title}</td>
-                      <td class="p-3 font-lato">{event.extendedProps.Instructor}</td>
-                      <td class="p-3 font-lato">{event.extendedProps.buildingAndRoom}</td>
-                      <td class="p-3 font-lato">{event.extendedProps.CRN || 'N/A'}</td>
+                      <td class="p-3 font-lato text-[12px]">{event.title}</td>
+                      <td class="p-3 font-lato text-[12px]">{event.extendedProps.Instructor}</td>
+                      <td class="p-3 font-lato text-[12px]">{event.extendedProps.buildingAndRoom}</td>
+                      <td class="p-3 font-lato text-[12px]">{event.extendedProps.CRN || 'N/A'}</td>
                       <td class="p-3 text-center">
                         <button 
                           class="bg-[#275D38] text-white px-3 py-1 rounded transition-opacity {hoveredRowId === event.id ? 'opacity-100' : 'opacity-0'}"
