@@ -212,87 +212,96 @@ function resetFilters() {
 			<div id="filterSection" class="flex flex-wrap flex-col m-4 mt-[52px] mb-[52px]">
 				<p class="uppercase font-primary-bold text-[18px] mb-2">Select schedule</p>
 				<button on:click={resetFilters} class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
-					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
+				  <i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>
 				
-				<div class="filter-group mt-[16px]">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer text-[18px] uppercase border-2 border-solid border-[#DCDCDD] w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('professors')}>
-					  Professors 
-					  {#if showProfessors}<i class="fa-solid fa-chevron-up mr-[12px]"></i>
-					  {:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>
-					  {/if}
-					</p>
-					{#if showProfessors}
-					<div class="border-2 rounded-[8px] max-h-[300px]">
-					  {#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
-						<label class="flex items-center space-x-2 mb-1 text-[#757677] font-lato text-[16px]">
-							<div class="w-full flex justify-between px-2">
-							<span class="text-sm">{instructor}</span>
+				<!-- Professors Filter -->
+				<div class="filter-container mt-[16px]">
+				  <p class="filter-header text-uvu-green font-rajdhani font-semibold cursor-pointer text-[18px] uppercase border-2 border-solid {showProfessors ? 'border-[#275D38]' : 'border-[#DCDCDD]'} w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('professors')}>
+					Professors 
+					{#if showProfessors}<i class="fa-solid fa-chevron-up mr-[12px]"></i>
+					{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>
+					{/if}
+				  </p>
+				  {#if showProfessors}
+				  <div class="filter-content border-2 border-solid border-[#275D38] rounded-[8px] max-h-[200px] overflow-y-auto mt-2">
+					{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
+					  <label class="filter-item">
+						<div class="w-full flex justify-between px-2 py-1 hover:bg-gray-100">
+						  <span class="text-sm truncate max-w-[200px] {$selectedInstructors.includes(instructor) ? 'text-black font-medium' : 'text-[#757677]'}">
+							{instructor}
+						  </span>
 						  <input
 							type="checkbox"
 							class="filterCheckbox"
 							value={instructor}
 							data-filter-type="instructor"
+							checked={$selectedInstructors.includes(instructor)}
 							on:change={addToFiltersStore}
 						  />
 						</div>
-						 
-						</label>
-					  {/each}
-					</div>
-					{/if}
+					  </label>
+					{/each}
 				  </div>
-				  
-				  <div class="filter-group mt-[8px]">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer text-[18px] uppercase border-2 border-solid border-[#DCDCDD] w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('rooms')}>
-					  Rooms {#if showRooms}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
-					</p>
-					{#if showRooms}
-					<div class="border-2 rounded-[8px] max-h-[300px]">
-					  {#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
-						<label class="flex items-center space-x-2 mb-1 text-[#757677] font-lato text-[16px]">
-							<div class="w-full flex justify-between px-2">
-							<span class="text-sm">{buildingAndRoom}</span>
+				  {/if}
+				</div>
+				
+				<!-- Rooms Filter -->
+				<div class="filter-container mt-[16px]">
+				  <p class="filter-header text-uvu-green font-rajdhani font-semibold cursor-pointer text-[18px] uppercase border-2 border-solid {showRooms ? 'border-[#275D38]' : 'border-[#DCDCDD]'} w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('rooms')}>
+					Rooms {#if showRooms}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
+				  </p>
+				  {#if showRooms}
+				  <div class="filter-content border-2 border-solid border-[#275D38] rounded-[8px] max-h-[200px] overflow-y-auto mt-2">
+					{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+					  <label class="filter-item">
+						<div class="w-full flex justify-between px-2 py-1 hover:bg-gray-100">
+						  <span class="text-sm truncate max-w-[200px] {$selectedRooms.includes(buildingAndRoom) ? 'text-black font-medium' : 'text-[#757677]'}">
+							{buildingAndRoom}
+						  </span>
 						  <input
 							type="checkbox"
 							class="filterCheckbox"
 							value={buildingAndRoom}
 							data-filter-type="room"
+							checked={$selectedRooms.includes(buildingAndRoom)}
 							on:change={addToFiltersStore}
 						  />
 						</div>
-						
-						</label>
-					  {/each}
-					</div>
-					{/if}
+					  </label>
+					{/each}
 				  </div>
-				  
-				  <div class="filter-group mt-[8px]">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer text-[18px] uppercase border-2 border-solid border-[#DCDCDD] w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('courses')}>
-					  Courses {#if showCourses}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
-					</p>
-					{#if showCourses}
-					<div class="border-2 rounded-[8px] max-h-[300px]">
-					  {#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
-						<label class="flex items-center space-x-2 mb-1 text-[#757677] font-lato text-[16px]">
-							<div class="w-full flex justify-between px-2">
-							<span class="text-sm">{courseName}</span>
+				  {/if}
+				</div>
+				
+				<!-- Courses Filter -->
+				<div class="filter-container mt-[16px]">
+				  <p class="filter-header text-uvu-green font-rajdhani font-semibold cursor-pointer text-[18px] uppercase border-2 border-solid {showCourses ? 'border-[#275D38]' : 'border-[#DCDCDD]'} w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('courses')}>
+					Courses {#if showCourses}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
+				  </p>
+				  {#if showCourses}
+				  <div class="filter-content border-2 border-solid border-[#275D38] rounded-[8px] max-h-[200px] overflow-y-auto mt-2">
+					{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+					  <label class="filter-item">
+						<div class="w-full flex justify-between px-2 py-1 hover:bg-gray-100">
+						  <span class="text-sm truncate max-w-[200px] {$selectedCourses.includes(courseName) ? 'text-black font-medium' : 'text-[#757677]'}">
+							{courseName}
+						  </span>
 						  <input
 							type="checkbox"
 							class="filterCheckbox"
 							value={courseName}
 							data-filter-type="course"
+							checked={$selectedCourses.includes(courseName)}
 							on:change={addToFiltersStore}
 						  />
 						</div>
-						 
-						</label>
-					  {/each}
-					</div>
-					{/if}
+					  </label>
+					{/each}
 				  </div>
-			</div>
+				  {/if}
+				</div>
+			  </div>
 
 
 	
@@ -456,5 +465,67 @@ function resetFilters() {
 		font-family: lato;
 	}
 
+	.filter-container {
+    display: flex;
+    flex-direction: column;
+    width: 269px;
+  }
+
+  .filter-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+  }
+
+  .filter-content {
+    padding: 0;
+    scrollbar-width: thin;
+  }
+
+  .filter-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .filter-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .filter-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  .filter-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  .filter-item {
+    display: block;
+    border-bottom: 1px solid #f0f0f0;
+    color: #757677;
+    font-family: lato;
+    font-size: 16px;
+  }
+
+  .filter-item:last-child {
+    border-bottom: none;
+  }
+
+  .filterCheckbox {
+    accent-color: #275D38;
+  }
+
+  .filter-item {
+    display: block;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: lato;
+    font-size: 16px;
+  }
+
+  .filter-item:last-child {
+    border-bottom: none;
+  }
 
 </style>
