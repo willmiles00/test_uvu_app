@@ -251,7 +251,7 @@
 {#if isOpen}
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div class="bg-white rounded-lg shadow-lg w-[1000px] max-h-[80vh] overflow-auto">
-      <div class="bg-[#00843D] text-white p-4 pl-6 text-xl  rounded-t-lg font-primary-semibold flex justify-between items-center h-[55px]">
+      <div class="bg-[#00843D] text-white p-4 pl-6 text-xl rounded-t-lg font-primary-semibold flex justify-between items-center h-[55px] relative">
         <span class="font-light text-[24px]">
           {viewMode === 'table' ? 'Edit Schedules' : 'EDIT CLASS'}
         </span>
@@ -260,9 +260,18 @@
             class="text-white hover:text-gray-200 text-sm"
             on:click={handleBack}
           >
-            <i class="fa-solid fa-arrow-left mr-2"></i>Back to list
+   
           </button>
         {/if}
+        
+        <!-- New X Close Button -->
+        <button 
+          class="absolute top-[16px] right-[16px] text-white hover:text-gray-200"
+          on:click={resetAndClose}
+          aria-label="Close modal"
+        >
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
       </div>
       
       <div class="p-6">
@@ -307,16 +316,6 @@
                   {/each}
                 </tbody>
               </table>
-            </div>
-            
-            <div class="flex justify-end mt-4">
-              <button
-                type="button"
-                class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-primary"
-                on:click={onClose}
-              >
-                Close
-              </button>
             </div>
           {/if}
         {:else if viewMode === 'edit' && editedEvent}
@@ -421,13 +420,6 @@
                 on:click={handleDelete}
               >
                 Delete
-              </button>
-              <button
-                type="button"
-                class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md font-primary"
-                on:click={resetAndClose}
-              >
-                Cancel
               </button>
               <button
                 type="button"
