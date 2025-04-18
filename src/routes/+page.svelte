@@ -19,6 +19,31 @@
 	let showRooms = false;
 	let showCourses = false;
 
+	function toggleFilter(filterName: string) {
+  // Check if the clicked filter is already open
+  const isAlreadyOpen = 
+    (filterName === 'professors' && showProfessors) ||
+    (filterName === 'rooms' && showRooms) ||
+    (filterName === 'courses' && showCourses);
+  
+  // Close all filters first
+  showProfessors = false;
+  showRooms = false;
+  showCourses = false;
+  
+  // If the filter wasn't already open, then open it
+  if (!isAlreadyOpen) {
+    if (filterName === 'professors') {
+      showProfessors = true;
+    } else if (filterName === 'rooms') {
+      showRooms = true;
+    } else if (filterName === 'courses') {
+      showCourses = true;
+    }
+  }
+  // If it was already open, it will remain closed because we set all to false above
+}
+
 
 	// initial variables
 	export const courses: any = [];
@@ -57,22 +82,25 @@
 
 	// Handle CSV file upload, see parseCSVUtil.ts for more details
 	async function handleCSVUpload(event: CustomEvent) {
-    const { file } = event.detail;
-    if (file) {
-      const processedCourses = await parseCSVFile(file);
-      
-      // Update the uploadedCourses with the processed data
-      uploadedCourses = processedCourses;
-      
-      // Update the global store with the new courses
-      events.update((value: any) => {
-        return [...value, ...processedCourses];
-      });
-      
-      // Close modal
-      handleUploadModal();
-    }
+  const { file } = event.detail;
+  if (file) {
+    // Update the fileName variable with the name of the uploaded file
+    fileName = file.name;
+    
+    const processedCourses = await parseCSVFile(file);
+    
+    // Update the uploadedCourses with the processed data
+    uploadedCourses = processedCourses;
+    
+    // Update the global store with the new courses
+    events.update((value: any) => {
+      return [...value, ...processedCourses];
+    });
+    
+    // Close modal
+    handleUploadModal();
   }
+}
   
   // Keep track of the currently selected file name for display in the sidebar
   let fileName = 'No File Selected';
@@ -187,65 +215,68 @@ function resetFilters() {
 					<i class="fa-solid fa-rotate-right pr-2"></i>reset filters
 				</button>
 				
-				<div class="filter-group">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showProfessors = !showProfessors}>
-						Professors
+				<div class="filter-group mt-[16px]">
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer text-[18px] uppercase border-2 border-solid border-[#DCDCDD] w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('professors')}>
+					  Professors 
+					  {#if showProfessors}<i class="fa-solid fa-chevron-up mr-[12px]"></i>
+					  {:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>
+					  {/if}
 					</p>
 					{#if showProfessors}
-						{#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
-							<label class="flex items-center space-x-2 mb-1">
-								<input
-									type="checkbox"
-									class="filterCheckbox"
-									value={instructor}
-									data-filter-type="instructor"
-									on:change={addToFiltersStore}
-								/>
-								<span class="text-sm">{instructor}</span>
-							</label>
-						{/each}
+					  {#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
+						<label class="flex items-center space-x-2 mb-1">
+						  <input
+							type="checkbox"
+							class="filterCheckbox"
+							value={instructor}
+							data-filter-type="instructor"
+							on:change={addToFiltersStore}
+						  />
+						  <span class="text-sm">{instructor}</span>
+						</label>
+					  {/each}
 					{/if}
-				</div>
-
-				<div class="filter-group mt-4">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showRooms = !showRooms}>
-						Rooms
+				  </div>
+				  
+				  <div class="filter-group mt-[8px]">
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer text-[18px] uppercase border-2 border-solid border-[#DCDCDD] w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('rooms')}>
+					  Rooms {#if showRooms}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
 					</p>
 					{#if showRooms}
-						{#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
-							<label class="flex items-center space-x-2 mb-1">
-								<input
-									type="checkbox"
-									class="filterCheckbox"
-									value={buildingAndRoom}
-									data-filter-type="room"
-									on:change={addToFiltersStore}
-								/>
-								<span class="text-sm">{buildingAndRoom}</span>
-							</label>
-						{/each}
+					  {#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
+						<label class="flex items-center space-x-2 mb-1">
+						  <input
+							type="checkbox"
+							class="filterCheckbox"
+							value={buildingAndRoom}
+							data-filter-type="room"
+							on:change={addToFiltersStore}
+						  />
+						  <span class="text-sm">{buildingAndRoom}</span>
+						</label>
+					  {/each}
 					{/if}
-				</div>
-
-				<div class="filter-group mt-4">
-					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer" on:click={() => showCourses = !showCourses}>
-						Courses
+				  </div>
+				  
+				  <div class="filter-group mt-[8px]">
+					<p class="text-uvu-green font-rajdhani font-semibold mb-2 cursor-pointer text-[18px] uppercase border-2 border-solid border-[#DCDCDD] w-[269px] h-[39px] rounded-[8px] flex items-center pl-[12px] justify-between" on:click={() => toggleFilter('courses')}>
+					  Courses {#if showCourses}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
 					</p>
 					{#if showCourses}
-						{#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
-							<label class="flex items-center space-x-2 mb-1">
-								<input
-									type="checkbox"
-									class="filterCheckbox"
-									value={courseName}
-									data-filter-type="course"
-									on:change={addToFiltersStore}
-								/>
-								<span class="text-sm">{courseName}</span>
-							</label>
-						{/each}
+					  {#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
+						<label class="flex items-center space-x-2 mb-1">
+						  <input
+							type="checkbox"
+							class="filterCheckbox"
+							value={courseName}
+							data-filter-type="course"
+							on:change={addToFiltersStore}
+						  />
+						  <span class="text-sm">{courseName}</span>
+						</label>
+					  {/each}
 					{/if}
-				</div>
+				  </div>
 			</div>
 
 
