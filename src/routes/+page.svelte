@@ -223,8 +223,11 @@ function resetFilters() {
 					  {/if}
 					</p>
 					{#if showProfessors}
+					<div class="border-2 rounded-[8px] max-h-[300px]">
 					  {#each [...new Set($events.map(course => course.extendedProps.Instructor))] as instructor}
-						<label class="flex items-center space-x-2 mb-1">
+						<label class="flex items-center space-x-2 mb-1 text-[#757677] font-lato text-[16px]">
+							<div class="w-full flex justify-between px-2">
+							<span class="text-sm">{instructor}</span>
 						  <input
 							type="checkbox"
 							class="filterCheckbox"
@@ -232,9 +235,11 @@ function resetFilters() {
 							data-filter-type="instructor"
 							on:change={addToFiltersStore}
 						  />
-						  <span class="text-sm">{instructor}</span>
+						</div>
+						 
 						</label>
 					  {/each}
+					</div>
 					{/if}
 				  </div>
 				  
@@ -243,8 +248,11 @@ function resetFilters() {
 					  Rooms {#if showRooms}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
 					</p>
 					{#if showRooms}
+					<div class="border-2 rounded-[8px] max-h-[300px]">
 					  {#each [...new Set($events.map(course => course.extendedProps.buildingAndRoom))] as buildingAndRoom}
-						<label class="flex items-center space-x-2 mb-1">
+						<label class="flex items-center space-x-2 mb-1 text-[#757677] font-lato text-[16px]">
+							<div class="w-full flex justify-between px-2">
+							<span class="text-sm">{buildingAndRoom}</span>
 						  <input
 							type="checkbox"
 							class="filterCheckbox"
@@ -252,9 +260,11 @@ function resetFilters() {
 							data-filter-type="room"
 							on:change={addToFiltersStore}
 						  />
-						  <span class="text-sm">{buildingAndRoom}</span>
+						</div>
+						
 						</label>
 					  {/each}
+					</div>
 					{/if}
 				  </div>
 				  
@@ -263,8 +273,11 @@ function resetFilters() {
 					  Courses {#if showCourses}<i class="fa-solid fa-chevron-up mr-[12px]"></i>{:else}<i class="fa-solid fa-chevron-down mr-[12px]"></i>{/if}
 					</p>
 					{#if showCourses}
+					<div class="border-2 rounded-[8px] max-h-[300px]">
 					  {#each [...new Set($events.map(course => course.extendedProps.Course))] as courseName}
-						<label class="flex items-center space-x-2 mb-1">
+						<label class="flex items-center space-x-2 mb-1 text-[#757677] font-lato text-[16px]">
+							<div class="w-full flex justify-between px-2">
+							<span class="text-sm">{courseName}</span>
 						  <input
 							type="checkbox"
 							class="filterCheckbox"
@@ -272,9 +285,11 @@ function resetFilters() {
 							data-filter-type="course"
 							on:change={addToFiltersStore}
 						  />
-						  <span class="text-sm">{courseName}</span>
+						</div>
+						 
 						</label>
 					  {/each}
+					</div>
 					{/if}
 				  </div>
 			</div>
