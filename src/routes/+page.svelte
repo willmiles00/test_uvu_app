@@ -94,12 +94,7 @@
     // Update the global store with the new courses
     events.update((value: any) => {
       return [...value, ...processedCourses];
-    });
-
-	// Default to setting all filters to true
-	// Set all checkboxes to checked
-	selectAllFilters();
-	
+    });	
 
     // Close modal
     handleUploadModal();
@@ -137,19 +132,19 @@ function addToFiltersStore(event: Event) {
     }
   }
 }
-
-function selectAllFilters(){
-  // Select all checkboxes
-  const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
-  checkboxes.forEach((checkbox: HTMLInputElement) => {
-	checkbox.checked = true; 
-  });
+// Function to select all filter checkboxes when file is uploaded
+// function selectAllFilters(){
+//   // Select all checkboxes
+//   const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
+//   checkboxes.forEach((checkbox: HTMLInputElement) => {
+// 	checkbox.checked = true; 
+//   });
   
-  // Update the filter stores with all values
-  $selectedInstructors = [...new Set($events.map(course => course.extendedProps.Instructor))];
-  $selectedRooms = [...new Set($events.map(course => course.extendedProps.buildingAndRoom))];
-  $selectedCourses = [...new Set($events.map(course => course.extendedProps.Course))];
-}
+//   // Update the filter stores with all values
+//   $selectedInstructors = [...new Set($events.map(course => course.extendedProps.Instructor))];
+//   $selectedRooms = [...new Set($events.map(course => course.extendedProps.buildingAndRoom))];
+//   $selectedCourses = [...new Set($events.map(course => course.extendedProps.Course))];
+// }
 
 
 function clearFilters() {
