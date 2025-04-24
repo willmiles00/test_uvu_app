@@ -81,25 +81,25 @@
         // hides weekends
         hiddenDays: [0],
         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' },
-       headerToolbar:{start: '', center: '', end: ''},
-    //    gets rid of specific day of the week in header. We will be adding all events to the same 'week' to avoid events falling off the face of the earth
-       dayHeaderFormat: { weekday: 'long' },
-       slotHeight: 30,
-       slotEventOverlap: false,
-       eventContent: function(info) {
+        headerToolbar:{start: '', center: '', end: ''},
+        //    gets rid of specific day of the week in header. We will be adding all events to the same 'week' to avoid events falling off the face of the earth
+        dayHeaderFormat: { weekday: 'long' },
+        slotHeight: 30,
+        slotEventOverlap: false,
+        eventContent: function(info) {
   return {
     html: `
-      <div data-crn='${info.event.extendedProps.CRN}' class='event-container flex flex-row wrap w-full h-full py-[4px] text-black relative z-10'>
+      <div data-crn='${info.event.extendedProps.CRN}' class='event-container flex flex-row wrap w-full h-full py-[4px] text-black relative z-10 has-tooltip'>
         <span class='color-span h-full w-[4px] mr-[4px] rounded-2xl' style='background-color:${info.event.extendedProps.pairingColor};'>
         </span>
-        <div class='info-container flex flex-col w-full h-full'>
+        <div class='info-container flex flex-col w-full h-full info-hover'>
           <div class="event-title font-lato font-bold text-[12px] h-fit w-full">${info.event.title}
           </div>
           <div class='event-room font-lato text-[10px] h-fit w-full'> ${info.event.extendedProps.buildingAndRoom || ''}
           </div>
           <div class='time-container font-lato text-[10px] flex flex-row w-full h-fit'> ${info.event.extendedProps.formattedTime || ''}
           </div>
-          <div class='details-button absolute top-0 right-0 bg-opaque-white w-[24px] h-[24px] rounded-full flex flex-wrap justify-center items-center'>
+          <div class='details-button absolute top-0 right-0 bg-opaque-white w-[24px] h-[24px] rounded-full flex flex-wrap justify-center items-center z-50'>
             <button class='h-fit'><i class="fa-solid fa-ellipsis-vertical"></i></button>
           </div>
           </div>
@@ -115,12 +115,14 @@
             </ul>
           </div>
         </div>
+
       
     `
   };
 },
-       
+
   
+
 
 
 eventClick: function(info) {
@@ -234,4 +236,11 @@ eventClick: function(info) {
   .bg-opaque-white {
     background-color: rgba(255, 255, 255, 0.8);
   }
+  .uploaded-event {
+    height: 100%;
+    width: 100%;
+  }
+
+
+
 </style>

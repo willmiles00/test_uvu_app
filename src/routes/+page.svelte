@@ -95,9 +95,16 @@
     events.update((value: any) => {
       return [...value, ...processedCourses];
     });
-    
+
+	// Default to setting all filters to true
+	// Set all checkboxes to checked
+	selectAllFilters();
+	
+
     // Close modal
     handleUploadModal();
+
+	// Update Calendar Events Style to override
   }
 }
   
@@ -131,7 +138,21 @@ function addToFiltersStore(event: Event) {
   }
 }
 
-function resetFilters() {
+function selectAllFilters(){
+  // Select all checkboxes
+  const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
+  checkboxes.forEach((checkbox: HTMLInputElement) => {
+	checkbox.checked = true; 
+  });
+  
+  // Update the filter stores with all values
+  $selectedInstructors = [...new Set($events.map(course => course.extendedProps.Instructor))];
+  $selectedRooms = [...new Set($events.map(course => course.extendedProps.buildingAndRoom))];
+  $selectedCourses = [...new Set($events.map(course => course.extendedProps.Course))];
+}
+
+
+function clearFilters() {
   $selectedInstructors = [];
   $selectedRooms = [];
   $selectedCourses = [];
@@ -139,7 +160,7 @@ function resetFilters() {
  // Reset all checkboxes
  const checkboxes = document.querySelectorAll('.filterCheckbox') as NodeListOf<HTMLInputElement>;
     checkboxes.forEach((checkbox: HTMLInputElement) => {
-      checkbox.checked = false;
+      checkbox.checked = false; 
     });
     
     // Clear events to be deleted (if needed)
@@ -148,7 +169,7 @@ function resetFilters() {
   
   // New function to handle edit saved event
   function handleEditSaved() {
-    resetFilters();
+    clearFilters();
   }
 
   function handleEditEvent(event) {
@@ -217,8 +238,8 @@ let userScheduleTitle = '';
 			<!-- filter sidebar -->
 			<div id="filterSection" class="flex flex-wrap flex-col m-4 mt-[52px] mb-[52px]">
 				<p class="uppercase font-primary-bold text-[18px] mb-2">Select schedule</p>
-				<button on:click={resetFilters} class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
-				  <i class="fa-solid fa-rotate-right pr-2"></i>reset filters
+				<button on:click={clearFilters} class="uppercase underline text-[14px] text-[#A7A8AA] text-left">
+				  <i class="fa-solid fa-rotate-right pr-2"></i>clear filters
 				</button>
 				
 				<!-- Professors Filter -->
@@ -415,6 +436,10 @@ let userScheduleTitle = '';
 		min-width: fit-content !important;
 		min-height: fit-content !important;
 	} */
+
+	.ec-event{
+		left: not-allowed !important;
+	}
 
 	.filter-group {
 		max-height: 200px;
